@@ -1,0 +1,310 @@
+<style>
+  /* ===== WHITE THEME PREVIEW SECTION ===== */
+  .at-preview-section {
+    background-color: #ffffff;
+    padding: clamp(60px, 8vw, 100px) 1.5rem;
+    color: #0f172a;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  .at-preview-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Header Alignments */
+  .at-preview-header {
+    text-align: center;
+    max-width: 620px;
+    margin: 0 auto clamp(24px, 4vw, 36px) auto;
+  }
+  .at-preview-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 800;
+    color: #1e4ed8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 14px;
+  }
+  .at-preview-title {
+    font-size: clamp(22px, 2.5vw, 32px);
+    font-weight: 800;
+    line-height: 1.25;
+    color: #0f172a;
+    margin-bottom: 10px;
+  }
+  .at-preview-desc {
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.6;
+  }
+
+  /* ===== HORIZONTALLY SCROLLABLE TABS ===== */
+  .at-preview-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    border-bottom: 2px solid #e2e8f0;
+    margin-bottom: var(--space-md);
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Hide scrollbar Firefox */
+  }
+  .at-preview-tabs::-webkit-scrollbar {
+    display: none; /* Hide scrollbar Chrome/Safari */
+  }
+  
+  .at-preview-tab {
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #64748b;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    user-select: none;
+    flex-shrink: 0;
+  }
+  .at-preview-tab:hover {
+    color: #0f172a;
+    background-color: #f1f5f9;
+    border-radius: 8px 8px 0 0;
+  }
+  .at-preview-tab.active {
+    color: #2563eb;
+    border-bottom-color: #2563eb;
+    font-weight: 800;
+  }
+
+  /* ===== BROWSER WINDOW MOCKUP ===== */
+  .browser-mockup {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 14px;
+    box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.12), 0 10px 20px -10px rgba(15, 23, 42, 0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .browser-header {
+    background-color: #f1f5f9;
+    padding: 10px 18px;
+    border-bottom: 1.5px solid #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .browser-dots {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .browser-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+  }
+  .browser-dot.red { background-color: #f87171; }
+  .browser-dot.yellow { background-color: #fbbf24; }
+  .browser-dot.green { background-color: #34d399; }
+
+  .browser-address-bar {
+    flex: 1;
+    max-width: 520px;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 4px 14px;
+    font-family: var(--font-mono, monospace);
+    font-size: 11px;
+    color: #64748b;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .browser-address-bar i { color: #10b981; font-size: 10px; }
+
+  .browser-viewport {
+    background-color: #f8fafc;
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+  }
+  .browser-img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  .browser-img.active {
+    display: block;
+    opacity: 1;
+  }
+
+  /* ===== MOBILE VIEWPORTS ===== */
+  @media (max-width: 899px) {
+    .at-preview-section { padding: 48px 1.5rem; }
+    .at-preview-tabs { justify-content: flex-start; padding-left: 10px; padding-right: 10px; }
+    .browser-header { padding: 8px 12px; gap: 10px; }
+    .browser-address-bar { font-size: 10px; padding: 4px 8px; }
+  }
+
+  /* ===== RTL ARABIC VIEW ALIGNMENTS ===== */
+  .lang-ar .at-preview-header { text-align: right; }
+  .lang-ar .at-preview-meta { flex-direction: row-reverse; }
+  .lang-ar .at-preview-tabs { flex-direction: row-reverse; }
+  .lang-ar .browser-header { flex-direction: row-reverse; }
+  .lang-ar .browser-dots { flex-direction: row-reverse; }
+  .lang-ar .browser-address-bar { flex-direction: row-reverse; }
+</style>
+
+<section class="at-preview-section" id="atPreviewSection">
+  <div class="at-preview-container">
+    
+    <!-- Header Block -->
+    <div class="at-preview-header">
+      <div class="at-preview-meta">
+        <i class="fa-solid fa-desktop"></i>
+        <span data-lang="en">User Interface Tour</span>
+        <span data-lang="fr">Tour d'Horizon</span>
+        <span data-lang="ar">جولة في واجهات المنصة</span>
+      </div>
+      <h2 class="at-preview-title">
+        <span data-lang="en">Explore Deployed Workspaces</span>
+        <span data-lang="fr">Explorez les Espaces Actifs</span>
+        <span data-lang="ar">استكشف واجهات التسيير المفعّلة</span>
+      </h2>
+      <p class="at-preview-desc">
+        <span data-lang="en">Click through our tailored responsive dashboards designed specifically for students, professors, and department coordinators.</span>
+        <span data-lang="fr">Naviguez entre nos tableaux de bord réactifs conçus pour les étudiants, enseignants et administrateurs.</span>
+        <span data-lang="ar">تنقّل بين واجهات التسيير المخصصة والمتجاوبة المصممة خصيصاً للطلبة، أساتذة المقياس، ورؤساء الأقسام.</span>
+      </p>
+    </div>
+
+    <!-- Scrollable Tab Switcher on Mobile [1] -->
+    <div class="at-preview-tabs" id="atPreviewTabs">
+      <div class="at-preview-tab active" id="tab-prev-teacher" onclick="switchPreviewTab('teacher', this)">
+        <i class="fa-solid fa-chalkboard-user"></i>
+        <span data-lang="en">Teacher Workspace</span><span data-lang="fr">Espace Enseignant</span><span data-lang="ar">حساب الأستاذ</span>
+      </div>
+      <div class="at-preview-tab" id="tab-prev-student" onclick="switchPreviewTab('student', this)">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span data-lang="en">Student Portal</span><span data-lang="fr">Portail Étudiant</span><span data-lang="ar">حساب الطالب</span>
+      </div>
+      <div class="at-preview-tab" id="tab-prev-admin" onclick="switchPreviewTab('admin', this)">
+        <i class="fa-solid fa-user-tie"></i>
+        <span data-lang="en">Department Admin</span><span data-lang="fr">Espace Admin</span><span data-lang="ar">حساب رئيس القسم</span>
+      </div>
+    </div>
+
+    <!-- Browser Mockup Window [1] -->
+    <div class="browser-mockup">
+      <div class="browser-header">
+        <div class="browser-dots">
+          <span class="browser-dot red"></span>
+          <span class="browser-dot yellow"></span>
+          <span class="browser-dot green"></span>
+        </div>
+        <div class="browser-address-bar">
+          <i class="fa-solid fa-lock"></i>
+          <span id="browserUrlField">acadtrack.univ-batna.dz/teacher-dashboard.html</span>
+        </div>
+        <div style="width: 39px;"></div> <!-- Alignment placeholder -->
+      </div>
+      <div class="browser-viewport">
+        <!-- Image 1: Teacher (Active by default) -->
+        <img src="https://blogger.googleusercontent.com/img/a/AVvXsEgxw1tmaX9vseWaOTyEODte0VfJ3d63Ree8j4lbYL8IRGZYk4CJ00zzg1cM9f7ee7tfaMWT1rP9xEOQ84SRChVguXR45-qjOFVnjt0FZzQv12PxTlIkU99fwd_VZ5eyRm8KPoOC2NcV8g3qmHBxiSNnUxHH5Q49FCdu2g4Buj8I-O3346OA_2k1h5apXsE=s16000" class="browser-img active" id="img-prev-teacher" alt="Teacher Dashboard" />
+        
+        <!-- Image 2: Student -->
+        <img src="https://blogger.googleusercontent.com/img/a/AVvXsEhtHjUmp08luWvvHpUtmlsuR5aRHGiRbJU4K595TqLWTqZDUgu37m7DwrMX0cobF0TJwaqsWGDNuvDQmg8y2asLSAgjYgFdrzxxntH2fXGaq7feY4V5KRZ2sGtvGlSAlT0Voq8jquafYGZdQDC5x0RI1iyiEcd3mzfbgdJqdjXABdFvV1uHsa6IYvS5Kqo" class="browser-img" id="img-prev-student" alt="Student Dashboard" />
+        
+        <!-- Image 3: Admin -->
+        <img src="https://blogger.googleusercontent.com/img/a/AVvXsEjJwl12YxocE-BH0kVSDWqZ4p5L0xpC3oxGkYZOQC4yZynhJTMOXuTS2_MPwFwEpxi7FQ27I6OzYHP1QbpcLo3qYY3QorYouFytuLLfVJCNV1ls26sI9QjdgC6WrdaEYE5AX9VWFTe0Id5z0jQPywBQ_n9RoCtjLszBnml8XXLNHiP7QAbMQq_CWizxJRI" class="browser-img" id="img-prev-admin" alt="Admin Dashboard" />
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+//<![CDATA[
+  document.addEventListener('DOMContentLoaded', function() {
+    // Run instant language alignment listener on load
+    const initLang = localStorage.getItem('acadtrack-lang') || 'en';
+    setLanguage(initLang);
+  });
+
+  function setLanguage(lang) {
+    localStorage.setItem('acadtrack-lang', lang);
+    document.documentElement.lang = lang;
+    const isRTL = lang === 'ar';
+    const section = document.getElementById('atPreviewSection');
+    if (section) {
+      section.dir = isRTL ? 'rtl' : 'ltr';
+      if (isRTL) section.classList.add('lang-ar');
+      else section.classList.remove('lang-ar');
+    }
+
+    document.querySelectorAll('.at-preview-section [data-lang]').forEach(el => {
+      el.style.display = el.getAttribute('data-lang') === lang ? '' : 'none';
+    });
+  }
+
+  // Interactive tab switcher logic [1]
+  window.switchPreviewTab = function(role, btnEl) {
+    // 1. Toggle Tab active styles
+    document.querySelectorAll('.at-preview-tab').forEach(t => t.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+
+    // 2. Hide all screenshots
+    document.querySelectorAll('.browser-img').forEach(img => img.classList.remove('active'));
+    
+    // 3. Reveal active screenshot
+    const activeImg = document.getElementById(`img-prev-${role}`);
+    if (activeImg) activeImg.classList.add('active');
+
+    // 4. Update Secure address bar URL [1]
+    const urlField = document.getElementById('browserUrlField');
+    if (urlField) {
+      const pageMapping = {
+        teacher: 'teacher-dashboard.html',
+        student: 'student-dashboard.html',
+        admin: 'dept-admin-dashboard.html'
+      };
+      urlField.textContent = `acadtrack.univ-batna.dz/${pageMapping[role] || 'dashboard.html'}`;
+    }
+
+    setLanguage(localStorage.getItem('acadtrack-lang') || 'en');
+  };
+//]]>
+</script>

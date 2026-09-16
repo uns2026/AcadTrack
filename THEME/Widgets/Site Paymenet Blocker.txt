@@ -1,0 +1,150 @@
+<!-- Load Tailwind CSS and Icons -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+
+<script>
+//<![CDATA[
+(function() {
+    /** 
+     * 1. REDIRECTION & HIDING LOGIC
+     **/
+    const homepage = window.location.origin + "/";
+    // Check if user is not on homepage (ignoring mobile parameters)
+    if (window.location.href.split('?')[0] !== homepage) {
+        window.location.href = homepage;
+        return; 
+    }
+
+    // CSS to kill the original site visibility and style the new UI
+    const style = document.createElement('style');
+    style.innerHTML = `
+        body > *:not(#locker-overlay) { display: none !important; }
+        body { margin: 0; padding: 0; background: #111827 !important; height: 100vh; overflow: hidden; }
+        @keyframes bounce-custom { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .animate-bounce-custom { animation: bounce-custom 1s infinite; }
+        .glass-card { background: rgba(255, 255, 255, 1); border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        
+        /* Smooth slide down animation for payment options */
+        .payment-options-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out, margin-top 0.3s ease-in-out;
+            opacity: 0;
+            margin-top: 0;
+        }
+        .payment-options-container.active {
+            max-height: 500px; /* Sufficient height for content */
+            opacity: 1;
+            margin-top: 1rem;
+        }
+    `;
+    document.head.appendChild(style);
+
+    /** 
+     * 2. UI CONSTRUCTION
+     **/
+    const overlay = document.createElement('div');
+    overlay.id = 'locker-overlay';
+    overlay.className = "fixed inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center z-[999999] overflow-y-auto py-10";
+    
+    overlay.innerHTML = `
+        <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto w-full">
+            <!-- Bouncing Lock Icon -->
+            <div class="mb-6 text-red-500 animate-bounce-custom">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                </svg>
+            </div>
+
+            <!-- Main Card -->
+            <div class="glass-card p-8 text-center max-w-md w-full">
+                <!-- Platform Logo -->
+                <div class="flex justify-center mb-6">
+                    <img src="https://blogger.googleusercontent.com/img/a/AVvXsEjfb3hTK_5-KuAMC_-HyWcBMXgZ9_Dw8zHjRFglKpiAYsD4jGC1gw0trwqFGaEwAVHCL_vDyTNnOU07UeHKyEA9jm97O7ONOmoc0PZzcoxzR_B_446Rwiivb1xFS3XnhOdlHsTBQhaDIa0Gx955SWUu1wNtBoMPjztnVKdjegXIj6DFanwp2ziOO6ppezs" 
+                         alt="Logo" class="h-12 object-contain" />
+                </div>
+
+                <h1 class="text-2xl font-extrabold text-gray-900 mb-2">Platform Suspended</h1>
+                <p class="text-gray-600 mb-6 text-sm">
+                    Access to the platform is currently locked. To restore services, please complete the required payment<b></b>.
+                </p>
+                
+                <div class="space-y-3">
+                    <!-- Open Payment Options Toggle -->
+                    <button id="payToggleBtn" onclick="togglePaymentOptions()" 
+                       class="flex items-center justify-center w-full bg-emerald-600 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-emerald-700 transition-all duration-300 shadow-lg shadow-emerald-200">
+                       <i class="fa-solid fa-wallet mr-2"></i> Proceed to Payment
+                    </button>
+                    
+                    <!-- Inline Payment Options (Hidden by default) -->
+                    <div id="paymentOptions" class="payment-options-container">
+                        <div class="space-y-3 text-left">
+                            <!-- Account Holder -->
+                            <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl text-center">
+                                <p class="text-xs font-semibold text-blue-500 uppercase tracking-wider mb-1">Account Holder</p>
+                                <p class="text-gray-900 font-extrabold text-base tracking-wide">M.MAHMOUDI YOUNES</p>
+                            </div>
+
+                            <!-- Compte CCP -->
+                            <div class="bg-gray-50 border border-gray-100 p-4 rounded-xl">
+                                <div class="flex items-center text-blue-600 mb-1.5">
+                                    <i class="fa-solid fa-building-columns mr-2 text-sm"></i>
+                                    <span class="text-xs font-bold uppercase tracking-wider">Compte CCP</span>
+                                </div>
+                                <p class="text-gray-900 font-mono font-bold text-lg">20592435 <span class="text-blue-600 text-sm font-bold">Clé 12</span></p>
+                            </div>
+
+                            <!-- BaridiMob -->
+                            <div class="bg-gray-50 border border-gray-100 p-4 rounded-xl">
+                                <div class="flex items-center text-emerald-600 mb-1.5">
+                                    <i class="fa-solid fa-mobile-screen-button mr-2 text-sm"></i>
+                                    <span class="text-xs font-bold uppercase tracking-wider">BaridiMob (RIP)</span>
+                                </div>
+                                <p class="text-gray-900 font-mono font-bold text-sm break-all">00799999002059243567</p>
+                            </div>
+
+                            <!-- Cash -->
+                            <div class="bg-gray-50 border border-gray-100 p-4 rounded-xl">
+                                <div class="flex items-center text-orange-600 mb-1.5">
+                                    <i class="fa-solid fa-hand-holding-dollar mr-2 text-sm"></i>
+                                    <span class="text-xs font-bold uppercase tracking-wider">Cash (Hand in Hand)</span>
+                                </div>
+                                <p class="text-gray-700 font-bold text-sm">Cash Payment (Contact Admin)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Check Status -->
+                    <a href="https://www.unsclass.tk/p/invoice-checker.html?invoiceNumber=INV01067" target="_blank"
+                       class="flex items-center justify-center w-full bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition mt-3">
+                       <i class="fa-solid fa-magnifying-glass mr-2"></i> Check Payment Status
+                    </a>
+                </div>
+
+                <p class="mt-6 text-xs text-gray-400">Owner: Mr. Younes MAHMOUDI</p>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    // Make the toggle function global so the onclick attribute can access it
+    window.togglePaymentOptions = function() {
+        const options = document.getElementById('paymentOptions');
+        const btn = document.getElementById('payToggleBtn');
+        
+        if(options.classList.contains('active')) {
+            options.classList.remove('active');
+            btn.innerHTML = '<i class="fa-solid fa-wallet mr-2"></i> Proceed to Payment';
+            btn.classList.remove('bg-gray-800', 'hover:bg-black', 'shadow-none');
+            btn.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'shadow-lg', 'shadow-emerald-200');
+        } else {
+            options.classList.add('active');
+            btn.innerHTML = '<i class="fa-solid fa-xmark mr-2"></i> Hide Payment Options';
+            btn.classList.add('bg-gray-800', 'hover:bg-black', 'shadow-none');
+            btn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'shadow-lg', 'shadow-emerald-200');
+        }
+    };
+})();
+//]]>
+</script>

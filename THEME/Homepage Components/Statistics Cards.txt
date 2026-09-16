@@ -1,0 +1,294 @@
+<style>
+  /* ===== DARK THEME LANDING STATISTICS SECTION ===== */
+  .at-stats-section {
+    background-color: #0f172a; /* Dark slate background [1] */
+    background-image: radial-gradient(circle at 50% -20%, rgba(37, 99, 235, 0.1), transparent 50%);
+    padding: clamp(60px, 8vw, 100px) 1.5rem;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .at-stats-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Header Alignments */
+  .at-stats-header {
+    text-align: center;
+    max-width: 620px;
+    margin: 0 auto clamp(32px, 5vw, 48px) auto;
+  }
+  .at-stats-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 800;
+    color: #60a5fa;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 14px;
+    backdrop-filter: blur(4px);
+  }
+  .at-stats-title {
+    font-size: clamp(22px, 2.5vw, 32px);
+    font-weight: 800;
+    line-height: 1.25;
+    color: #ffffff;
+    margin-bottom: 10px;
+  }
+  .at-stats-desc {
+    font-size: 14px;
+    color: #94a3b8;
+    line-height: 1.6;
+  }
+
+  /* ===== 4-COLUMN GLASSMORPHISM CARDS GRID ===== */
+  .at-stats-grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 480px) { .at-stats-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .at-stats-grid { grid-template-columns: repeat(4, 1fr); } }
+
+  /* Premium Dark Theme Glassmorphism Cards [1] */
+  .at-stat-card {
+    background: rgba(30, 41, 59, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    padding: var(--space-md) var(--space-lg);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.25s ease,
+                box-shadow 0.25s ease;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+  }
+  .at-stat-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; bottom: 0;
+    width: 4px;
+    border-radius: 4px 0 0 4px;
+  }
+  .at-stat-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  }
+
+  /* Card Color Accents [1] */
+  .at-stat-card.emerald::before { background-color: #10b981; }
+  .at-stat-card.emerald:hover { border-color: rgba(16, 185, 129, 0.4); }
+  
+  .at-stat-card.blue::before { background-color: #2563eb; }
+  .at-stat-card.blue:hover { border-color: rgba(37, 99, 235, 0.4); }
+  
+  .at-stat-card.purple::before { background-color: #7c3aed; }
+  .at-stat-card.purple:hover { border-color: rgba(124, 58, 237, 0.4); }
+  
+  .at-stat-card.amber::before { background-color: #f59e0b; }
+  .at-stat-card.amber:hover { border-color: rgba(245, 158, 11, 0.4); }
+
+  /* Icon Wrap */
+  .at-stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .at-stat-card.emerald .at-stat-icon { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+  .at-stat-card.blue .at-stat-icon { background: rgba(37, 99, 235, 0.1); color: #3b82f6; }
+  .at-stat-card.purple .at-stat-icon { background: rgba(124, 58, 237, 0.1); color: #7c3aed; }
+  .at-stat-card.amber .at-stat-icon { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+
+  .at-stat-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .at-stat-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .at-stat-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #94a3b8;
+    margin-top: 4px;
+    line-height: 1.35;
+  }
+
+  /* ===== RTL ARABIC VIEW ALIGNMENTS ===== */
+  .lang-ar .at-stats-header { text-align: right; }
+  .lang-ar .at-stats-meta { flex-direction: row-reverse; }
+  .lang-ar .at-stats-grid { direction: rtl; }
+  .lang-ar .at-stat-card { text-align: right; flex-direction: row-reverse; }
+  .lang-ar .at-stat-card::before { left: auto; right: 0; border-radius: 0 4px 4px 0; }
+</style>
+
+<section class="at-stats-section" id="atStatsSection">
+  <div class="at-stats-container">
+    
+    <!-- Header Block -->
+    <div class="at-stats-header">
+      <div class="at-stats-meta">
+        <i class="fa-solid fa-chart-line"></i>
+        <span data-lang="en">Platform Metrics</span>
+        <span data-lang="fr">Métriques du Portail</span>
+        <span data-lang="ar">إحصائيات وأرقام المنصة</span>
+      </div>
+      <h2 class="at-stats-title">
+        <span data-lang="en">Department-Wide Operational Reach</span>
+        <span data-lang="fr">Portée Opérationnelle Globale</span>
+        <span data-lang="ar">الحجم التشغيلي للقسم في المنصة</span>
+      </h2>
+      <p class="at-stats-desc">
+        <span data-lang="en">Discover our active academic numbers running seamlessly across student cohorts, staff rosters, and programmed syllabus courses.</span>
+        <span data-lang="fr">Découvrez nos effectifs académiques actifs répartis sur les cohortes, les enseignants et les cours.</span>
+        <span data-lang="ar">استكشف مؤشرات الحجم الكلي للمستخدمين والعمليات الأكاديمية والغيابات المسجلة في القسم.</span>
+      </p>
+    </div>
+
+    <!-- 4-Column KPI Cards Grid with Dynamic Ticking Counters [1] -->
+    <div class="at-stats-grid">
+      
+      <!-- Card 1: Total Students -->
+      <div class="at-stat-card emerald">
+        <div class="at-stat-info">
+          <!-- Ticking counter element [1] -->
+          <div class="at-stat-value"><span class="at-counter" data-target="347" data-suffix="+">0</span></div>
+          <div class="at-stat-label">
+            <span data-lang="en">Enrolled Students</span>
+            <span data-lang="fr">Étudiants Inscrits</span>
+            <span data-lang="ar">إجمالي الطلبة المسجلين</span>
+          </div>
+        </div>
+        <div class="at-stat-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+      </div>
+
+      <!-- Card 2: Active Professors -->
+      <div class="at-stat-card blue">
+        <div class="at-stat-info">
+          <!-- Ticking counter element [1] -->
+          <div class="at-stat-value"><span class="at-counter" data-target="12" data-suffix="+">0</span></div>
+          <div class="at-stat-label">
+            <span data-lang="en">Active Professors</span>
+            <span data-lang="fr">Enseignants Actifs</span>
+            <span data-lang="ar">الأساتذة والمحاضرين النشطين</span>
+          </div>
+        </div>
+        <div class="at-stat-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+      </div>
+
+      <!-- Card 3: Programmed Sessions -->
+      <div class="at-stat-card purple">
+        <div class="at-stat-info">
+          <!-- Ticking counter element [1] -->
+          <div class="at-stat-value"><span class="at-counter" data-target="1250" data-suffix="+">0</span></div>
+          <div class="at-stat-label">
+            <span data-lang="en">Syllabus Sessions</span>
+            <span data-lang="fr">Séances Programrées</span>
+            <span data-lang="ar">الحصص والمحاضرات المجدولة</span>
+          </div>
+        </div>
+        <div class="at-stat-icon"><i class="fa-solid fa-clock"></i></div>
+      </div>
+
+      <!-- Card 4: Success Rate -->
+      <div class="at-stat-card amber">
+        <div class="at-stat-info">
+          <!-- Ticking counter element [1] -->
+          <div class="at-stat-value"><span class="at-counter" data-target="94" data-suffix="%">0</span></div>
+          <div class="at-stat-label">
+            <span data-lang="en">Average Success Rate</span>
+            <span data-lang="fr">Taux de Réussite</span>
+            <span data-lang="ar">متوسط نسبة نجاح الفوج</span>
+          </div>
+        </div>
+        <div class="at-stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+//<![CDATA[
+  document.addEventListener('DOMContentLoaded', function() {
+    const initLang = localStorage.getItem('acadtrack-lang') || 'en';
+    setLanguage(initLang);
+
+    // Dynamic, high-performance IntersectionObserver ticking counters [1]
+    const counters = document.querySelectorAll('.at-counter');
+    const animationSpeed = 120; // Lower value = faster speed
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const counterEl = entry.target;
+          const target = parseInt(counterEl.getAttribute('data-target') || '0');
+          const suffix = counterEl.getAttribute('data-suffix') || '';
+          
+          let count = 0;
+          const increment = Math.ceil(target / animationSpeed);
+
+          const updateCount = () => {
+            count += increment;
+            if (count < target) {
+              counterEl.textContent = count + suffix;
+              setTimeout(updateCount, 15);
+            } else {
+              counterEl.textContent = target + suffix;
+            }
+          };
+
+          updateCount();
+          observer.unobserve(counterEl); // Unobserve once animated [1]
+        }
+      });
+    }, { threshold: 0.3 }); // Ticks as soon as 30% of the element is visible
+
+    counters.forEach(counter => observer.observe(counter));
+  });
+
+  function setLanguage(lang) {
+    localStorage.setItem('acadtrack-lang', lang);
+    document.documentElement.lang = lang;
+    const isRTL = lang === 'ar';
+    const section = document.getElementById('atStatsSection');
+    if (section) {
+      section.dir = isRTL ? 'rtl' : 'ltr';
+      if (isRTL) section.classList.add('lang-ar');
+      else section.classList.remove('lang-ar');
+    }
+
+    document.querySelectorAll('.at-stats-section [data-lang]').forEach(el => {
+      el.style.display = el.getAttribute('data-lang') === lang ? '' : 'none';
+    });
+  }
+//]]>
+</script>

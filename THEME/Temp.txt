@@ -1,0 +1,1012 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html b:css='false' b:defaultwidgetversion='2' b:layoutsVersion='3' b:responsive='true' 
+      expr:dir='data:blog.languageDirection' expr:lang='data:blog.locale.language'
+      xmlns='http://www.w3.org/1999/xhtml'
+      xmlns:b='http://www.google.com/2005/gml/b'
+      xmlns:data='http://www.google.com/2005/gml/data'
+      xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+  <meta charset='UTF-8'/>
+  <meta name='viewport' content='width=device-width, initial-scale=1, viewport-fit=cover'/>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'/>
+  
+  <b:if cond='data:view.isHomepage'>
+    <title><data:blog.title.escaped/></title>
+  <b:elseif cond='data:view.search.query'/>
+    <title>Search: <data:view.search.query/> - <data:blog.title.escaped/></title>
+  <b:elseif cond='data:view.search.label'/>
+    <title><data:blog.pageName.escaped/> - <data:blog.title.escaped/></title>
+  <b:elseif cond='data:view.isError'/>
+    <title>404 - Page Not Found</title>
+  <b:else/>
+    <title><data:blog.pageName.escaped/> - <data:blog.title.escaped/></title>
+  </b:if>
+
+  <b:if cond='!data:view.isError'>
+    <link expr:href='data:blog.url.canonical' rel='canonical'/>
+    <meta expr:content='data:blog.metaDescription.escaped' name='description'/>
+    <meta name='author' expr:content='data:blog.title.escaped'/>
+    <meta name='generator' content='blogger'/>
+    <meta name='theme-color' content='#ffffff'/>
+    <meta expr:content='data:blog.pageName.escaped ? data:blog.pageName.escaped : data:blog.title.escaped' property='og:title'/>
+    <meta expr:content='data:blog.canonicalUrl' property='og:url'/>
+    <meta expr:content='data:blog.title.escaped' property='og:site_name'/>
+    <b:if cond='data:view.isMultipleItems'>
+      <meta content='website' property='og:type'/>
+    <b:else/>
+      <meta content='article' property='og:type'/>
+      <b:if cond='data:blog.postImageUrl'>
+        <meta expr:content='resizeImage(data:blog.postImageUrl, 1200)' property='og:image'/>
+      </b:if>
+    </b:if>
+  </b:if>
+
+  <link expr:href='data:blog.blogspotFaviconUrl' rel='icon' type='image/x-icon'/>
+
+  <!-- Icons & Typography Resources -->
+  <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css' rel='stylesheet'/>
+  <link rel='preconnect' href='https://fonts.googleapis.com'/>
+  <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin='anonymous'/>
+  <link href='https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&amp;display=swap' rel='stylesheet'/>
+
+  <b:skin><![CDATA[
+:root {
+  --primary: #2563eb; --primary-hover: #1d4ed8; --text: #1f2937; --text-secondary: #6b7280; --text-light: #9ca3af;
+  --bg: #ffffff; --bg-warm: #fafafa; --bg-cool: #f8fafc; --border: #e5e7eb; --border-light: #f3f4f6; --card: #ffffff;
+  --shadow-color: 0 0 0 / 0.08; --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --space-xs: 0.5rem; --space-sm: 1rem; --space-md: 1.5rem; --space-lg: 2rem; --space-xl: 3rem; --space-2xl: 4rem;
+  --header-height: 4rem; --max-width: 1280px; --radius: 0.75rem; --radius-sm: 0.375rem; --radius-lg: 1rem;
+  --shadow-sm: 0 1px 2px 0 rgb(var(--shadow-color)); --shadow: 0 1px 3px 0 rgb(var(--shadow-color)), 0 1px 2px -1px rgb(var(--shadow-color));
+  --shadow-md: 0 4px 6px -1px rgb(var(--shadow-color)), 0 2px 4px -2px rgb(var(--shadow-color));
+  --shadow-lg: 0 10px 15px -3px rgb(var(--shadow-color)), 0 4px 6px -4px rgb(var(--shadow-color)); --transition: 200ms ease;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { font-family: var(--font-sans); font-size: 16px; line-height: 1.6; color: var(--text); background-color: var(--bg); -webkit-font-smoothing: antialiased; }
+img, picture, video, canvas, svg { display: block; max-width: 100%; height: auto; }
+input, button, textarea, select { font: inherit; color: inherit; }
+a { color: inherit; text-decoration: none; transition: color var(--transition), background-color var(--transition); }
+.container { width: 100%; max-width: var(--max-width); margin-inline: auto; padding-inline: var(--space-md); }
+@media (min-width: 640px) { .container { padding-inline: var(--space-lg); } }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
+
+/* Dynamic Layout Section Wrapper Alignment Corrections */
+#desktop-navigation, #mobile-navigation, #desktop-user-menu, #mobile-user-sidebar, #header-notifications, #header-language { display: contents; }
+#HTML21, #HTML23, #HTML33, #HTML34 { display: contents; }
+#HTML22, #HTML24 { display: contents; }
+
+/* Theme Administrative Control Wrappers (Keeps layout panel uncluttered) */
+.theme-toggles-section { display: none !important; }
+
+/* Hide Desktop layout elements entirely from Mobile flow to maintain centered alignment */
+@media (max-width: 767px) {
+  #HTML21, #HTML23, #HTML33, #header-notifications { display: none !important; }
+}
+/* Hide Mobile layout elements from Desktop flow */
+@media (min-width: 768px) {
+  #HTML22, #HTML24 { display: none !important; }
+}
+
+/* Lang System */
+[data-lang] { display: none !important; }
+.lang-en [data-lang="en"], .lang-fr [data-lang="fr"], .lang-ar [data-lang="ar"] { display: block !important; }
+.lang-en span[data-lang="en"], .lang-fr span[data-lang="fr"], .lang-ar span[data-lang="ar"] { display: inline !important; }
+.lang-en a[data-lang="en"], .lang-fr a[data-lang="fr"], .lang-ar a[data-lang="ar"] { display: inline-flex !important; }
+.lang-en button[data-lang="en"], .lang-fr button[data-lang="fr"], .lang-ar button[data-lang="ar"] { display: inline-flex !important; }
+.lang-ar [data-lang="ar"] { font-family: 'Cairo', sans-serif; }
+
+.site-header { position: sticky; top: 0; z-index: 50; height: var(--header-height); background-color: rgba(255, 255, 255, 0.95); border-bottom: 1px solid var(--border-light); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.header-inner { display: flex; align-items: center; justify-content: space-between; height: 100%; position: relative; }
+.brand { display: flex; align-items: center; justify-content: center; gap: var(--space-xs); font-size: 1.25rem; font-weight: 700; color: var(--text); letter-spacing: -0.025em; flex: 1 1 0%; min-width: 0; }
+@media (min-width: 768px) { .brand { justify-content: flex-start; flex: 0 1 auto; } }
+.brand:hover { color: var(--primary); } .brand img { height: 2.5rem; width: auto; }
+
+.menu-toggle { display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; color: var(--text); position: relative; z-index: 60; flex-shrink: 0; order: -1; }
+.menu-toggle:hover { background-color: var(--bg-warm); border-color: var(--text-light); }
+@media (min-width: 768px) { .menu-toggle { display: none; } }
+.hamburger { width: 20px; height: 14px; position: relative; display: flex; flex-direction: column; justify-content: space-between; }
+.hamburger span { display: block; width: 100%; height: 2px; background-color: currentColor; border-radius: 2px; transition: transform 0.3s ease, opacity 0.3s ease; transform-origin: center; }
+.menu-toggle.active .hamburger span:nth-child(1) { transform: translateY(6px) rotate(45deg); } .menu-toggle.active .hamburger span:nth-child(2) { opacity: 0; } .menu-toggle.active .hamburger span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+.header-actions { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; position: relative; z-index: 60; }
+.user-toggle { display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; background: none; border: 1px solid var(--border); border-radius: 9999px; cursor: pointer; color: var(--text); flex-shrink: 0; }
+.user-toggle svg { width: 20px; height: 20px; } .user-toggle:hover { background-color: var(--bg-warm); border-color: var(--text-light); }
+
+.user-sidebar-overlay { position: fixed; inset: 0; top: var(--header-height); background-color: rgba(0, 0, 0, 0.3); z-index: 35; opacity: 0; visibility: hidden; transition: opacity 0.35s ease, visibility 0s 0.35s; }
+.user-sidebar-overlay.active { opacity: 1; visibility: visible; transition: opacity 0.35s ease, visibility 0s 0s; }
+
+.site-main { padding: var(--space-xl) 0; background-color: var(--bg); }
+.layout { display: grid; gap: var(--space-xl); }
+@media (min-width: 1024px) { .layout { grid-template-columns: 1fr 300px; align-items: start; } }
+.content { min-width: 0; } .page-title { font-size: 1.75rem; font-weight: 800; margin-bottom: var(--space-lg); letter-spacing: -0.025em; line-height: 1.2; color: var(--text); }
+@media (min-width: 768px) { .page-title { font-size: 2.25rem; } }
+.posts-grid { display: grid; gap: var(--space-lg); }
+@media (min-width: 640px) { .posts-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .posts-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1280px) { .posts-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.post-card { display: flex; flex-direction: column; background-color: var(--card); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border-light); transition: transform var(--transition), box-shadow var(--transition); height: 100%; }
+.post-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.post-card__image { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background-color: var(--bg-warm); }
+.post-card__image img { width: 100%; height: 100%; object-fit: cover; transition: transform 300ms ease; } .post-card:hover .post-card__image img { transform: scale(1.04); }
+.post-card__body { display: flex; flex-direction: column; flex: 1; padding: var(--space-md); }
+.post-card__meta { display: flex; align-items: center; gap: var(--space-xs); font-size: 0.75rem; color: var(--text-light); margin-bottom: var(--space-xs); text-transform: uppercase; letter-spacing: 0.05em; }
+.post-card__title { font-size: 1.125rem; font-weight: 700; line-height: 1.4; margin-bottom: var(--space-xs); color: var(--text); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; } .post-card__title a:hover { color: var(--primary); }
+.post-card__excerpt { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: var(--space-sm); }
+.post-card__footer { margin-top: auto; padding-top: var(--space-sm); display: flex; align-items: center; justify-content: space-between; font-size: 0.875rem; }
+.read-more { display: inline-flex; align-items: center; gap: 0.25rem; font-weight: 600; color: var(--primary); font-size: 0.875rem; } .read-more:hover { color: var(--primary-hover); } .read-more svg { width: 1rem; height: 1rem; transition: transform var(--transition); } .read-more:hover svg { transform: translateX(3px); }
+
+.article { max-width: 720px; margin: 0 auto; } .article__header { margin-bottom: var(--space-xl); padding-bottom: var(--space-lg); border-bottom: 1px solid var(--border-light); }
+.article__title { font-size: 2rem; font-weight: 800; line-height: 1.2; letter-spacing: -0.025em; margin-bottom: var(--space-md); color: var(--text); }
+@media (min-width: 768px) { .article__title { font-size: 2.75rem; } }
+.article__meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm); font-size: 0.875rem; color: var(--text-secondary); }
+.article__meta img { width: 2.5rem; height: 2.5rem; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-light); }
+.article__content { font-size: 1.125rem; line-height: 1.8; color: var(--text); } .article__content > * + * { margin-top: 1.5em; }
+.article__content h2, .article__content h3, .article__content h4 { font-weight: 700; line-height: 1.3; margin-top: 2em; margin-bottom: 0.75em; color: var(--text); } .article__content h2 { font-size: 1.75rem; } .article__content h3 { font-size: 1.375rem; }
+.article__content p { color: var(--text-secondary); } .article__content img { border-radius: var(--radius); margin: 2em 0; border: 1px solid var(--border-light); }
+.article__content a { color: var(--primary); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 2px; text-decoration-color: var(--primary); } .article__content a:hover { text-decoration-color: var(--primary-hover); }
+.article__content blockquote { border-left: 4px solid var(--primary); padding-left: var(--space-md); padding-top: var(--space-xs); padding-bottom: var(--space-xs); font-style: italic; color: var(--text-secondary); background-color: var(--bg-cool); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.article__content code { font-family: var(--font-mono); font-size: 0.875em; background-color: var(--bg-warm); padding: 0.2em 0.4em; border-radius: var(--radius-sm); color: var(--primary); }
+.article__content pre { background-color: var(--bg-warm); padding: var(--space-md); border-radius: var(--radius); overflow-x: auto; border: 1px solid var(--border-light); } .article__content pre code { background: none; padding: 0; color: var(--text); }
+.post-tags { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid var(--border-light); }
+.tag { display: inline-flex; align-items: center; padding: 0.5rem 1rem; background-color: var(--bg-warm); border: 1px solid var(--border-light); border-radius: 9999px; font-size: 0.875rem; font-weight: 500; color: var(--text-secondary); transition: all var(--transition); } .tag:hover { background-color: var(--primary); color: white; border-color: var(--primary); }
+
+.sidebar { display: flex; flex-direction: column; gap: var(--space-lg); }
+.sidebar-widget { padding: var(--space-lg); background-color: var(--card); border-radius: var(--radius); border: 1px solid var(--border-light); }
+.sidebar-title { font-size: 1.125rem; font-weight: 700; margin-bottom: var(--space-md); padding-bottom: var(--space-sm); border-bottom: 2px solid var(--primary); color: var(--text); }
+.sidebar-list { list-style: none; display: flex; flex-direction: column; gap: var(--space-xs); } .sidebar-list a { display: flex; align-items: center; justify-content: space-between; padding: var(--space-xs) 0; font-size: 0.875rem; color: var(--text-secondary); border-bottom: 1px solid var(--border-light); transition: all var(--transition); } .sidebar-list a:hover { color: var(--primary); padding-left: var(--space-xs); }
+.sidebar-list a span { display: inline-flex; align-items: center; justify-content: center; min-width: 1.5rem; height: 1.5rem; padding: 0 0.5rem; background-color: var(--bg-warm); border: 1px solid var(--border-light); border-radius: 9999px; font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); }
+
+.pagination { display: flex; align-items: center; justify-content: center; gap: var(--space-xs); margin-top: var(--space-2xl); }
+.pagination a, .pagination span { display: inline-flex; align-items: center; justify-content: center; min-width: 2.5rem; height: 2.5rem; padding: 0 var(--space-sm); border-radius: var(--radius-sm); font-size: 0.875rem; font-weight: 500; transition: all var(--transition); }
+.pagination a { background-color: var(--card); border: 1px solid var(--border); color: var(--text); } .pagination a:hover { border-color: var(--primary); color: var(--primary); background-color: var(--bg-cool); }
+.pagination .current { background-color: var(--primary); color: white; border-color: var(--primary); }
+
+.error-page { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; text-align: center; padding: var(--space-xl); }
+.error-code { font-size: 6rem; font-weight: 800; color: var(--primary); line-height: 1; margin-bottom: var(--space-md); opacity: 0.2; } .error-title { font-size: 1.5rem; font-weight: 700; margin-bottom: var(--space-sm); color: var(--text); } .error-desc { color: var(--text-secondary); margin-bottom: var(--space-lg); max-width: 24rem; }
+.btn { display: inline-flex; align-items: center; gap: var(--space-xs); padding: 0.75rem 1.5rem; background-color: var(--primary); color: white; font-size: 0.875rem; font-weight: 600; border-radius: var(--radius-sm); transition: background-color var(--transition); border: none; cursor: pointer; } .btn:hover { background-color: var(--primary-hover); }
+
+/* SaaS Dynamics Toggle CSS Logic */
+body:not(.logged-in) .only-logged-in { display: none !important; }
+body.logged-in .only-logged-out { display: none !important; }
+
+/* Role State Display Engine */
+.state-guest, .state-student, .state-teacher, .state-admin, .state-platform-admin { display: none !important; }
+body:not(.logged-in) .state-guest { display: block !important; }
+body.logged-in.role-student .state-student { display: block !important; }
+body.logged-in.role-teacher .state-teacher { display: block !important; }
+body.logged-in.role-admin .state-admin { display: block !important; }
+body.logged-in.role-platform-admin .state-platform-admin { display: block !important; }
+
+/* Notification Bell Dropdown styles */
+.notif-toggle { display: block; position: relative; }
+.notif-btn { display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; background: none; border: 1px solid var(--border); border-radius: 9999px; cursor: pointer; color: var(--text); }
+.notif-btn:hover { background-color: var(--bg-warm); border-color: var(--text-light); }
+.notif-badge { position: absolute; top: -2px; right: -2px; display: inline-flex; align-items: center; justify-content: center; min-width: 1.125rem; height: 1.125rem; padding: 0 4px; border-radius: 9999px; background-color: #ef4444; color: white; font-size: 0.6875rem; font-weight: 700; border: 2px solid var(--bg); }
+.notif-dropdown { position: absolute; top: calc(100% + 0.75rem); right: 0; width: 320px; background-color: var(--card); border: 1px solid var(--border-light); border-radius: var(--radius); box-shadow: var(--shadow-lg); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.2s ease; z-index: 100; overflow: hidden; }
+.notif-dropdown.active { opacity: 1; visibility: visible; transform: translateY(0); }
+.notif-dropdown::before { content: ''; position: absolute; top: -6px; right: 14px; width: 12px; height: 12px; background: var(--card); border-top: 1px solid var(--border-light); border-left: 1px solid var(--border-light); transform: rotate(45deg); }
+.notif-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem; border-bottom: 1px solid var(--border-light); font-weight: 700; font-size: 0.875rem; }
+.notif-body { max-height: 280px; overflow-y: auto; }
+.notif-item { display: flex; gap: 0.75rem; padding: 0.875rem 1rem; border-bottom: 1px solid var(--border-light); font-size: 0.8125rem; color: var(--text-secondary); transition: background 0.2s; }
+.notif-item:hover { background-color: var(--bg-warm); }
+.notif-item-icon { display: flex; align-items: center; justify-content: center; width: 1.75rem; height: 1.75rem; border-radius: 50%; background-color: var(--bg-cool); color: var(--primary); flex-shrink: 0; }
+.notif-item-content { display: flex; flex-direction: column; gap: 2px; }
+.notif-item-title { font-weight: 600; color: var(--text); }
+.notif-item-time { font-size: 0.75rem; color: var(--text-light); }
+
+/* Accordion inside mobile user menu */
+.menu-accordion-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; width: 100%; }
+.menu-accordion-content { display: none; padding-left: 1rem; margin-top: 0.5rem; border-left: 1.5px dashed var(--border); }
+.menu-accordion-content.active { display: block; }
+
+/* Hide Desktop Notification Bell from Header on Mobile */
+@media (max-width: 767px) {
+  .notif-toggle.only-logged-into-header { display: none !important; }
+}
+
+/* Global Arabic View (.lang-ar) Alignment (Explicit right-to-left formatting for text layers, preserving layout columns) */
+.lang-ar body,
+.lang-ar .homepage-wrapper,
+.lang-ar .site-main,
+.lang-ar .content,
+.lang-ar .sidebar,
+.lang-ar .error-page {
+  direction: rtl;
+  text-align: right;
+}
+.lang-ar .layout {
+  /* Guard structure column order so content remains on left and sidebar on right on desktop */
+  direction: ltr !important;
+}
+
+/* Arabic View (.lang-ar) Text Direction & Icon Alignment Configuration */
+.lang-ar .user-dropdown,
+.lang-ar .user-sidebar,
+.lang-ar .demo-role-dropdown-desktop,
+.lang-ar .notif-dropdown,
+.lang-ar .nav-desktop,
+.lang-ar .mobile-nav {
+  /* Retain global layout structure and absolute boundaries as Left-To-Right */
+  direction: ltr !important; 
+}
+
+/* Align individual text items and list blocks dynamically right-to-left */
+.lang-ar .user-profile-header,
+.lang-ar .user-profile-nav a,
+.lang-ar .demo-role-option,
+.lang-ar .notif-item,
+.lang-ar .notif-header,
+.lang-ar .menu-accordion-header,
+.lang-ar .menu-accordion-content a,
+.lang-ar .lang-option {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+/* Ensure mobile accordion dropdown arrows remain anchored on the left boundary */
+.lang-ar .menu-accordion-header .fa-chevron-down,
+.lang-ar .nav-item-demo a #demoChevron {
+  margin-right: auto !important;
+  margin-left: 0 !important;
+}
+
+/* Align dynamic desktop navigation elements from right to left */
+.lang-ar .nav-item-demo a {
+  direction: rtl !important;
+  text-align: right !important;
+}
+  ]]></b:skin>
+</head>
+
+<body class='logged-in role-teacher'>
+  <a href='#main-content' class='sr-only'>Skip to main content</a>
+
+  <!-- Layout Toggles Section (Hidden on frontend, fully editable in Blogger Layout dashboard) -->
+  <b:section id='theme-toggles' class='theme-toggles-section' showaddelement='yes'>
+    <b:widget id='HTML31' locked='false' title='Turn On/Off latest posts' type='HTML' version='2'>
+      <b:widget-settings>
+        <b:widget-setting name='content'>yes</b:widget-setting>
+      </b:widget-settings>
+      <b:includable id='main'>
+        <b:if cond='data:content == "no" or data:content == "off" or data:content == "false"'>
+          <style>
+            .posts-grid, .page-title, .pagination { display: none !important; }
+          </style>
+        </b:if>
+      </b:includable>
+    </b:widget>
+    
+    <b:widget id='HTML32' locked='false' title='Turn On/Off sidebar' type='HTML' version='2'>
+      <b:widget-settings>
+        <b:widget-setting name='content'>yes</b:widget-setting>
+      </b:widget-settings>
+      <b:includable id='main'>
+        <b:if cond='data:content == "no" or data:content == "off" or data:content == "false"'>
+          <style>
+            .sidebar { display: none !important; }
+            .layout { grid-template-columns: 1fr !important; }
+          </style>
+        </b:if>
+      </b:includable>
+    </b:widget>
+  </b:section>
+
+  <header class='site-header'>
+    <div class='container header-inner'>
+      <b:section id='header' maxwidgets='1' showaddelement='no'>
+        <b:widget id='Header1' locked='true' title='Blog Header' type='Header' version='2'>
+          <b:includable id='main'>
+            <a class='brand' expr:href='data:blog.homepageUrl.canonical'>
+              <img alt='Logo' src='https://blogger.googleusercontent.com/img/a/AVvXsEjfb3hTK_5-KuAMC_-HyWcBMXgZ9_Dw8zHjRFglKpiAYsD4jGC1gw0trwqFGaEwAVHCL_vDyTNnOU07UeHKyEA9jm97O7ONOmoc0PZzcoxzR_B_446Rwiivb1xFS3XnhOdlHsTBQhaDIa0Gx955SWUu1wNtBoMPjztnVKdjegXIj6DFanwp2ziOO6ppezs' loading='eager'/>
+            </a>
+          </b:includable>
+        </b:widget>
+      </b:section>
+
+      <!-- Desktop Navigation Layout Widget (Initialized Empty) -->
+      <b:section id='desktop-navigation' class='nav-desktop-section' showaddelement='yes'>
+        <b:widget id='HTML21' locked='false' title='Desktop Navigation' type='HTML' version='2'>
+          <b:widget-settings>
+            <b:widget-setting name='content'><![CDATA[]]></b:widget-setting>
+          </b:widget-settings>
+          <b:includable id='main'>
+            <nav class='nav-desktop' aria-label='Main navigation'>
+              <data:content/>
+            </nav>
+          </b:includable>
+        </b:widget>
+      </b:section>
+
+      <button class='menu-toggle' id='menuToggle' aria-label='Toggle menu' aria-expanded='false'>
+        <div class='hamburger'><span></span><span></span><span></span></div>
+      </button>
+
+      <div class="header-actions">
+        <!-- Desktop Notifications Bell Layout Section (Initialized Empty) -->
+        <b:section id='header-notifications' class='header-notif-section' showaddelement='yes'>
+          <b:widget id='HTML34' locked='false' title='Notifications Bell' type='HTML' version='2'>
+            <b:widget-settings>
+              <b:widget-setting name='content'><![CDATA[]]></b:widget-setting>
+            </b:widget-settings>
+            <b:includable id='main'>
+              <div class="notif-toggle only-logged-into-header">
+                <data:content/>
+              </div>
+            </b:includable>
+          </b:widget>
+        </b:section>
+
+        <!-- Desktop Language Selector Layout Section (Initialized Empty) -->
+        <b:section id='header-language' class='header-lang-section' showaddelement='yes'>
+          <b:widget id='HTML33' locked='false' title='Language Selector' type='HTML' version='2'>
+            <b:widget-settings>
+              <b:widget-setting name='content'><![CDATA[]]></b:widget-setting>
+            </b:widget-settings>
+            <b:includable id='main'>
+              <div class="lang-toggle lang-desktop-only">
+                <data:content/>
+              </div>
+            </b:includable>
+          </b:widget>
+        </b:section>
+
+        <button class='user-toggle' id='userToggle' aria-label='User menu'>
+          <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/><circle cx='12' cy='7' r='4'/></svg>
+        </button>
+      </div>
+
+      <!-- Desktop Avatar Dropdown Layout Widget (Initialized Empty) -->
+      <b:section id='desktop-user-menu' class='desktop-user-menu-section' showaddelement='yes'>
+        <b:widget id='HTML23' locked='false' title='Desktop User Dropdown' type='HTML' version='2'>
+          <b:widget-settings>
+            <b:widget-setting name='content'><![CDATA[]]></b:widget-setting>
+          </b:widget-settings>
+          <b:includable id='main'>
+            <div class='user-dropdown' id='userDropdown'>
+              <data:content/>
+            </div>
+          </b:includable>
+        </b:widget>
+      </b:section>
+
+    </div>
+  </header>
+
+  <div class='mobile-nav-overlay' id='mobileOverlay'></div>
+  
+  <!-- Mobile Navigation Layout Widget (Initialized Empty) -->
+  <b:section id='mobile-navigation' class='mobile-nav-section' showaddelement='yes'>
+    <b:widget id='HTML22' locked='false' title='Mobile Navigation' type='HTML' version='2'>
+      <b:widget-settings>
+        <b:widget-setting name='content'><![CDATA[]]></b:widget-setting>
+      </b:widget-settings>
+      <b:includable id='main'>
+        <nav class='mobile-nav' id='mobileNav' aria-label='Mobile navigation'>
+          <data:content/>
+        </nav>
+      </b:includable>
+    </b:widget>
+  </b:section>
+
+  <div class='user-sidebar-overlay' id='userSidebarOverlay'></div>
+  
+  <!-- Mobile User Sidebar Layout Widget (Initialized Empty) -->
+  <b:section id='mobile-user-sidebar' class='mobile-user-sidebar-section' showaddelement='yes'>
+    <b:widget id='HTML24' locked='false' title='Mobile User Sidebar' type='HTML' version='2'>
+      <b:widget-settings>
+        <b:widget-setting name='content'><![CDATA[]]></b:widget-setting>
+      </b:widget-settings>
+      <b:includable id='main'>
+        <aside class='user-sidebar' id='userSidebar'>
+          <data:content/>
+        </aside>
+      </b:includable>
+    </b:widget>
+  </b:section>
+
+  <b:if cond='data:view.isHomepage'>
+    <div class='homepage-wrapper'>
+      <b:section id='homepage-sections' class='homepage-sections' showaddelement='yes'>
+        <b:widget id='HTML1' locked='false' title='Hero Section' type='HTML'><b:includable id='main'><b:if cond='data:content'><data:content/></b:if></b:includable></b:widget>
+        <b:widget id='HTML2' locked='false' title='Feature Cards' type='HTML'><b:includable id='main'><b:if cond='data:content'><data:content/></b:if></b:includable></b:widget>
+        <b:widget id='HTML3' locked='false' title='Dashboard Preview' type='HTML'><b:includable id='main'><b:if cond='data:content'><data:content/></b:if></b:includable></b:widget>
+        <b:widget id='HTML4' locked='false' title='Statistics Cards' type='HTML'><b:includable id='main'><b:if cond='data:content'><data:content/></b:if></b:includable></b:widget>
+        <b:widget id='HTML5' locked='false' title='User Role Cards' type='HTML'><b:includable id='main'><b:if cond='data:content'><data:content/></b:if></b:includable></b:widget>
+        <b:widget id='HTML6' locked='false' title='Platform Preview' type='HTML'><b:includable id='main'><b:if cond='data:content'><data:content/></b:if></b:includable></b:widget>
+        <b:widget id='HTML7' locked='false' title='CTA Section' type='HTML'><b:includable id='main'><b:if cond='data:content'><data:content/></b:if></b:includable></b:widget>
+      </b:section>
+    </div>
+  </b:if>
+
+  <main id='main-content' class='site-main'>
+    <div class='container layout'>
+      <div class='content'>
+        <b:section id='main' showaddelement='no'>
+          <b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='2'>
+            <b:includable id='main'>
+              <b:if cond='data:view.isMultipleItems'>
+                <h1 class='page-title'>
+                  <b:if cond='data:view.isHomepage'><span data-lang="en">Latest Articles</span><span data-lang="fr">Derniers articles</span><span data-lang="ar">أحدث المقالات</span></b:if>
+                  <b:if cond='data:view.search.query'>Search: <data:view.search.query/></b:if>
+                  <b:if cond='data:view.search.label'><data:blog.pageName/></b:if>
+                  <b:if cond='data:view.isArchive'>Archive: <data:blog.pageName/></b:if>
+                </h1>
+                <div class='posts-grid'>
+                  <b:loop values='data:posts' var='post'>
+                    <b:include data='post' name='postCard'/>
+                  </b:loop>
+                </div>
+                <b:include name='nextprev'/>
+              <b:elseif cond='data:view.isError'/>
+                <div class='error-page'>
+                  <div class='error-code'>404</div>
+                  <h1 class='error-title'><span data-lang="en">Page Not Found</span><span data-lang="fr">Page non trouvée</span><span data-lang="ar">الصفحة غير موجودة</span></h1>
+                  <p class='error-desc'><span data-lang="en">The page you're looking for doesn't exist.</span><span data-lang="fr">La page que vous recherchez n'existe pas.</span><span data-lang="ar">الصفحة التي تبحث عنها غير موجودة.</span></p>
+                  <a class='btn' expr:href='data:blog.homepageUrl.canonical'><svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round'><path d='M19 12H5M12 19l-7-7 7-7'/></svg> <span data-lang="en">Back to Home</span><span data-lang="fr">Retour à l'accueil</span><span data-lang="ar">العودة إلى الرئيسية</span></a>
+                </div>
+              <b:else/>
+                <article class='article'>
+                  <b:loop values='data:posts' var='post'>
+                    <b:include data='post' name='postFull'/>
+                  </b:loop>
+                </article>
+              </b:if>
+            </b:includable>
+            <b:includable id='postCard' var='post'>
+              <article class='post-card'>
+                <div class='post-card__image'>
+                  <a expr:href='data:post.url.canonical' aria-hidden='true' tabindex='-1'>
+                    <b:if cond='data:post.featuredImage'>
+                      <img expr:alt='data:post.title' expr:src='resizeImage(data:post.featuredImage, 400, "16:10")' loading='lazy'/>
+                    <b:else/>
+                      <div style='width:100%;height:100%;background:linear-gradient(135deg,#e0e7ff 0%,#c7d2fe 100%);display:flex;align-items:center;justify-content:center;'><svg width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='#818cf8' stroke-width='1.5'><rect x='3' y='3' width='18' height='18' rx='2'/><circle cx='8.5' cy='8.5' r='1.5'/><path d='M21 15l-5-5L5 21'/></svg></div>
+                    </b:if>
+                  </a>
+                </div>
+                <div class='post-card__body'>
+                  <div class='post-card__meta'>
+                    <b:if cond='data:post.labels'><span><data:post.labels.first.name/></span><span aria-hidden='true'>&#183;</span></b:if>
+                    <time><data:post.date/></time>
+                  </div>
+                  <h2 class='post-card__title'><a expr:href='data:post.url.canonical' expr:aria-label='data:post.title'><data:post.title/></a></h2>
+                  <p class='post-card__excerpt'><data:post.snippet/></p>
+                  <div class='post-card__footer'>
+                    <span style='font-size:0.875rem;color:var(--text-light);'><data:post.author.name/></span>
+                    <a class='read-more' expr:href='data:post.url.canonical'> <span data-lang="en">Read</span><span data-lang="fr">Lire</span><span data-lang="ar">اقرأ</span> <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 12h14M12 5l7 7-7 7'/></svg> </a>
+                  </div>
+                </div>
+              </article>
+            </b:includable>
+            <b:includable id='postFull' var='post'>
+              <header class='article__header'>
+                <h1 class='article__title'><data:post.title/></h1>
+                <div class='article__meta'>
+                  <b:if cond='data:post.author.authorPhoto.image'><img expr:src='resizeImage(data:post.author.authorPhoto.image, 80, "1:1")' expr:alt='data:post.author.name' loading='lazy'/></b:if>
+                  <span><data:post.author.name/></span><span aria-hidden='true'>&#183;</span><time><data:post.date/></time>
+                  <b:if cond='data:post.estimatedReadTime'><span aria-hidden='true'>&#183;</span><span><data:post.estimatedReadTime/> min read</span></b:if>
+                </div>
+              </header>
+              <div class='article__content'><data:post.body/></div>
+              <b:if cond='data:post.labels'>
+                <div class='post-tags'>
+                  <b:loop values='data:post.labels' var='label'><a class='tag' expr:href='data:label.url'><data:label.name/></a></b:loop>
+                </div>
+              </b:if>
+              <b:if cond='data:post.allowComments'>
+                <div style='margin-top:var(--space-2xl);'>
+                  <h2 style='font-size:1.5rem;font-weight:700;margin-bottom:var(--space-lg);color:var(--text);'><span data-lang="en">Discussion</span><span data-lang="fr">Discussion</span><span data-lang="ar">مناقشة</span></h2>
+                  <b:include data='post' name='comments'/>
+                </div>
+              </b:if>
+            </b:includable>
+            <b:includable id='nextprev'>
+              <nav class='pagination' aria-label='Pagination'>
+                <b:if cond='data:newerPageUrl'><a expr:href='data:newerPageUrl' aria-label='Newer posts'><svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M19 12H5M12 19l-7-7 7-7'/></svg></a></b:if>
+                <span class='current' aria-current='page'><span data-lang="en">Page</span><span data-lang="fr">Page</span><span data-lang="ar">صفحة</span></span>
+                <b:if cond='data:olderPageUrl'><a expr:href='data:olderPageUrl' aria-label='Older posts'><svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M5 12h14M12 5l7 7-7 7'/></svg></a></b:if>
+              </nav>
+            </b:includable>
+          </b:widget>
+        </b:section>
+      </div>
+
+      <aside class='sidebar'>
+        <b:section id='sidebar' showaddelement='yes'>
+          <b:widget id='Profile1' locked='false' title='About' type='Profile'>
+            <b:includable id='main'>
+              <div class='sidebar-widget'>
+                <h3 class='sidebar-title'><span data-lang="en">About</span><span data-lang="fr">À propos</span><span data-lang="ar">حول</span></h3>
+                <p style='font-size:0.875rem;line-height:1.6;color:var(--text-secondary);'>
+                  <span data-lang="en">Welcome to our blog! We share insights, tutorials, and stories to help you learn and grow.</span>
+                  <span data-lang="fr">Bienvenue sur notre blog ! Nous partageons des idées, des tutoriels and des histoires pour vous aider à apprendre et à grandir.</span>
+                  <span data-lang="ar">مرحبًا بك في مدونتنا! نشارك الرؤى والدروس والقصص لمساعدتك على التعلم والنمو.</span>
+                </p>
+              </div>
+            </b:includable>
+          </b:widget>
+          <b:widget id='Label1' locked='false' title='Categories' type='Label'>
+            <b:includable id='main'>
+              <div class='sidebar-widget'>
+                <h3 class='sidebar-title'><span data-lang="en">Categories</span><span data-lang="fr">Catégories</span><span data-lang="ar">الفئات</span></h3>
+                <ul class='sidebar-list'>
+                  <b:loop values='data:labels' var='label'>
+                    <li><a expr:href='data:label.url'><data:label.name/><span><data:label.count/></span></a></li>
+                  </b:loop>
+                </ul>
+              </div>
+            </b:includable>
+          </b:widget>
+        </b:section>
+      </aside>
+    </div>
+  </main>
+
+  <b:section id='footer-area' class='footer-area' showaddelement='yes' maxwidgets='1'>
+    <b:widget id='HTML10' locked='false' title='Site Footer' type='HTML'>
+      <b:includable id='main'><b:if cond='data:content'><data:content/></b:if></b:includable>
+    </b:widget>
+  </b:section>
+
+  <script>
+  //<![CDATA[
+    // Dynamic Role-selection Translation Labels mapping
+    const roleLabels = {
+      en: {
+        demo: "Demo",
+        student: "Student",
+        teacher: "Professor",
+        admin: "Admin",
+        'platform-admin': "Platform Admin"
+      },
+      fr: {
+        demo: "Démo",
+        student: "Étudiant",
+        teacher: "Enseignant",
+        admin: "Admin",
+        'platform-admin': "Admin Plateforme"
+      },
+      ar: {
+        demo: "العرض",
+        student: "طالب",
+        teacher: "أستاذ",
+        admin: "رئيس قسم",
+        'platform-admin': "مدير النظام"
+      }
+    };
+
+    // Role-specific Font Awesome Icon mapping
+    const roleIcons = {
+      demo: "fa-flask",
+      student: "fa-graduation-cap",
+      teacher: "fa-chalkboard-user",
+      admin: "fa-user-tie",
+      'platform-admin': "fa-server"
+    };
+
+    // Multilingual Time-of-Day Dynamic Greetings Matrix
+    const greetingTranslations = {
+      morning: {
+        en: "Good Morning",
+        fr: "Bonjour",
+        ar: "صباح الخير"
+      },
+      afternoon: {
+        en: "Good Afternoon",
+        fr: "Bon après-midi",
+        ar: "مساء الخير"
+      },
+      evening: {
+        en: "Good Evening",
+        fr: "Bonsoir",
+        ar: "مساء الخير"
+      },
+      night: {
+        en: "Good Night",
+        fr: "Bonne nuit",
+        ar: "تصبح على خير"
+      }
+    };
+
+    // Customized SaaS Batna 1 University Psychology Department Mock Database
+    const demoUsers = {
+      guest: null,
+      student: {
+        uid: "demo_student_batna1",
+        name: "Imad AZIZI",
+        email: "imad.azizi@univ-batna1.dz",
+        role: "student",
+        studentId: "202312345",
+        level: "Licence 3 Psychologie",
+        group: "L3 Psychologie Clinique",
+        department: "Psychologie",
+        university: "Université Batna 1 - El Hadj Lakhdar",
+        grades: [
+          { module: "Psychologie Clinique", teacher: "Pr. Zakia CHENNA", score: 82, grade: "B+" },
+          { module: "Méthodologie de Recherche", teacher: "Dr. Ammar CHOUCHANE", score: 76, grade: "B" }
+        ],
+        attendance: { present: 42, total: 48, rate: "87.5%" }
+      },
+      teacher: {
+        uid: "demo_teacher_batna1",
+        name: "Pr. Zakia CHENNA",
+        title: "Professeur des Universités",
+        role: "teacher",
+        department: "Psychologie",
+        university: "Université Batna 1 - El Hadj Lakhdar",
+        load: [
+          { module: "Psychologie Clinique", level: "L3 Psychologie", students: 54 }
+        ]
+      },
+      admin: {
+        uid: "demo_dept_admin_batna1",
+        name: "Dr. Ammar CHOUCHANE",
+        title: "Maître de Conférences Classe A",
+        role: "admin",
+        position: "Chef de Département de Psychologie",
+        university: "Université Batna 1 - El Hadj Lakhdar"
+      },
+      'platform-admin': {
+        uid: "demo_super_admin",
+        name: "Mr. Uns MAHMOUDI",
+        role: "platform-admin",
+        permissions: "Full global access"
+      }
+    };
+
+    function selectSaaSRole(role) {
+      if (role === 'guest') {
+        localStorage.removeItem('acadtrack_currentUser');
+        localStorage.removeItem('acadtrack_demoMode');
+        applySessionState(null);
+        if (window.location.pathname.includes('-dashboard')) {
+          window.location.href = "/";
+        }
+      } else {
+        const user = demoUsers[role];
+        localStorage.setItem('acadtrack_currentUser', JSON.stringify(user));
+        localStorage.setItem('acadtrack_demoMode', 'true');
+        applySessionState(user);
+        
+        // Prototype dashboard redirection map
+        const dashboardMap = {
+          student: "/p/student-dashboard.html",
+          teacher: "/p/teacher-dashboard.html",
+          admin: "/p/dept-admin-dashboard.html",
+          'platform-admin': "/p/platform-admin-dashboard.html"
+        };
+        
+        if (window.location.pathname.includes('-dashboard') || window.location.pathname.includes('/p/')) {
+          window.location.href = dashboardMap[role];
+        }
+      }
+      closeAllHeaderDropdowns();
+    }
+
+    function logoutUser() {
+      localStorage.removeItem('acadtrack_currentUser');
+      localStorage.removeItem('acadtrack_demoMode');
+      applySessionState(null);
+      window.location.href = "/";
+    }
+
+    function resetDemoSession() {
+      const storedUser = localStorage.getItem('acadtrack_currentUser');
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        selectSaaSRole(user.role);
+      } else {
+        selectSaaSRole('guest');
+      }
+    }
+
+    function applySessionState(user) {
+      const body = document.body;
+      body.classList.remove('logged-in', 'role-student', 'role-teacher', 'role-admin', 'role-platform-admin');
+      
+      const currentLang = localStorage.getItem('acadtrack-lang') || 'en';
+      const activeRole = user ? user.role : 'demo';
+      
+      // Update label in desktop navigation
+      const activeLabel = roleLabels[currentLang] ? roleLabels[currentLang][activeRole] : roleLabels['en'][activeRole];
+      const demoActiveLabel = document.getElementById('demoActiveLabel');
+      if (demoActiveLabel) {
+        demoActiveLabel.textContent = activeLabel;
+      }
+      
+      // Update label in mobile navigation accordion header
+      const demoActiveLabelMobile = document.getElementById('demoActiveLabelMobile');
+      if (demoActiveLabelMobile) {
+        demoActiveLabelMobile.textContent = activeLabel;
+      }
+
+      // Update dynamic role icons in navigation
+      const activeIconClass = roleIcons[activeRole] || 'fa-flask';
+      const demoActiveIcon = document.getElementById('demoActiveIcon');
+      if (demoActiveIcon) {
+        demoActiveIcon.className = `fa-solid ${activeIconClass}`;
+      }
+      const demoActiveIconMobile = document.getElementById('demoActiveIconMobile');
+      if (demoActiveIconMobile) {
+        demoActiveIconMobile.className = `fa-solid ${activeIconClass}`;
+      }
+
+      if (user) {
+        body.classList.add('logged-in');
+        body.classList.add('role-' + user.role);
+        
+        // Dynamically update profile names inside dropdowns
+        document.querySelectorAll('.studentName').forEach(el => el.textContent = user.name);
+        
+        // Show exit demo options inside accordion and dropdown menu
+        document.querySelectorAll('.exit-demo-option').forEach(el => el.classList.add('visible'));
+        
+        // Highlight active role in desktop dropdown options list
+        document.querySelectorAll('.demo-role-option').forEach(el => {
+          el.classList.remove('active');
+          if (el.getAttribute('data-demo-role') === user.role) {
+            el.classList.add('active');
+          }
+        });
+      } else {
+        body.classList.add('not-logged-in');
+        document.querySelectorAll('.exit-demo-option').forEach(el => el.classList.remove('visible'));
+        document.querySelectorAll('.demo-role-option').forEach(el => {
+          el.classList.remove('active');
+        });
+      }
+      
+      // Sync translations matrix
+      updateDynamicGreetings(currentLang);
+    }
+
+    function updateDynamicGreetings(lang) {
+      const hour = new Date().getHours();
+      let timePeriod = 'night';
+      if (hour >= 5 && hour < 12) timePeriod = 'morning';
+      else if (hour >= 12 && hour < 17) timePeriod = 'afternoon';
+      else if (hour >= 17 && hour < 21) timePeriod = 'evening';
+
+      const greeting = greetingTranslations[timePeriod][lang] || greetingTranslations[timePeriod]['en'];
+      document.querySelectorAll('.saasGreeting').forEach(el => {
+        el.textContent = greeting;
+      });
+    }
+
+    let currentLang = localStorage.getItem('acadtrack-lang');
+    function applyLanguage(lang) {
+      document.body.className = document.body.className.replace(/lang-\w+/g, '').trim();
+      document.body.classList.add('lang-' + lang);
+      localStorage.setItem('acadtrack-lang', lang);
+      const flagMap = { en: 'us', fr: 'fr', ar: 'dz' };
+      document.querySelectorAll('.active-lang-flag').forEach(flag => flag.src = `https://kapowaz.github.io/circle-flags/flags/${flagMap[lang]}.svg`);
+      
+      // Update role label translations and greetings on language change
+      const storedUser = localStorage.getItem('acadtrack_currentUser');
+      applySessionState(storedUser ? JSON.parse(storedUser) : null);
+      
+      closeLangDropdowns();
+    }
+    function setLanguage(lang) { applyLanguage(lang); }
+    function closeLangDropdowns() { document.querySelectorAll('.lang-dropdown').forEach(dd => dd.classList.remove('active')); }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      // Dynamic Default Language Configuration Picker Loader
+      if (!currentLang) {
+        const configEl = document.getElementById('defaultLangConfig');
+        currentLang = configEl ? configEl.textContent.trim() : 'en';
+      }
+      applyLanguage(currentLang);
+      
+      const storedUser = localStorage.getItem('acadtrack_currentUser');
+      if (storedUser) {
+        applySessionState(JSON.parse(storedUser));
+      } else {
+        applySessionState(null);
+      }
+    });
+
+    var menuToggle = document.getElementById('menuToggle');
+    var mobileNav = document.getElementById('mobileNav');
+    var mobileOverlay = document.getElementById('mobileOverlay');
+    var isMenuOpen = false;
+    
+    var userToggle = document.getElementById('userToggle');
+    var userDropdown = document.getElementById('userDropdown');
+    var userSidebar = document.getElementById('userSidebar');
+    var userSidebarOverlay = document.getElementById('userSidebarOverlay');
+    var isUserOpen = false;
+
+    // Notification dropdown desktop triggers
+    var notifBtnDesktop = document.getElementById('notifBtnDesktop');
+    var notifDropdownDesktop = document.getElementById('notifDropdownDesktop');
+    var isNotifOpen = false;
+
+    // Integrated Demo Dropdown triggers (Desktop)
+    var demoBtnDesktop = document.getElementById('demoBtnDesktop');
+    var demoNavContainer = document.getElementById('demoNavContainer');
+    var isDemoOpen = false;
+
+    // Dynamic Language Dropdown trigger (Desktop)
+    var langToggleDesktop = document.getElementById('langToggleDesktop');
+    var langDropdownDesktop = document.getElementById('langDropdownDesktop');
+
+    function openMenu() { 
+      isMenuOpen = true; 
+      if (menuToggle) { menuToggle.classList.add('active'); menuToggle.setAttribute('aria-expanded', 'true'); }
+      if (mobileNav) mobileNav.classList.add('active'); 
+      if (mobileOverlay) mobileOverlay.classList.add('active'); 
+      document.body.classList.add('menu-open'); 
+    }
+    function closeMenu() { 
+      isMenuOpen = false; 
+      if (menuToggle) { menuToggle.classList.remove('active'); menuToggle.setAttribute('aria-expanded', 'false'); }
+      if (mobileNav) mobileNav.classList.remove('active'); 
+      if (mobileOverlay) mobileOverlay.classList.remove('active'); 
+      document.body.classList.remove('menu-open'); 
+    }
+    function openUserMenu() { 
+      isUserOpen = true; 
+      if (window.innerWidth >= 768) { 
+        if (userDropdown) userDropdown.classList.add('active'); 
+      } else { 
+        if (userSidebar) userSidebar.classList.add('active'); 
+        if (userSidebarOverlay) userSidebarOverlay.classList.add('active'); 
+        document.body.classList.add('menu-open'); 
+      } 
+    }
+    function closeUserMenu() { 
+      isUserOpen = false; 
+      if (userDropdown) userDropdown.classList.remove('active'); 
+      if (userSidebar) userSidebar.classList.remove('active'); 
+      if (userSidebarOverlay) userSidebarOverlay.classList.remove('active'); 
+      document.body.classList.remove('menu-open'); 
+    }
+
+    function openNotifDropdown() {
+      isNotifOpen = true;
+      if (notifDropdownDesktop) notifDropdownDesktop.classList.add('active');
+    }
+    function closeNotifDropdown() {
+      isNotifOpen = false;
+      if (notifDropdownDesktop) notifDropdownDesktop.classList.remove('active');
+    }
+
+    // Safe trigger verification for dynamically injected Elements
+    function verifyLayoutTriggerElements() {
+      notifBtnDesktop = document.getElementById('notifBtnDesktop');
+      notifDropdownDesktop = document.getElementById('notifDropdownDesktop');
+      langToggleDesktop = document.getElementById('langToggleDesktop');
+      langDropdownDesktop = document.getElementById('langDropdownDesktop');
+      
+      if (notifBtnDesktop) {
+        notifBtnDesktop.removeEventListener('click', handleNotifClick);
+        notifBtnDesktop.addEventListener('click', handleNotifClick);
+      }
+      if (langToggleDesktop) {
+        langToggleDesktop.removeEventListener('click', handleLangClick);
+        langToggleDesktop.addEventListener('click', handleLangClick);
+      }
+    }
+
+    function handleNotifClick(e) {
+      e.stopPropagation();
+      if (isUserOpen) closeUserMenu();
+      if (isDemoOpen) closeDemoDropdown();
+      if (isNotifOpen) { closeNotifDropdown(); } else { closeAllHeaderDropdowns(); openNotifDropdown(); }
+    }
+
+    function handleLangClick(e) {
+      e.stopPropagation();
+      if (isUserOpen) closeUserMenu();
+      if (isNotifOpen) closeNotifDropdown();
+      if (isDemoOpen) closeDemoDropdown();
+      const isActive = langDropdownDesktop ? langDropdownDesktop.classList.contains('active') : false;
+      closeAllHeaderDropdowns();
+      if (!isActive && langDropdownDesktop) langDropdownDesktop.classList.add('active');
+    }
+
+    function openDemoDropdown() {
+      isDemoOpen = true;
+      if (demoNavContainer) demoNavContainer.classList.add('active');
+    }
+    function closeDemoDropdown() {
+      isDemoOpen = false;
+      if (demoNavContainer) demoNavContainer.classList.remove('active');
+    }
+
+    function closeAllHeaderDropdowns() {
+      closeLangDropdowns();
+      closeUserMenu();
+      closeNotifDropdown();
+      closeDemoDropdown();
+    }
+
+    // Toggle menu-accordion for mobile accordion items
+    function toggleAccordion(id) {
+      var content = document.getElementById(id);
+      if (content) {
+        content.classList.toggle('active');
+        var icon = content.previousElementSibling.querySelector('.fa-chevron-down');
+        if (icon) {
+          icon.style.transform = content.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+          icon.style.transition = 'transform 0.20s ease';
+        }
+        
+        // Explicit inline style display management to prevent layout overrides
+        if (content.classList.contains('active')) {
+          content.style.setProperty('display', 'block', 'important');
+        } else {
+          content.style.setProperty('display', 'none', 'important');
+        }
+      }
+    }
+
+    // Robust Global Event-delegation Accordion Handler (Sanitizer-Immune)
+    document.addEventListener('click', function(e) {
+      var header = e.target.closest('.menu-accordion-header');
+      if (header) {
+        e.preventDefault();
+        e.stopPropagation();
+        var content = header.nextElementSibling;
+        if (content && content.classList.contains('menu-accordion-content')) {
+          var id = content.id;
+          toggleAccordion(id);
+        }
+      }
+    });
+
+    if (menuToggle) {
+      menuToggle.addEventListener('click', function() { 
+        if (isUserOpen) closeUserMenu(); 
+        if (isDemoOpen) closeDemoDropdown();
+        if (isMenuOpen) { closeMenu(); } else { openMenu(); } 
+      });
+    }
+    if (userToggle) {
+      userToggle.addEventListener('click', function(e) { 
+        e.stopPropagation(); 
+        if (isMenuOpen) closeMenu(); 
+        if (isDemoOpen) closeDemoDropdown();
+        if (isUserOpen) { closeUserMenu(); } else { closeAllHeaderDropdowns(); openUserMenu(); } 
+      });
+    }
+    if (demoBtnDesktop) {
+      demoBtnDesktop.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (isUserOpen) closeUserMenu();
+        if (notifDropdownDesktop) closeNotifDropdown();
+        if (isDemoOpen) { closeDemoDropdown(); } else { closeAllHeaderDropdowns(); openDemoDropdown(); }
+      });
+    }
+    
+    mobileOverlay.addEventListener('click', closeMenu);
+    userSidebarOverlay.addEventListener('click', closeUserMenu);
+
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.lang-toggle') && !e.target.closest('.mobile-lang-list')) { closeLangDropdowns(); }
+      if (window.innerWidth >= 768 && isUserOpen && !userDropdown.contains(e.target) && !userToggle.contains(e.target)) { closeUserMenu(); }
+      if (isNotifOpen && notifDropdownDesktop && !notifDropdownDesktop.contains(e.target) && !notifBtnDesktop.contains(e.target)) { closeNotifDropdown(); }
+      if (isDemoOpen && !demoNavContainer.contains(e.target) && !demoBtnDesktop.contains(e.target)) { closeDemoDropdown(); }
+    });
+
+    document.addEventListener('keydown', function(e) { 
+      if (e.key === 'Escape') { 
+        if (isMenuOpen) { closeMenu(); menuToggle.focus(); } 
+        if (isUserOpen) { closeUserMenu(); userToggle.focus(); } 
+        if (isNotifOpen) { closeNotifDropdown(); if (notifBtnDesktop) notifBtnDesktop.focus(); }
+        if (isDemoOpen) { closeDemoDropdown(); demoBtnDesktop.focus(); }
+        closeLangDropdowns(); 
+      } 
+    });
+    window.addEventListener('resize', function() { if (window.innerWidth >= 768 && isMenuOpen) closeMenu(); });
+    
+    // Bind triggers after Blogger renders Widget configurations
+    window.addEventListener('load', verifyLayoutTriggerElements);
+    document.addEventListener('DOMSubtreeModified', verifyLayoutTriggerElements);
+  //]]>
+  </script>
+</body>
+</html>

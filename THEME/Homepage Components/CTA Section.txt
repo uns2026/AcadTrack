@@ -1,0 +1,412 @@
+<style>
+  /* ===== WHITE THEME LANDING CTA SECTION ===== */
+  .at-cta-section {
+    background-color: #ffffff; /* Symmetrical White Background [1] */
+    padding: clamp(60px, 8vw, 110px) 1.5rem;
+    text-align: center;
+    color: #0f172a;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  .at-cta-container {
+    max-width: 720px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+  }
+
+  .at-cta-title {
+    font-size: clamp(24px, 3.5vw, 36px);
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: #0f172a;
+  }
+  .at-cta-title span {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .at-cta-desc {
+    font-size: clamp(14px, 1.4vw, 17px);
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+    opacity: 0.85;
+    line-height: 1.65;
+    color: #475569;
+  }
+
+  /* Premium primary blue waitlist button */
+  .at-cta-btn {
+    background: #2563eb;
+    color: #ffffff !important;
+    padding: 14px 38px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: clamp(13px, 1.3vw, 15px);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .at-cta-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
+  }
+
+  /* ===== DYNAMIC OVERLAID WAITLIST MODAL ===== */
+  .waitlist-modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 999999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.25s ease;
+  }
+  .waitlist-modal-overlay.active { display: flex; opacity: 1; }
+  .waitlist-modal-box {
+    background: #ffffff;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 480px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+    padding: 24px;
+    transform: scale(0.95);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .waitlist-modal-overlay.active .waitlist-modal-box { transform: scale(1); }
+  
+  .waitlist-modal-title { font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .waitlist-modal-desc { font-size: 12.5px; color: #64748b; margin-bottom: 18px; line-height: 1.5; text-align: left; }
+
+  /* Input fields */
+  .form-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+  @media (min-width: 480px) { .form-grid.grid-col-2 { grid-template-columns: repeat(2, 1fr); } }
+  .form-group { display: flex; flex-direction: column; gap: 4px; text-align: left; }
+  .form-label { font-size: 11.5px; font-weight: 700; color: #475569; }
+  .form-input { width: 100%; padding: 10px 14px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 13.5px; outline: none; background-color: #ffffff; transition: border-color 0.2s; color: #0f172a; }
+  .form-input:focus { border-color: #2563eb; }
+
+  /* Modal actions button */
+  .btn-saas { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; border: 1px solid transparent; transition: all 0.2s ease; }
+  .btn-saas-primary { background-color: #2563eb; color: white !important; }
+  .btn-saas-primary:hover { background-color: #1d4ed8; }
+  .btn-saas-primary:disabled { background-color: #94a3b8; cursor: not-allowed; }
+  .btn-saas-secondary { background-color: #f1f5f9; color: #475569; border-color: #cbd5e1; }
+  .btn-saas-secondary:hover { background-color: #e2e8f0; }
+
+  /* Success State inside modal */
+  .waitlist-success-state { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px 0; }
+  .success-icon { width: 56px; height: 56px; background: #ecfdf5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 16px; }
+
+  /* ===== PORTABLE FLOATING TOAST NOTIFIER (TOP-LEFT) ===== */
+  .profile-toast-container { position: fixed; top: 80px; left: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 1000000; max-width: 340px; width: calc(100% - 40px); pointer-events: none; }
+  .saas-toast-alert { background: #ffffff; border: 1.5px solid #e2e8f0; border-left: 4px solid #10b981; border-radius: 10px; padding: 12px 16px; box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.15); display: flex; align-items: center; gap: 12px; transform: translateX(-120%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease; opacity: 0; pointer-events: auto; }
+  .saas-toast-alert.active { transform: translateX(0); opacity: 1; }
+  .saas-toast-icon { width: 32px; height: 32px; border-radius: 50%; background: #ecfdf5; color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .saas-toast-body { display: flex; flex-direction: column; gap: 2px; text-align: left; }
+  .saas-toast-title { font-size: 13px; font-weight: 800; color: #0f172a; }
+  .saas-toast-desc { font-size: 11px; color: #475569; font-weight: 500; }
+
+  /* Spinner Animation */
+  .fa-spinner {
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    100% { transform: rotate(360deg); }
+  }
+
+  /* ===== RTL ARABIC VIEW ALIGNMENTS ===== */
+  .lang-ar .at-cta-container { direction: rtl; }
+  .lang-ar .at-cta-btn { flex-direction: row-reverse; }
+  .lang-ar .waitlist-modal-box { text-align: right; direction: rtl; }
+  
+  .lang-ar .waitlist-modal-desc { text-align: right; }
+  .lang-ar .form-group { text-align: right; }
+  .lang-ar .std-modal-actions { flex-direction: row-reverse; }
+  .lang-ar .profile-toast-container { left: auto; right: 20px; }
+  .lang-ar .saas-toast-alert { border-left: none; border-right: 4px solid #10b981; transform: translateX(120%); flex-direction: row-reverse; }
+  .lang-ar .saas-toast-alert.active { transform: translateX(0); }
+  .lang-ar .saas-toast-body { text-align: right; }
+</style>
+
+<section class="at-cta-section" id="atCtaSection">
+  <!-- Symmetrical Floating Toast Notifier (Top-Left on LTR) [1] -->
+  <div class="profile-toast-container" id="profileToastContainer"></div>
+
+  <div class="at-cta-container">
+    
+    <!-- English Version [1] -->
+    <div data-lang="en">
+      <h2 class="at-cta-title">Ready to Modernize Your <span>University Workspace?</span></h2>
+      <p class="at-cta-desc">Transform your academic management today with AcadTrack. Eliminate paper workflows, improve performance tracking, and get an exclusive discount when we officially launch.</p>
+      <button class="at-cta-btn" onclick="openWaitlistModal()">
+        <i class="fa-solid fa-clock"></i> Join the Waitlist
+      </button>
+    </div>
+
+    <!-- French Version [1] -->
+    <div data-lang="fr">
+      <h2 class="at-cta-title">Prêt à moderniser votre <span>université ?</span></h2>
+      <p class="at-cta-desc">Transformez votre gestion académique dès aujourd'hui avec AcadTrack. Éliminez la paperasserie, améliorez les performances et bénéficiez d'une réduction exclusive lors du lancement officiel.</p>
+      <button class="at-cta-btn" onclick="openWaitlistModal()">
+        <i class="fa-solid fa-clock"></i> Rejoindre la liste d'attente
+      </button>
+    </div>
+
+    <!-- Arabic Version [1] -->
+    <div data-lang="ar">
+      <h2 class="at-cta-title">هل أنت مستعد لتحديث وتسيير <span>قسمك الأكاديمي؟</span></h2>
+      <p class="at-cta-desc">ابدأ بتغيير وتطوير نمط التسيير في كليتك اليوم مع AcadTrack. استبدل المعالجة الورقية بنظام رقمي آمن، وانضم لقائمة الانتظار للحصول على خصم حصري فور الإطلاق الرسمي للمنصة.</p>
+      <button class="at-cta-btn" onclick="openWaitlistModal()">
+        <i class="fa-solid fa-clock"></i> انضم إلى قائمة الانتظار
+      </button>
+    </div>
+
+  </div>
+</section>
+
+<!-- DYNAMIC OVERLAID WAITLIST MODAL [1] -->
+<div class="waitlist-modal-overlay" id="waitlist-modal" onclick="if(event.target===this)closeWaitlistModal()">
+  <div class="waitlist-modal-box">
+    
+    <!-- 1. Form Inputs State -->
+    <div id="waitlist-state-form">
+      <div class="waitlist-modal-title">
+        <i class="fa-solid fa-clock" style="color:var(--primary);"></i>
+        <span data-lang="en">Join the Platform Waitlist</span>
+        <span data-lang="fr">Rejoindre la liste d'attente</span>
+        <span data-lang="ar">الانضمام إلى قائمة الانتظار</span>
+      </div>
+      <div class="waitlist-modal-desc">
+        <span data-lang="en">Register your details below. We'll send an exclusive early-bird discount directly to your email address upon our official launch.</span>
+        <span data-lang="fr">Inscrivez vos coordonnées ci-dessous. Nous vous enverrons un code de réduction exclusif directement par courriel lors du lancement officiel.</span>
+        <span data-lang="ar">سجل بياناتك أدناه لتأمين مكانك في قائمة الانتظار، وسنرسل لك رمز خصم ترحيبي حصري مباشرة على بريدك الإلكتروني فور الإطلاق الرسمي للمنصة.</span>
+      </div>
+
+      <form class="form-grid grid-col-2" id="waitlist-fields-form" onsubmit="event.preventDefault(); submitWaitlistSubscriber();">
+        <div class="form-group">
+          <label class="form-label" for="wl-first"><span data-lang="en">First Name</span><span data-lang="fr">Prénom</span><span data-lang="ar">الاسم الأول</span> *</label>
+          <input type="text" class="form-input" id="wl-first" placeholder="Ex: Uns" required="true" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="wl-last"><span data-lang="en">Last Name</span><span data-lang="fr">Nom</span><span data-lang="ar">اللقب</span> *</label>
+          <input type="text" class="form-input" id="wl-last" placeholder="Ex: MAHMOUDI" required="true" />
+        </div>
+        <div class="form-group" style="grid-column: span 2;">
+          <label class="form-label" for="wl-email">Email Address *</label>
+          <input type="email" class="form-input" id="wl-email" placeholder="yourname@univ-batna.dz" required="true" />
+        </div>
+        <div class="form-group" style="grid-column: span 2;">
+          <label class="form-label" for="wl-phone"><span data-lang="en">Phone Number</span><span data-lang="fr">Numéro de Téléphone</span><span data-lang="ar">رقم الهاتف</span> *</label>
+          <input type="tel" class="form-input" id="wl-phone" placeholder="0666444555" required="true" />
+        </div>
+
+        <div class="std-modal-actions" style="display:flex; justify-content:flex-end; gap:10px; margin-top:15px; border-top:1px solid var(--border-light); padding-top:15px; grid-column: span 2;">
+          <button type="button" class="btn-saas btn-saas-secondary" onclick="closeWaitlistModal()">
+            <span data-lang="en">Cancel</span><span data-lang="fr">Annuler</span><span data-lang="ar">إلغاء</span>
+          </button>
+          <button type="submit" class="btn-saas btn-saas-primary" id="wl-submit-btn">
+            <i class="fa-solid fa-spinner" id="wl-btn-icon" style="display: none;"></i>
+            <span id="wl-btn-text">
+              <span data-lang="en">Submit</span><span data-lang="fr">Envoyer</span><span data-lang="ar">تأكيد التسجيل</span>
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- 2. Success Feedback State (Strictly NO Emojis) [1] -->
+    <div class="waitlist-success-state" id="waitlist-state-success">
+      <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+      <h3 style="font-size:18px; font-weight:800; color:#0f172a; margin-bottom:8px;">
+        <span data-lang="en">Successfully Registered!</span>
+        <span data-lang="fr">Inscription Réussie !</span>
+        <span data-lang="ar">تم تسجيلك بنجاح!</span>
+      </h3>
+      <p style="font-size:13px; color:#475569; line-height:1.55; max-width:340px; margin:0 auto 20px auto;">
+        <span data-lang="en">Thank you for joining. We have safely secured your place on the AcadTrack waitlist and will deliver your exclusive launch discount code directly to your email address.</span>
+        <span data-lang="fr">Merci de nous avoir rejoints. Nous avons enregistré votre inscription. Votre code de réduction exclusif vous sera envoyé directement par e-mail lors du lancement.</span>
+        <span data-lang="ar">شكراً لانضمامك إلينا. لقد تم حجز مكانك بنجاح في قائمة انتظار البوابة الأكاديمية، وسنرسل لك رمز الخصم الترحيبي الحصري مباشرة على بريدك الإلكتروني فور الإطلاق الرسمي للمنصة.</span>
+      </p>
+      <button class="btn-saas btn-saas-secondary" onclick="closeWaitlistModal()">
+        <span data-lang="en">Close</span><span data-lang="fr">Fermer</span><span data-lang="ar">إغلاق</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+//<![CDATA[
+  // Paste your Google Apps Script Web App Deployment URL here:
+  const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbygbMOvDWKjxrgD_9VjtMAWjnlLWqd7AR-e8CNET0SX05bTGcf-qW29wTzQkVvxHNBb/exec";
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const initLang = localStorage.getItem('acadtrack-lang') || 'en';
+    setLanguage(initLang);
+  });
+
+  function setLanguage(lang) {
+    localStorage.setItem('acadtrack-lang', lang);
+    document.documentElement.lang = lang;
+    const isRTL = lang === 'ar';
+    const section = document.getElementById('atCtaSection');
+    if (section) {
+      section.dir = isRTL ? 'rtl' : 'ltr';
+      if (isRTL) section.classList.add('lang-ar');
+      else section.classList.remove('lang-ar');
+    }
+
+    document.querySelectorAll('.at-cta-section [data-lang], .waitlist-modal-box [data-lang]').forEach(el => {
+      el.style.display = el.getAttribute('data-lang') === lang ? '' : 'none';
+    });
+  }
+
+  window.openWaitlistModal = function() {
+    const modal = document.getElementById('waitlist-modal');
+    if (modal) {
+      document.getElementById('waitlist-state-form').style.display = 'block';
+      document.getElementById('waitlist-state-success').style.display = 'none';
+      document.getElementById('waitlist-fields-form').reset();
+      modal.classList.add('active');
+    }
+    setLanguage(localStorage.getItem('acadtrack-lang') || 'en');
+  };
+
+  window.closeWaitlistModal = function() {
+    const modal = document.getElementById('waitlist-modal');
+    if (modal) modal.classList.remove('active');
+  };
+
+  window.submitWaitlistSubscriber = function() {
+    const first = document.getElementById('wl-first').value.trim();
+    const last = document.getElementById('wl-last').value.trim();
+    const email = document.getElementById('wl-email').value.trim();
+    const phone = document.getElementById('wl-phone').value.trim();
+
+    if (!first || !last || !email || !phone) return;
+
+    // Ensure Apps Script URL is updated
+    if (GOOGLE_APPS_SCRIPT_URL.includes("YOUR_DEPLOYED_URL")) {
+      alert("Configuration Error: Please paste your active Google Apps Script web app URL inside the script block.");
+      return;
+    }
+
+    const submitBtn = document.getElementById('wl-submit-btn');
+    const btnIcon = document.getElementById('wl-btn-icon');
+    const btnText = document.getElementById('wl-btn-text');
+    const currentLang = localStorage.getItem('acadtrack-lang') || 'en';
+
+    // Enter loading state
+    if (submitBtn) submitBtn.disabled = true;
+    if (btnIcon) btnIcon.style.display = "inline-block";
+    if (btnText) {
+      btnText.innerHTML = currentLang === 'ar' ? 'جاري الإرسال...' : (currentLang === 'fr' ? 'Envoi...' : 'Submitting...');
+    }
+
+    // Convert parameters to url-encoded format to bypass CORS blocks
+    const payload = new URLSearchParams();
+    payload.append('first', first);
+    payload.append('last', last);
+    payload.append('email', email);
+    payload.append('phone', phone);
+
+    fetch(GOOGLE_APPS_SCRIPT_URL, {
+      method: "POST",
+      body: payload,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.status === "success") {
+        // Transition modal window to show success state
+        document.getElementById('waitlist-state-form').style.display = 'none';
+        document.getElementById('waitlist-state-success').style.display = 'flex';
+        setLanguage(currentLang);
+
+        // Trigger floating success toast
+        triggerSuccessToast(
+          currentLang === 'ar' ? "تم التسجيل بنجاح" : "Registered Successfully", 
+          currentLang === 'ar' ? "تم حجز مكانك في قائمة الانتظار وإرسال بريد لتأكيد ذلك." : "Your place on our early-bird waitlist is secured."
+        );
+      } else if (data && data.status === "duplicate") {
+        const errMsg = {
+          en: "This email address is already registered on our waitlist.",
+          fr: "Cette adresse e-mail est déjà inscrite sur notre liste d'attente.",
+          ar: "هذا البريد الإلكتروني مسجل بالفعل في قائمة الانتظار لدينا."
+        };
+        alert(errMsg[currentLang] || errMsg.en);
+      } else {
+        alert("Submission Failed: " + (data.message || "An unknown error occurred."));
+      }
+    })
+    .catch(err => {
+      const netError = {
+        en: "Network Connection Error. Please verify your connection and try again.",
+        fr: "Échec de la connexion. Veuillez vérifier votre réseau et réessayer.",
+        ar: "خطأ في الاتصال بالشبكة. يرجى التحقق من اتصالك بالإنترنت وإعادة المحاولة."
+      };
+      alert(netError[currentLang] || netError.en);
+    })
+    .finally(() => {
+      // Reset button states
+      if (submitBtn) submitBtn.disabled = false;
+      if (btnIcon) btnIcon.style.display = "none";
+      if (btnText) {
+        btnText.innerHTML = `
+          <span data-lang="en">Submit</span><span data-lang="fr">Envoyer</span><span data-lang="ar">تأكيد التسجيل</span>
+        `;
+      }
+      setLanguage(currentLang);
+    });
+  };
+
+  function triggerSuccessToast(title, description) {
+    const container = document.getElementById('profileToastContainer');
+    if (!container) return;
+
+    const currentLang = localStorage.getItem('acadtrack-lang') || 'en';
+    const toastId = 'toast_' + Date.now();
+
+    const toastHTML = `
+      <div class="saas-toast-alert" id="${toastId}">
+        <div class="saas-toast-icon">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div class="saas-toast-body">
+          <div class="saas-toast-title">${title}</div>
+          <div class="saas-toast-desc">${description}</div>
+        </div>
+      </div>
+    `;
+
+    container.innerHTML += toastHTML;
+
+    setTimeout(() => {
+      const el = document.getElementById(toastId);
+      if (el) el.classList.add('active');
+    }, 50);
+
+    setTimeout(() => {
+      const el = document.getElementById(toastId);
+      if (el) {
+        el.classList.remove('active');
+        setTimeout(() => el.remove(), 350);
+      }
+    }, 4500);
+  }
+//]]>
+</script>

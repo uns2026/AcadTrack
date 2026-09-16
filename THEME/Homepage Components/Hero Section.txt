@@ -1,0 +1,570 @@
+<style>
+  /* ===== BREATHING NEBULA BACKGROUND HERO ===== */
+  .at-hero {
+    background-color: #0f172a;
+    position: relative;
+    overflow: hidden;
+    min-height: 100dvh; 
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+    padding: clamp(60px, 10vw, 120px) 1.5rem clamp(40px, 8vw, 80px) 1.5rem;
+  }
+
+  /* Mobile Alignment: A bit from the top, not centered */
+  @media (max-width: 899px) {
+    .at-hero {
+      align-items: flex-start;
+      padding-top: 15dvh; 
+    }
+  }
+
+  /* ===== CORNER GRID TEXTURE ===== */
+  .at-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(circle at center, transparent 30%, black 100%);
+    -webkit-mask-image: radial-gradient(circle at center, transparent 30%, black 100%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* ===== ANIMATED BACKGROUND: NEBULAS & LIGHT ===== */
+  .at-bg-shape {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    will-change: transform;
+    z-index: 0;
+  }
+
+  /* Cosmic Nebula 1 (Blue) */
+  .at-bg-shape-1 {
+    top: -20%;
+    left: -10%;
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(circle, rgba(59,130,246,0.2) 0%, transparent 70%);
+    filter: blur(80px);
+    animation: atOrbit1 18s infinite alternate ease-in-out;
+  }
+
+  /* Cosmic Nebula 2 (Purple) */
+  .at-bg-shape-2 {
+    bottom: -25%;
+    right: -15%;
+    width: 55vw;
+    height: 55vw;
+    background: radial-gradient(circle, rgba(124,58,237,0.2) 0%, transparent 70%);
+    filter: blur(80px);
+    animation: atOrbit2 22s infinite alternate ease-in-out;
+  }
+
+  /* Moving Spotlight / Light Orb */
+  .at-bg-spotlight {
+    position: absolute;
+    top: 40%;
+    left: 45%;
+    width: 80vw;
+    height: 80vw;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(147,197,253,0.1) 0%, rgba(59,130,246,0.03) 40%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+    animation: pulseSpot 10s infinite alternate ease-in-out;
+  }
+
+  @keyframes atOrbit1 {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(80px, 60px) scale(1.2); }
+  }
+  @keyframes atOrbit2 {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(-70px, -50px) scale(1.15); }
+  }
+  @keyframes pulseSpot {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+    100% { transform: translate(-45%, -55%) scale(1.3); opacity: 1; }
+  }
+
+  /* ===== SUBTLE GLOWING STARS ===== */
+  .at-bg-star {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 3;
+    /* Subdued glow instead of bright glow */
+    box-shadow: 0 0 4px 1px rgba(147, 197, 253, 0.3);
+  }
+
+  /* Smaller, subtler cross-shaped lens flare */
+  .at-bg-star::before, .at-bg-star::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.3); 
+    border-radius: 2px;
+  }
+  .at-bg-star::before { width: 1px; height: 10px; }
+  .at-bg-star::after { width: 10px; height: 1px; }
+
+  /* Fewer Stars positioned around the layout */
+  .star-1 { top: 15%; right: 18%; width: 3px; height: 3px; animation: twinkle 4s infinite ease-in-out; }
+  .star-2 { top: 25%; left: 10%; width: 2px; height: 2px; animation: twinkle 5s infinite ease-in-out 1.5s; }
+  .star-3 { bottom: 20%; right: 12%; width: 3px; height: 3px; animation: twinkle 4.5s infinite ease-in-out 0.8s; }
+  .star-4 { bottom: 30%; left: 15%; width: 2px; height: 2px; animation: twinkle 5.5s infinite ease-in-out 2.2s; }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.4; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  /* Two-column responsive grid */
+  .at-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    align-items: center;
+    position: relative;
+    z-index: 10;
+  }
+
+  .at-hero-left {
+    text-align: left;
+    animation: atFadeInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes atFadeInLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* Specialty Trust Badge */
+  .at-hero-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #bfdbfe;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 20px;
+    backdrop-filter: blur(4px);
+  }
+  .at-hero-meta-item i { color: #3b82f6; }
+
+  .at-hero h1 {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800;
+    line-height: 1.15; /* Default for mobile */
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.03em;
+    color: #ffffff;
+  }
+  
+  /* Desktop specific adjustments */
+  @media (min-width: 900px) {
+    .at-hero-grid { grid-template-columns: 1.2fr 1fr; }
+    .at-hero h1 { line-height: 57px; } /* Desktop-only line-height */
+  }
+
+  .at-hero h1 span {
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #93c5fd 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .at-hero p {
+    font-size: clamp(14px, 1.4vw, 16px);
+    opacity: 0.85;
+    margin-bottom: 2.5rem;
+    line-height: 1.65;
+    color: #e2e8f0;
+  }
+
+  /* Action Buttons */
+  .at-hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .at-btn-primary {
+    background: #2563eb;
+    color: #ffffff !important;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+    transition: all 0.25s ease;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .at-btn-primary:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.45);
+  }
+  .at-btn-outline {
+    background: rgba(255,255,255,0.05);
+    color: #ffffff;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: inline-flex; align-items: center; gap: 8px;
+    backdrop-filter: blur(4px);
+  }
+  .at-btn-outline:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: #ffffff;
+    transform: translateY(-1px);
+  }
+
+  /* ===== RIGHT COLUMN: ANIMATED SATELLITE VECTOR ART ===== */
+  .at-hero-right {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    animation: atFadeInRight 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes atFadeInRight {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 899px) {
+    .at-hero-right { display: none !important; }
+    .at-hero-left { text-align: center !important; }
+    .at-hero-meta-item { margin-left: auto; margin-right: auto; }
+    .at-hero-btns { justify-content: center !important; }
+    .lang-ar .at-hero-left { text-align: center !important; }
+    .lang-ar .at-hero-meta-item { margin-left: auto !important; margin-right: auto !important; }
+    .lang-ar .at-hero-btns { justify-content: center !important; }
+
+    /* ===== SOLUTION 1: STOP HEAVY ANIMATIONS ON MOBILE ===== */
+    .at-bg-shape-1,
+    .at-bg-shape-2,
+    .at-bg-spotlight {
+      animation: none !important;
+    }
+  }
+
+  /* Advanced overlapping fluid wave animations */
+  .anim-wave-1 { stroke-dasharray: 800; stroke-dashoffset: 800; animation: drawStroke 2s cubic-bezier(0.4, 0, 0.2, 1) forwards, floatWave1 5s infinite alternate ease-in-out; }
+  .anim-wave-2 { stroke-dasharray: 800; stroke-dashoffset: 800; animation: drawStroke 2.2s cubic-bezier(0.4, 0, 0.2, 1) forwards 0.15s, floatWave2 5s infinite alternate ease-in-out 0.3s; }
+  .anim-wave-3 { stroke-dasharray: 800; stroke-dashoffset: 800; animation: drawStroke 2.4s cubic-bezier(0.4, 0, 0.2, 1) forwards 0.3s, floatWave3 5s infinite alternate ease-in-out 0.6s; }
+  .anim-wave-4 { stroke-dasharray: 800; stroke-dashoffset: 800; animation: drawStroke 2.6s cubic-bezier(0.4, 0, 0.2, 1) forwards 0.45s, floatWave4 5s infinite alternate ease-in-out 0.9s; }
+  
+  @keyframes drawStroke { to { stroke-dashoffset: 0; } }
+  @keyframes floatWave1 { 0% { transform: translateY(0px) rotate(0deg); } 100% { transform: translateY(-10px) rotate(1deg); transform-origin: center; } }
+  @keyframes floatWave2 { 0% { transform: translateY(0px) rotate(0deg); } 100% { transform: translateY(-14px) rotate(-1deg); transform-origin: center; } }
+  @keyframes floatWave3 { 0% { transform: translateY(0px) rotate(0deg); } 100% { transform: translateY(-8px) rotate(0.5deg); transform-origin: center; } }
+  @keyframes floatWave4 { 0% { transform: translateY(0px) rotate(0deg); } 100% { transform: translateY(-12px) rotate(-0.5deg); transform-origin: center; } }
+
+  /* ===== DYNAMIC OVERLAID DEMO SELECTION MODAL ===== */
+  .demo-modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  .demo-modal-overlay.active { 
+    opacity: 1; 
+    visibility: visible; 
+  }
+  
+  .demo-modal-box {
+    background: #ffffff;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 480px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+    padding: 24px;
+    transform: scale(0.85) translateY(20px);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .demo-modal-overlay.active .demo-modal-box { 
+    transform: scale(1) translateY(0); 
+  }
+  
+  .demo-modal-title { font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  
+  /* Selection Cards inside Modal */
+  .demo-card {
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+  }
+  .demo-card:hover { border-color: #2563eb; background-color: #eff6ff; transform: translateY(-2px); }
+  .demo-card-icon { width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .demo-card.teacher .demo-card-icon { background: #eef2ff; color: #2563eb; }
+  .demo-card.admin .demo-card-icon { background: #fffbeb; color: #d97706; }
+  .demo-card.student .demo-card-icon { background: #ecfdf5; color: #059669; }
+  .demo-card-details { flex: 1; min-width: 0; }
+  .demo-card-title { font-size: 13.5px; font-weight: 800; color: #0f172a; }
+  .demo-card-subtitle { font-size: 11px; color: #64748b; margin-top: 1px; }
+
+  .demo-modal-box .btn-saas-secondary {
+    background: #f1f5f9 !important;
+    color: #475569 !important;
+    border: 1px solid #e2e8f0 !important;
+    padding: 10px 20px !important;
+    border-radius: 8px !important;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .demo-modal-box .btn-saas-secondary:hover {
+    background: #e2e8f0 !important;
+    color: #0f172a !important;
+  }
+
+  /* ===== RTL ARABIC VIEW ALIGNMENTS ===== */
+  .lang-ar .at-hero-grid { direction: rtl; }
+  .lang-ar .at-hero-left { text-align: right; }
+  .lang-ar .at-hero-meta-item { flex-direction: row-reverse; }
+  .lang-ar .demo-modal-box { text-align: right; direction: rtl; }
+
+  .lang-ar .demo-card { flex-direction: row-reverse; text-align: right; }
+</style>
+
+<section class="at-hero">
+  <!-- Animated Background Elements -->
+  <div class="at-bg-shape at-bg-shape-1"></div>
+  <div class="at-bg-shape at-bg-shape-2"></div>
+  <div class="at-bg-spotlight"></div>
+
+  <!-- Fewer, Subtler Glowing Stars -->
+  <div class="at-bg-star star-1"></div>
+  <div class="at-bg-star star-2"></div>
+  <div class="at-bg-star star-3"></div>
+  <div class="at-bg-star star-4"></div>
+
+  <div class="at-hero-grid" id="atHeroGrid">
+    
+    <!-- Left Column: Localized Dynamic Headline & CTAs -->
+    <div class="at-hero-left">
+      <div class="at-hero-meta-item">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span data-lang="en">Smarter university starts here</span>
+        <span data-lang="fr">Une gestion universitaire plus intelligente commence ici</span>
+        <span data-lang="ar">إدارة جامعية أذكى تبدأ من هنا</span>
+      </div>
+      
+      <!-- English Version -->
+      <div data-lang="en">
+        <h1>Unified Smart Portal for <span>Academic Administration</span></h1>
+        <p>AI-powered unified LMD university platform replacing paper workflows and connecting students, professors, and administration in one automated system with QR/NFC attendance, geo-location checks, documents, schedules, exams, grades, reports, and real-time notifications.</p>
+        <div class="at-hero-btns">
+          <button class="at-btn-primary" onclick="openDemoSelectionModal()"><i class="fa-solid fa-play"></i> Launch Demo</button>
+          <button class="at-btn-outline" onclick="window.location.href='/p/signup.html'"><i class="fa-solid fa-arrow-right-to-bracket"></i> Start Now</button>
+        </div>
+      </div>
+
+      <!-- French Version -->
+      <div data-lang="fr">
+        <h1>Portail Intelligent Unique de <span>Gestion Universitaire</span></h1>
+        <p>Plateforme universitaire LMD unifiée et alimentée par l’IA, remplaçant le papier et connectant étudiants, enseignants et administration dans un système automatisé avec présence QR/NFC, géolocalisation, gestion des documents, emplois du temps, examens, notes, rapports et notifications en temps réel.</p>
+        <div class="at-hero-btns">
+          <button class="at-btn-primary" onclick="openDemoSelectionModal()"><i class="fa-solid fa-play"></i> Démarrer Démo</button>
+          <button class="at-btn-outline" onclick="window.location.href='/p/signup.html'"><i class="fa-solid fa-arrow-right-to-bracket"></i> Commencer</button>
+        </div>
+      </div>
+
+      <!-- Arabic Version -->
+      <div data-lang="ar">
+        <h1> منصة التسيير الأكاديمي مدعومة<span>بالذكاء الاصطناعي</span></h1>
+        <p>منصة جامعية ذكية موحدة وفق نظام LMD الجزائري تستبدل العمل الورقي وتربط الطلبة والأساتذة والإدارة في نظام رقمي مؤتمت مدعوم بالذكاء الاصطناعي، يغطي الحضور عبر QR وNFC، التحقق من الموقع الجغرافي، إدارة الوثائق، الجداول، الامتحانات والنقاط، مع تقارير ذكية وإشعارات فورية وأدوات تعاون لتحسين التسيير الأكاديمي.</p>
+        <div class="at-hero-btns">
+          <button class="at-btn-primary" onclick="openDemoSelectionModal()"><i class="fa-solid fa-play"></i>  العرض التجريبي</button>
+          <button class="at-btn-outline" onclick="window.location.href='/p/signup.html'"><i class="fa-solid fa-arrow-right-to-bracket"></i> ابدأ الآن</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Animated Vector Art -->
+    <div class="at-hero-right">
+      <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 500 500" width="100%" height="100%">
+        <rect width="100%" height="100%" fill="none" />
+        <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="250" cy="275" r="52" fill="#2563eb" fill-opacity="0.1" stroke="wheat" stroke-width="4" />
+          <path d="M 148 395 A 120 120 0 0 1 352 395" stroke-width="12" stroke="white" class="anim-wave-1" />
+          <path d="M 162 290 A 92 92 0 1 1 338 290" stroke-width="10" stroke="#3b82f6" class="anim-wave-2" />
+          <path d="M 129 328 A 136 136 0 1 1 371 328" stroke-width="10" stroke="#60a5fa" class="anim-wave-3" />
+          <path d="M 97 365 A 180 180 0 1 1 403 365" stroke-width="10" stroke="white" class="anim-wave-4" />
+        </path></path></path></path></circle></g>
+      </rect></svg>
+    </div>
+
+  </div>
+</section>
+
+<!-- DYNAMIC OVERLAID DEMO SELECTION MODAL -->
+<div class="demo-modal-overlay" id="hero-demo-modal" onclick="if(event.target===this)closeDemoSelectionModal()">
+  <div class="demo-modal-box">
+    <div class="demo-modal-title">
+      <i class="fa-solid fa-play" style="color:#2563eb;"></i>
+      <span data-lang="en">Select Demo Workspace Role</span>
+      <span data-lang="fr">Sélectionner un Espace Démo</span>
+      <span data-lang="ar">اختر حساب وبيئة العرض التجريبي</span>
+    </div>
+    <div style="font-size:12.5px; color:#64748b; margin-bottom:18px;">
+      <span data-lang="en">Choose a pre-configured workspace role to explore the active SaaS modules.</span>
+      <span data-lang="fr">Sélectionnez un rôle configuré pour explorer les modules actifs.</span>
+      <span data-lang="ar">اختر بيئة وصلاحيات حساب العرض التجريبي لتصفح ميزات المنصة والعمليات الجارية.</span>
+    </div>
+
+    <div class="demo-card teacher" onclick="triggerWorkspaceDemoSelection('teacher')">
+      <div class="demo-card-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+      <div class="demo-card-details">
+        <div class="demo-card-title"><span data-lang="en">Teacher Workspace</span><span data-lang="fr">Espace Enseignant</span><span data-lang="ar">حساب أستاذ المقياس</span></div>
+        <div class="demo-card-subtitle"><span data-lang="en">Pr. Zakia CHENNA — Clinical Psychology</span><span data-lang="fr">Pr. Zakia CHENNA — Psychologie Clinique</span><span data-lang="ar">أ.د. زكية شنة — علم النفس العيادي</span></div>
+      </div>
+    </div>
+
+    <div class="demo-card admin" onclick="triggerWorkspaceDemoSelection('admin')">
+      <div class="demo-card-icon"><i class="fa-solid fa-user-shield"></i></div>
+      <div class="demo-card-details">
+        <div class="demo-card-title"><span data-lang="en">Department Head Workspace</span><span data-lang="fr">Espace Administration</span><span data-lang="ar">حساب رئيس القسم</span></div>
+        <div class="demo-card-subtitle"><span data-lang="en">Dr. Ammar CHOUCHANE — Department Admin</span><span data-lang="fr">Dr. Ammar CHOUCHANE — Admin Département</span><span data-lang="ar">د. عمار شوشان — المشرف العام للقسم</span></div>
+      </div>
+    </div>
+
+    <div class="demo-card student" onclick="triggerWorkspaceDemoSelection('student')">
+      <div class="demo-card-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+      <div class="demo-card-details">
+        <div class="demo-card-title"><span data-lang="en">Student Portal</span><span data-lang="fr">Portail Étudiant</span><span data-lang="ar">حساب وفضاء الطالب الأكاديمي</span></div>
+        <div class="demo-card-subtitle"><span data-lang="en">Imad AZIZI — L3 Clinical Psychology</span><span data-lang="fr">Imad AZIZI — L3 Psychologie Clinique</span><span data-lang="ar">عماد عزيزي — السنة الثالثة عيادي</span></div>
+      </div>
+    </div>
+
+    <div style="text-align: right; margin-top: 15px; border-top:1px solid #e2e8f0; padding-top:10px;">
+      <button class="btn-saas btn-saas-secondary" onclick="closeDemoSelectionModal()"><span data-lang="en">Cancel</span><span data-lang="fr">Annuler</span><span data-lang="ar">إلغاء</span></button>
+    </div>
+  </div>
+</div>
+
+<script>
+//<![CDATA[
+  document.addEventListener('DOMContentLoaded', function() {
+    const initLang = localStorage.getItem('acadtrack-lang') || 'en';
+    setLanguage(initLang);
+  });
+
+  function setLanguage(lang) {
+    localStorage.setItem('acadtrack-lang', lang);
+    document.documentElement.lang = lang;
+    const isRTL = lang === 'ar';
+    const grid = document.getElementById('atHeroGrid');
+    if (grid) {
+      grid.dir = isRTL ? 'rtl' : 'ltr';
+      if (isRTL) grid.classList.add('lang-ar');
+      else grid.classList.remove('lang-ar');
+    }
+
+    document.querySelectorAll('.at-hero [data-lang], .demo-modal-box [data-lang]').forEach(el => {
+      el.style.display = el.getAttribute('data-lang') === lang ? '' : 'none';
+    });
+  }
+
+  window.openDemoSelectionModal = function() {
+    const modal = document.getElementById('hero-demo-modal');
+    if (modal) {
+      modal.classList.add('active');
+      setLanguage(localStorage.getItem('acadtrack-lang') || 'en');
+    }
+  };
+
+  window.closeDemoSelectionModal = function() {
+    const modal = document.getElementById('hero-demo-modal');
+    if (modal) {
+      modal.classList.remove('active');
+    }
+  };
+
+  window.triggerWorkspaceDemoSelection = function(role) {
+    let currentUserSession = null;
+    let redirectDestination = '/p/student-dashboard.html';
+
+    if (role === 'teacher') {
+      currentUserSession = {
+        uid: "teacher_zakia",
+        title: "Pr.",
+        name: "Pr. Zakia CHENNA",
+        email: "zakia.chenna@univ-batna.dz",
+        phone: "0659144039",
+        role: "teacher",
+        institution: "Université Batna 1",
+        department: "Psychologie",
+        status: "active",
+        approved: true
+      };
+      redirectDestination = '/p/teacher-dashboard.html';
+    } else if (role === 'admin') {
+      currentUserSession = {
+        uid: "demo_dept_admin_batna1",
+        title: "Dr.",
+        name: "Dr. CHOUCHANE Ammar",
+        email: "ammar.chouchane@univ-batna.dz",
+        phone: "0667787444",
+        role: "admin",
+        institution: "Université Batna 1",
+        department: "Psychologie, Sciences de l'Éducation et Orthophonie",
+        status: "active",
+        approved: true
+      };
+      redirectDestination = '/p/dept-admin-dashboard.html';
+    } else if (role === 'student') {
+      currentUserSession = {
+        uid: "student_imad",
+        name: "Imad AZIZI",
+        role: "student",
+        studentId: "202312001",
+        department: "Psychologie",
+        group: "L3 Psychologie Clinique",
+        status: "active"
+      };
+      redirectDestination = '/p/student-dashboard.html';
+    }
+
+    if (currentUserSession) {
+      localStorage.setItem('acadtrack_currentUser', JSON.stringify(currentUserSession));
+      localStorage.setItem('acadtrack_demoMode', 'true');
+      
+      closeDemoSelectionModal();
+      setTimeout(() => {
+        window.location.href = redirectDestination;
+      }, 350); 
+    }
+  };
+//]]>
+</script>

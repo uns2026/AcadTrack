@@ -1,0 +1,425 @@
+<style>
+  /* ===== WHITE THEME ROLES SECTION ===== */
+  .at-roles-section {
+    background-color: #ffffff;
+    padding: clamp(60px, 8vw, 100px) 1.5rem;
+    color: #0f172a;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  .at-roles-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Header Alignments */
+  .at-roles-header {
+    text-align: center;
+    max-width: 620px;
+    margin: 0 auto clamp(32px, 5vw, 48px) auto;
+  }
+  .at-roles-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 800;
+    color: #1e4ed8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 14px;
+  }
+  .at-roles-title {
+    font-size: clamp(22px, 2.5vw, 32px);
+    font-weight: 800;
+    line-height: 1.25;
+    color: #0f172a;
+    margin-bottom: 10px;
+  }
+  .at-roles-desc {
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.6;
+  }
+
+  /* ===== 3-COLUMN ROLES CARD GRID ===== */
+  .at-roles-grid {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 640px) { .at-roles-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 900px) { .at-roles-grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .at-role-card {
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 20px;
+    padding: var(--space-md) var(--space-lg);
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03), 0 2px 4px rgba(15, 23, 42, 0.02);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.25s ease,
+                box-shadow 0.25s ease;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+  }
+  .at-role-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 4px;
+    border-radius: 4px 4px 0 0;
+  }
+  .at-role-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.04);
+  }
+
+  /* Specific Card Color Schemes */
+  .at-role-card.teacher::before { background-color: #2563eb; }
+  .at-role-card.teacher:hover { border-color: #bfdbfe; }
+  
+  .at-role-card.student::before { background-color: #10b981; }
+  .at-role-card.student:hover { border-color: #a7f3d0; }
+
+  .at-role-card.admin::before { background-color: #7c3aed; }
+  .at-role-card.admin:hover { border-color: #c7d2fe; }
+
+  /* Icon Wrap */
+  .at-role-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 16px;
+    align-self: center;
+  }
+  .at-role-card.teacher .at-role-icon { background: #eff6ff; color: #2563eb; }
+  .at-role-card.student .at-role-icon { background: #ecfdf5; color: #10b981; }
+  .at-role-card.admin .at-role-icon   { background: #f5f3ff; color: #7c3aed; }
+
+  .at-role-name {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 4px;
+    letter-spacing: -0.02em;
+    align-self: center;
+  }
+  .at-role-summary {
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 16px;
+    align-self: center;
+  }
+  .at-role-card.teacher .at-role-summary { color: #2563eb; }
+  .at-role-card.student .at-role-summary { color: #10b981; }
+  .at-role-card.admin .at-role-summary   { color: #7c3aed; }
+
+  .at-role-desc {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.55;
+    margin-bottom: 20px;
+    border-bottom: 1px dashed #e2e8f0;
+    padding-bottom: 14px;
+  }
+
+  /* ===== VERIFIED CHECKLIST ===== */
+  .at-role-checklist {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: auto;
+  }
+  .at-role-check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    line-height: 1.4;
+  }
+  .at-role-check-item i {
+    font-size: 14px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .at-role-card.teacher .at-role-check-item i { color: #2563eb; }
+  .at-role-card.student .at-role-check-item i { color: #10b981; }
+  .at-role-card.admin .at-role-check-item i   { color: #7c3aed; }
+
+  /* ===== RTL ARABIC VIEW ALIGNMENTS ===== */
+  .lang-ar .at-roles-header { text-align: right; }
+  .lang-ar .at-roles-meta { flex-direction: row-reverse; }
+  .lang-ar .at-roles-grid { direction: rtl; }
+  .lang-ar .at-role-card { text-align: right; }
+  .lang-ar .at-role-card::before { left: auto; right: 0; }
+
+</style>
+
+<section class="at-roles-section" id="atRolesSection">
+  <div class="at-roles-container">
+    
+    <!-- Header Block -->
+    <div class="at-roles-header">
+      <div class="at-roles-meta">
+        <i class="fa-solid fa-user-shield"></i>
+        <span data-lang="en">Workspace Capabilities</span>
+        <span data-lang="fr">Habilitations des Espaces</span>
+        <span data-lang="ar">صلاحيات ومزايا مساحات العمل</span>
+      </div>
+      <h2 class="at-roles-title">
+        <span data-lang="en">Tailored Portals for Every User</span>
+        <span data-lang="fr">Portails sur Mesure pour Chacun</span>
+        <span data-lang="ar">فضاءات عمل مخصصة لكل مستخدم</span>
+      </h2>
+      <p class="at-roles-desc">
+        <span data-lang="en">Discover how our specialized dashboards empower teachers, university students, and department administrators respectively.</span>
+        <span data-lang="fr">Découvrez comment nos espaces spécialisés s'adaptent aux enseignants, étudiants et responsables d'administration.</span>
+        <span data-lang="ar">اكتشف المزايا وخصائص لوحة التحكم المخصصة لتسهيل وإنجاز العمل اليومي لكل من الأساتذة، الطلبة، وإدارة الكلية.</span>
+      </p>
+    </div>
+
+    <!-- 3-Column Grid -->
+    <div class="at-roles-grid">
+      
+      <!-- Card 1: Teacher Role -->
+      <div class="at-role-card teacher">
+        <div class="at-role-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+        <h3 class="at-role-name">
+          <span data-lang="en">Professor Portal</span>
+          <span data-lang="fr">Espace Enseignant</span>
+          <span data-lang="ar">فضاء أستاذ المقياس</span>
+        </h3>
+        <div class="at-role-summary">
+          <span data-lang="en">Classroom &amp; Grades</span>
+          <span data-lang="fr">Classe &amp; Évaluations</span>
+          <span data-lang="ar">إدارة الحصص ورصد النقاط</span>
+        </div>
+        <p class="at-role-desc">
+          <span data-lang="en">Equips instructors with advanced syllabus scheduling, Excel-style grading sheets, and contactless attendance.</span>
+          <span data-lang="fr">Équipe les enseignants d'outils de planification, de grilles de notes de style Excel et d'appel de présence.</span>
+          <span data-lang="ar">تزويد الأستاذ بالأدوات المنهجية لجدولة الحصص الأسبوعية، رصد نقاط التقييمات، وتسجيل حضور وغياب الطلبة تلقائياً.</span>
+        </p>
+        
+        <!-- Checklist -->
+        <ul class="at-role-checklist">
+          <li class="at-role-check-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>
+              <span data-lang="en">Assigned Modules &amp; Groups syllabus mapping</span>
+              <span data-lang="fr">Syllabus des modules et groupes assignés</span>
+              <span data-lang="ar">عرض وتتبع المقاييس والأفواج المسندة للأستاذ</span>
+            </span>
+          </li>
+          <li class="at-role-check-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>
+              <span data-lang="en">Manual roll call carousel &amp; 60s rotating QR</span>
+              <span data-lang="fr">Appel manuel et QR code rotatif de 60s</span>
+              <span data-lang="ar">كشف حضور يدوي وتوليد رمز الـ QR الدوار</span>
+            </span>
+          </li>
+          <li class="at-role-check-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>
+              <span data-lang="en">Geolocated GPS allowed radius verification</span>
+              <span data-lang="fr">Vérification de présence géolocalisée par GPS</span>
+              <span data-lang="ar">التحقق الجغرافي بالـ GPS داخل القاعات</span>
+            </span>
+          </li>
+          <li class="at-role-check-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>
+              <span data-lang="en">Excel-Style Grades Matrix &amp; GPA calculators</span>
+              <span data-lang="fr">Matrice de notes de style Excel &amp; moyennes</span>
+              <span data-lang="ar">شبكة رصد نقاط مرنة واحتساب تلقائي للمعدلات</span>
+            </span>
+          </li>
+          <li class="at-role-check-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>
+              <span data-lang="en">NFC student ID card swiping reader</span>
+              <span data-lang="fr">Lecteur de cartes d'étudiant NFC</span>
+              <span data-lang="ar">ماسح وقارئ بطاقات الطلبة الذكية بالـ NFC</span>
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Card 2: Student Role -->
+      <div class="at-role-card student">
+        <div class="at-role-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+        <h3 class="at-role-name">
+          <span data-lang="en">Student Portal</span>
+          <span data-lang="fr">Portail Étudiant</span>
+          <span data-lang="ar">بوابة الطالب الجامعي</span>
+        </h3>
+        <div class="at-role-summary">
+          <span data-lang="en">Grades &amp; Attendance</span>
+          <span data-lang="fr">Bulletins &amp; Présences</span>
+          <span data-lang="ar">الاطلاع على النقاط والمواظبة</span>
+        </div>
+        <p class="at-role-desc">
+          <span data-lang="en">Enables students to complete onboarding, perform contactless check-ins, and track grades and attendance rates.</span>
+          <span data-lang="fr">Permet aux étudiants de s'inscrire, de pointer et de suivre leurs notes et leur assiduité en temps réel.</span>
+          <span data-lang="ar">تتيح للطالب إكمال تفعيل حسابه الشخصي، تسجيل حضوره، والاطلاع الفوري على كشف النقاط ونسبة الحضور التراكمية.</span>
+        </p>
+        
+        <!-- Checklist -->
+        <ul class="at-role-checklist">
+          <li class="at-role-check-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>
+              <span data-lang="en">Onboarding first-time account activation form</span>
+              <span data-lang="fr">Formulaire d'inscription de première connexion</span>
+              <span data-lang="ar">استمارة تفعيل وتأمين الحساب الشخصي لأول مرة</span>
+            </span>
+          </li>
+          <li class="at-role-check-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>
+              <span data-lang="en">Contactless QR code attendance scanning</span>
+              <span data-lang="fr">Pointage par scan de code QR sans contact</span>
+              <span data-lang="ar">تسجيل الحضور الآلي بمسح رمز الـ QR للحصة</span>
+            </span>
+          </li>
+          <li class="at-role-check-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>
+              <span data-lang="en">GPS permitted geofence check-ins</span>
+              <span data-lang="fr">Validation de présence par géolocalisation GPS</span>
+              <span data-lang="ar">إثبات الحضور الجغرافي بالـ GPS لقاعة المحاضرة</span>
+            </span>
+          </li>
+          <li class="at-role-check-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>
+              <span data-lang="en">Real-time S2 grades and GPA averages transcripts</span>
+              <span data-lang="fr">Relevé de notes et moyennes du S2 en direct</span>
+              <span data-lang="ar">الاطلاع اللحظي على كشف النقاط والمعدل الفصلي</span>
+            </span>
+          </li>
+          <li class="at-role-check-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>
+              <span data-lang="en">Attendance percentage warning threshold indicators</span>
+              <span data-lang="fr">Indicateurs d'assiduité avec seuils d'alerte</span>
+              <span data-lang="ar">تتبع نسب الحضور لتفادي تخطي حد إنذار الإقصاء</span>
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Card 3: Department Admin Role -->
+      <div class="at-role-card admin">
+        <div class="at-role-icon"><i class="fa-solid fa-user-shield"></i></div>
+        <h3 class="at-role-name">
+          <span data-lang="en">Department Admin</span>
+          <span data-lang="fr">Espace Administration</span>
+          <span data-lang="ar">بوابة رئيس القسم والإدارة</span>
+        </h3>
+        <div class="at-role-summary">
+          <span data-lang="en">Control &amp; Analytics</span>
+          <span data-lang="fr">Pilotage &amp; Rapports</span>
+          <span data-lang="ar">الإشراف والتقارير والتحليلات</span>
+        </div>
+        <p class="at-role-desc">
+          <span data-lang="en">Empowers administrators with instructor validations, specialties structures, monitoring, and comprehensive analytics.</span>
+          <span data-lang="fr">Offre aux administrateurs la validation des profs, l'organisation des spécialités, la supervision et les rapports.</span>
+          <span data-lang="ar">تمكن رئيس القسم من تفعيل اشتراكات الأساتذة، هيكلة الشعب والأفواج، والاطلاع على تحليلات الأداء الشاملة للقسم.</span>
+        </p>
+        
+        <!-- Checklist -->
+        <ul class="at-role-checklist">
+          <li class="at-role-check-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>
+              <span data-lang="en">Instructor payment &amp; subscription verifications </span>
+              <span data-lang="fr">Validation des abonnements et paiements des profs</span>
+              <span data-lang="ar">قائمة تفعيل اشتراكات وحسابات الأساتذة</span>
+            </span>
+          </li>
+          <li class="at-role-check-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>
+              <span data-lang="en">Sub-department specialties &amp; divisions </span>
+              <span data-lang="fr">Organisation des spécialités et filières du département</span>
+              <span data-lang="ar">هيكلة وإدارة شعب وتخصصات علم النفس بالقسم</span>
+            </span>
+          </li>
+          <li class="at-role-check-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>
+              <span data-lang="en">Active cohorts capacity progress monitoring </span>
+              <span data-lang="fr">Suivi des capacités d'effectifs des cohortes actives</span>
+              <span data-lang="ar">مراقبة نسب القدرة الاستيعابية للأفواج الدراسية</span>
+            </span>
+          </li>
+          <li class="at-role-check-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>
+              <span data-lang="en">Chronological activity and audit logs</span>
+              <span data-lang="fr">Historique chronologique d'audit des activités</span>
+              <span data-lang="ar">معاينة سجل العمليات والتحذيرات الأمنية للنظام</span>
+            </span>
+          </li>
+          <li class="at-role-check-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>
+              <span data-lang="en">Department-wide GPAs analytics &amp; official PDF sheets</span>
+              <span data-lang="fr">PVs officiels académiques PDF &amp; statistiques global</span>
+              <span data-lang="ar">تحليلات الأداء العام للقسم وتوليد كشوف الـ PDF</span>
+            </span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+//<![CDATA[
+  document.addEventListener('DOMContentLoaded', function() {
+    // Run instant language alignment listener on load
+    const initLang = localStorage.getItem('acadtrack-lang') || 'en';
+    setLanguage(initLang);
+  });
+
+  function setLanguage(lang) {
+    localStorage.setItem('acadtrack-lang', lang);
+    document.documentElement.lang = lang;
+    const isRTL = lang === 'ar';
+    const section = document.getElementById('atRolesSection');
+    if (section) {
+      section.dir = isRTL ? 'rtl' : 'ltr';
+      if (isRTL) section.classList.add('lang-ar');
+      else section.classList.remove('lang-ar');
+    }
+
+    document.querySelectorAll('.at-roles-section [data-lang]').forEach(el => {
+      el.style.display = el.getAttribute('data-lang') === lang ? '' : 'none';
+    });
+  }
+//]]>
+</script>

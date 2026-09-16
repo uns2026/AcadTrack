@@ -1,0 +1,607 @@
+<!-- Styles to isolate page layout and hide Blogger Defaults (Sidebar and Title) on this page -->
+<style>
+  .article__header {
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--border-light);
+    display: none;
+}
+  
+  /* Force full-width layout by hiding sidebar and stretching content main area */
+  .sidebar, .page-title, .sidebar-widget { display: none !important; }
+  .layout { grid-template-columns: 1fr !important; }
+  .site-main { display: block !important; padding: var(--space-xl) 0 !important; background-color: var(--bg-cool) !important; }
+
+  /* Login Card styling */
+  .login-card { max-width: 480px; margin: 0 auto; background: var(--card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); padding: var(--space-lg); position: relative; overflow: hidden; }
+  @media (min-width: 640px) { .login-card { padding: var(--space-xl); } }
+  .completion-card { max-width: 680px; } /* Wider card for account completion step */
+
+  /* Tab Swapper */
+  .auth-tabs { display: flex; border-bottom: 1.5px solid var(--border-light); margin-bottom: var(--space-md); }
+  .auth-tab { flex: 1; text-align: center; padding: var(--space-sm) 0; font-weight: 700; cursor: pointer; color: var(--text-secondary); transition: all 0.2s ease; border-bottom: 2px solid transparent; font-size: 0.875rem; }
+  .auth-tab:hover { background-color: var(--bg-warm); }
+  .auth-tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 800; }
+
+  /* Dynamic Simulated OAuth Loader Overlay */
+  .onboarding-overlay { display: none; position: absolute; inset: 0; background-color: rgba(255, 255, 255, 0.95); z-index: 2000; align-items: center; justify-content: center; flex-direction: column; color: var(--primary); transition: all 0.3s ease; }
+  .onboarding-spinner { width: 40px; height: 40px; border: 4px solid var(--border-light); border-top: 4px solid var(--primary); border-radius: 50%; animation: saasSpin 1s linear infinite; }
+  @keyframes saasSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+  /* Form Layout */
+  .login-form { display: flex; flex-direction: column; gap: var(--space-sm); }
+  .form-grid-2 { display: grid; gap: var(--space-sm); grid-template-columns: 1fr; }
+  @media (min-width: 640px) {
+    .form-grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .span-col-2 { grid-column: span 2; }
+  }
+  .form-group { display: flex; flex-direction: column; gap: var(--space-xs); text-align: left; }
+  .form-label { font-size: 0.8125rem; font-weight: 600; color: var(--text); }
+  .form-input { width: 100%; padding: 0.625rem 0.875rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.875rem; background-color: var(--bg); transition: border-color 0.2s; }
+  .form-input:focus { outline: none; border-color: var(--primary); }
+  .form-input:disabled { background-color: var(--bg-cool); color: var(--text-secondary); cursor: not-allowed; }
+  .password-wrapper { position: relative; width: 100%; }
+  .password-toggle-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-light); font-size: 0.875rem; display: flex; align-items: center; justify-content: center; }
+
+  /* Inline Error notices */
+  .onboarding-error-box { display: none; background-color: #fee2e2; border: 1px solid #fca5a5; color: #b91c1c; padding: var(--space-xs) var(--space-sm); border-radius: var(--radius-sm); font-size: 0.8125rem; font-weight: 500; margin-bottom: var(--space-sm); align-items: center; gap: var(--space-xs); }
+
+  /* Arabized RTL overrides */
+  .lang-ar .login-card { text-align: right; }
+  .lang-ar .form-group { text-align: right; }
+  .lang-ar .password-toggle-btn { right: auto; left: 12px; }
+  .lang-ar .btn i { margin-right: 0; margin-left: 6px; }
+</style>
+
+<div class="login-card" id="authContainer">
+  <!-- Dynamic Simulated OAuth Loader Overlay -->
+  <div class="onboarding-overlay" id="loadingOverlay">
+    <div class="onboarding-spinner"></div>
+    <div style="font-weight: 700; font-size: 0.95rem; margin-top: 1rem;" class="loader-text">
+      <span data-lang="en">Verifying credentials...</span>
+      <span data-lang="fr">Vérification des identifiants...</span>
+      <span data-lang="ar">جاري التحقق من بيانات الدخول...</span>
+    </div>
+  </div>
+
+  <!-- Inline Form Error Display Box -->
+  <div class="onboarding-error-box" id="errorBox">
+    <i class="fa-solid fa-circle-exclamation"></i>
+    <span id="errorMsgText">Please resolve all required fields before proceeding.</span>
+  </div>
+
+  <!-- AUTH STATE VIEW -->
+  <div id="authStateView">
+    <div style="text-align: center; margin-bottom: var(--space-md);">
+      <div style="width: 4rem; height: 4rem; border-radius: 50%; background-color: var(--bg-cool); color: var(--primary); display: inline-flex; align-items: center; justify-content: center; font-size: 1.75rem; margin-bottom: var(--space-xs); box-shadow: var(--shadow-sm);">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--text); margin-bottom: 4px; letter-spacing: -0.02em;">
+        <span data-lang="en">Sign In to AcadTrack</span>
+        <span data-lang="fr">Connexion à AcadTrack</span>
+        <span data-lang="ar">تسجيل الدخول إلى AcadTrack</span>
+      </h1>
+      <p style="font-size: 0.8125rem; color: var(--text-secondary);">
+        <span data-lang="en">Access your workspace of Batna 1 Psychology department.</span>
+        <span data-lang="fr">Accédez à votre espace du département de psychologie Batna 1.</span>
+        <span data-lang="ar">الوصول إلى مساحة العمل الخاصة بقسم علم النفس بجامعة باتنة 1.</span>
+      </p>
+    </div>
+
+    <!-- Tab Swapper -->
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tabTeacher" onclick="switchAuthTab('teacher')">
+        <i class="fa-solid fa-chalkboard-user"></i>
+        <span data-lang="en">Teacher / Admin</span>
+        <span data-lang="fr">Enseignant / Admin</span>
+        <span data-lang="ar">أستاذ / إدارة</span>
+      </div>
+      <div class="auth-tab" id="tabStudent" onclick="switchAuthTab('student')">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span data-lang="en">Student</span>
+        <span data-lang="fr">Étudiant</span>
+        <span data-lang="ar">طالب</span>
+      </div>
+    </div>
+
+    <!-- 1. TEACHER / ADMIN LOGIN FORM -->
+    <form class="login-form" id="teacherLoginForm" onsubmit="handleTeacherSubmit(event)">
+      <div class="form-group">
+        <label class="form-label" for="tEmail">
+          <span data-lang="en">Email or Phone Number</span><span data-lang="fr">Email ou Téléphone</span><span data-lang="ar">البريد الإلكتروني أو رقم الهاتف</span>
+        </label>
+        <input class="form-input" id="tEmail" placeholder="name@univ-batna1.dz" required type="text" autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="tPassword">
+          <span data-lang="en">Password</span><span data-lang="fr">Mot de passe</span><span data-lang="ar">كلمة المرور</span>
+        </label>
+        <div class="password-wrapper">
+          <input class="form-input" id="tPassword" placeholder="••••••••" required type="password" autocomplete="current-password" />
+          <button class="password-toggle-btn" onclick="togglePasswordVisibility('tPassword')" type="button">
+            <i class="fa-solid fa-eye" id="tPasswordEye"></i>
+          </button>
+        </div>
+      </div>
+      
+      <button class="btn" style="width: 100%; justify-content: center; margin-top: var(--space-xs);" type="submit">
+        <i class="fa-solid fa-key"></i> <span data-lang="en">Sign In</span><span data-lang="fr">Se connecter</span><span data-lang="ar">تسجيل الدخول</span>
+      </button>
+
+      <div style="text-align: center; font-size: 0.75rem; color: var(--text-light); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin: var(--space-xs) 0;">
+        <span data-lang="en">Or Continue With</span><span data-lang="fr">Ou Continuer Avec</span><span data-lang="ar">أو المتابعة باستخدام</span>
+      </div>
+
+      <button class="btn btn-sm btn-outline" id="btnGoogleLogin" style="width:100%; justify-content: center; gap: 8px;" type="button" onclick="simulateGoogleLogin()">
+        <i class="fa-brands fa-google"></i>
+        <span data-lang="en">Continue with Google</span><span data-lang="fr">Continuer avec Google</span><span data-lang="ar">المتابعة باستخدام Google</span>
+      </button>
+    </form>
+
+    <!-- 2. STUDENT LOGIN FORM -->
+    <form class="login-form" id="studentLoginForm" onsubmit="handleStudentSubmit(event)" style="display: none;">
+      <div class="form-group">
+        <label class="form-label" for="sId">
+          <span data-lang="en">Student ID / Card Number</span><span data-lang="fr">Identifiant / Carte d'Étudiant</span><span data-lang="ar">رقم بطاقة الطالب / معرف الدخول</span>
+        </label>
+        <input class="form-input" id="sId" placeholder="Ex: 202312001" required type="text" autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="sPassword">
+          <span data-lang="en">Password</span><span data-lang="fr">Mot de passe</span><span data-lang="ar">كلمة المرور</span>
+        </label>
+        <div class="password-wrapper">
+          <input class="form-input" id="sPassword" placeholder="••••••••" required type="password" autocomplete="current-password" />
+          <button class="password-toggle-btn" onclick="togglePasswordVisibility('sPassword')" type="button">
+            <i class="fa-solid fa-eye" id="sPasswordEye"></i>
+          </button>
+        </div>
+      </div>
+      
+      <button class="btn" style="width: 100%; justify-content: center; margin-top: var(--space-xs);" type="submit">
+        <i class="fa-solid fa-key"></i> <span data-lang="en">Sign In as Student</span><span data-lang="fr">Connexion Étudiant</span><span data-lang="ar">دخول الطالب</span>
+      </button>
+      
+      <div style="background-color: var(--bg-cool); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: var(--space-xs) var(--space-sm); font-size: 0.75rem; color: var(--text-secondary); margin-top: var(--space-xs); line-height: 1.5;">
+        <i class="fa-solid fa-circle-info" style="color: var(--primary);"></i> 
+        <span data-lang="en">First-time login? Use your <strong>Student ID</strong> and the default password provided by your instructor.</span>
+        <span data-lang="fr">Première connexion ? Utilisez votre <strong>Identifiant</strong> et le mot de passe par défaut fourni par l'enseignant.</span>
+        <span data-lang="ar">تسجيل الدخول للمرة الأولى؟ استخدم <strong>رقم بطاقتك</strong> وكلمة المرور الافتراضية المقدمة من أستاذ المقياس.</span>
+      </div>
+    </form>
+  </div>
+
+  <!-- 3. STUDENT ACCOUNT COMPLETION VIEW -->
+  <div id="accountCompletionView" style="display: none;">
+    <div style="text-align: center; margin-bottom: var(--space-md);">
+      <div style="width: 4rem; height: 4rem; border-radius: 50%; background-color: #ecfdf5; color: #059669; display: inline-flex; align-items: center; justify-content: center; font-size: 1.75rem; margin-bottom: var(--space-xs); box-shadow: var(--shadow-sm);">
+        <i class="fa-solid fa-user-check"></i>
+      </div>
+      <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--text); margin-bottom: 4px; letter-spacing: -0.02em;">
+        <span data-lang="en">Complete Your Account</span>
+        <span data-lang="fr">Compléter Votre Profil</span>
+        <span data-lang="ar">إكمال إعداد حسابك</span>
+      </h1>
+      <p style="font-size: 0.8125rem; color: var(--text-secondary);">
+        <span data-lang="en">Configure your personal credentials to activate portal access.</span>
+        <span data-lang="fr">Configurez vos identifiants pour activer votre accès au portail.</span>
+        <span data-lang="ar">يرجى إدخال بياناتك الشخصية لتفعيل حسابك والولوج للبوابة الأكاديمية.</span>
+      </p>
+    </div>
+
+    <form class="form-grid-2" id="studentCompletionForm" onsubmit="handleCompletionSubmit(event)">
+      <!-- Student ID (Read Only) -->
+      <div class="form-group">
+        <label class="form-label" for="cId">ID</label>
+        <input class="form-input" id="cId" type="text" disabled="true" />
+      </div>
+      <!-- Group (Read Only) -->
+      <div class="form-group">
+        <label class="form-label" for="cGroup"><span data-lang="en">Group</span><span data-lang="fr">Groupe</span><span data-lang="ar">الفوج</span></label>
+        <input class="form-input" id="cGroup" type="text" disabled="true" />
+      </div>
+      <!-- First Name (Read Only) -->
+      <div class="form-group">
+        <label class="form-label" for="cFirst"><span data-lang="en">First Name</span><span data-lang="fr">Prénom</span><span data-lang="ar">الاسم</span></label>
+        <input class="form-input" id="cFirst" type="text" disabled="true" />
+      </div>
+      <!-- Last Name (Read Only) -->
+      <div class="form-group">
+        <label class="form-label" for="cLast"><span data-lang="en">Last Name</span><span data-lang="fr">Nom</span><span data-lang="ar">اللقب</span></label>
+        <input class="form-input" id="cLast" type="text" disabled="true" />
+      </div>
+
+      <!-- Gender (Editable) -->
+      <div class="form-group">
+        <label class="form-label" for="cGender"><span data-lang="en">Gender</span><span data-lang="fr">Genre</span><span data-lang="ar">الجنس</span></label>
+        <select class="form-input" id="cGender" required="true">
+          <option value="Male">Male / Masculin / ذكر</option>
+          <option value="Female">Female / Féminin / أنثى</option>
+        </select>
+      </div>
+      <!-- DOB (Editable) -->
+      <div class="form-group">
+        <label class="form-label" for="cDob"><span data-lang="en">Date of Birth</span><span data-lang="fr">Date de naissance</span><span data-lang="ar">تاريخ الميلاد</span></label>
+        <input class="form-input" id="cDob" required="true" type="date" />
+      </div>
+      <!-- Email (Editable) -->
+      <div class="form-group">
+        <label class="form-label" for="cEmail">Email</label>
+        <input class="form-input" id="cEmail" required="true" placeholder="imad.azizi@univ-batna1.dz" type="email" />
+      </div>
+      <!-- Phone (Editable) -->
+      <div class="form-group">
+        <label class="form-label" for="cPhone"><span data-lang="en">Phone Number</span><span data-lang="fr">Téléphone</span><span data-lang="ar">رقم الهاتف</span></label>
+        <input class="form-input" id="cPhone" required="true" placeholder="0659144039" type="tel" />
+      </div>
+      <!-- New Password -->
+      <div class="form-group form-col-span-2">
+        <label class="form-label" for="cPassword"><span data-lang="en">Configure New Password</span><span data-lang="fr">Nouveau mot de passe</span><span data-lang="ar">إنشاء كلمة مرور جديدة</span></label>
+        <div class="password-wrapper">
+          <input class="form-input" id="cPassword" placeholder="••••••••" required="true" type="password" />
+          <button class="password-toggle-btn" onclick="togglePasswordVisibility('cPassword')" type="button">
+            <i class="fa-solid fa-eye" id="cPasswordEye"></i>
+          </button>
+        </div>
+      </div>
+
+      <button class="btn span-col-2" style="width: 100%; justify-content: center; margin-top: var(--space-xs);" type="submit">
+        <i class="fa-solid fa-circle-check"></i> <span data-lang="en">Complete Account &amp; Access Dashboard</span><span data-lang="fr">Valider et Ouvrir le Tableau</span><span data-lang="ar">تفعيل الحساب والولوج للوحة التحكم</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+//<![CDATA[
+  let activeTab = 'teacher';
+  let completingStudentObj = null;
+
+  const authErrors = {
+    empty_fields: { en: "Please fill out all required fields.", fr: "Veuillez remplir tous les champs obligatoires.", ar: "يرجى ملء جميع الحقول المطلوبة." },
+    invalid_credentials: { en: "Invalid email, phone number, or password.", fr: "Identifiants ou mot de passe incorrects.", ar: "البريد، رقم الهاتف، أو كلمة المرور غير صالحة." },
+    student_not_found: { en: "Student ID not found in institutional database.", fr: "Identifiant non enregistré dans la base.", ar: "رقم الطالب غير مسجل في قاعدة البيانات." },
+    student_password_incorrect: { en: "Incorrect password for this student ID.", fr: "Mot de passe étudiant incorrect.", ar: "كلمة المرور غير صحيحة لرقم الطالب هذا." },
+    password_length: { en: "New password must be at least 6 characters.", fr: "Le mot de passe doit comporter au moins 6 caractères.", ar: "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل." },
+    invalid_email: { en: "Invalid email format.", fr: "Format d'e-mail invalide.", ar: "صيغة البريد الإلكتروني غير صالحة." }
+  };
+
+  // Seed default databases on load if empty (Ensures lookups do not fail)
+  document.addEventListener('DOMContentLoaded', function() {
+    const defaultStudents = [
+      { id: "202312001", firstName: "Imad", lastName: "AZIZI", group: "L3 Clinique A", email: "imad.azizi@univ-batna.dz", phone: "0659144039", completed: false, defaultPassword: "123" },
+      { id: "202312002", firstName: "Amina", lastName: "BENALIA", group: "L3 Clinique A", email: "amina.b@univ-batna.dz", phone: "0554123456", completed: false, defaultPassword: "123" }
+    ];
+    const defaultUsers = [
+      { email: "ammar.chouchane@univ-batna1.dz", phone: "0661234567", password: "123", role: "admin", institution: "Université Batna 1 - El Hadj Lakhdar", department: "Psychologie, Sciences de l'Éducation et Orthophonie", name: "Dr. Ammar CHOUCHANE", status: "active", approved: true },
+      { email: "zakia.chenna@univ-batna.dz", phone: "0659144039", password: "123", role: "teacher", institution: "Université Batna 1 - El Hadj Lakhdar", department: "Psychologie", name: "Pr. Zakia CHENNA", status: "active", approved: true }
+    ];
+
+    if (!localStorage.getItem('students')) localStorage.setItem('students', JSON.stringify(defaultStudents));
+    if (!localStorage.getItem('acadtrack_users')) localStorage.setItem('acadtrack_users', JSON.stringify(defaultUsers));
+
+    const initLang = localStorage.getItem('acadtrack-lang') || 'en';
+    setLanguage(initLang);
+
+    // Dynamic Session Auto-Routing Gate on Page Load
+    const activeSession = JSON.parse(localStorage.getItem('acadtrack_currentUser') || 'null');
+    if (activeSession && activeSession.status === 'active') {
+      const dashboardMap = {
+        student: "/p/student-dashboard.html",
+        teacher: "/p/teacher-dashboard.html",
+        admin: "/p/dept-admin-dashboard.html"
+      };
+      if (dashboardMap[activeSession.role]) {
+        window.location.href = dashboardMap[activeSession.role];
+      }
+    }
+  });
+
+  // Arabic View Dynamic RTL Trigger
+  function setLanguage(lang) {
+    localStorage.setItem('acadtrack-lang', lang);
+    document.documentElement.lang = lang;
+    const isRTL = lang === 'ar';
+    const card = document.getElementById('authContainer');
+    if (card) card.dir = isRTL ? 'rtl' : 'ltr';
+
+    document.querySelectorAll('[data-lang]').forEach(el => {
+      el.style.display = el.dataset.lang === lang ? '' : 'none';
+    });
+  }
+
+  // Switch Auth Roles Tabs
+  function switchAuthTab(tab) {
+    activeTab = tab;
+    document.getElementById('errorBox').style.display = 'none';
+
+    document.getElementById('tabTeacher').classList.toggle('active', tab === 'teacher');
+    document.getElementById('tabStudent').classList.toggle('active', tab === 'student');
+
+    document.getElementById('teacherLoginForm').style.display = tab === 'teacher' ? 'flex' : 'none';
+    document.getElementById('studentLoginForm').style.display = tab === 'student' ? 'flex' : 'none';
+  }
+
+  // Eye Icon Password Toggle
+  function togglePasswordVisibility(fieldId) {
+    const field = document.getElementById(fieldId);
+    const eyeIcon = document.getElementById(fieldId + 'Eye');
+    if (field) {
+      if (field.type === 'password') {
+        field.type = 'text';
+        if (eyeIcon) eyeIcon.className = 'fa-solid fa-eye-slash';
+      } else {
+        field.type = 'password';
+        if (eyeIcon) eyeIcon.className = 'fa-solid fa-eye';
+      }
+    }
+  }
+
+  function displayAuthError(key) {
+    const errorBox = document.getElementById('errorBox');
+    const errorMsgText = document.getElementById('errorMsgText');
+    const currentLang = localStorage.getItem('acadtrack-lang') || 'en';
+    
+    if (errorBox && errorMsgText) {
+      errorMsgText.textContent = authErrors[key][currentLang] || authErrors[key]['en'];
+      errorBox.style.display = 'flex';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  // Robust Decoder helper for Base64 password matches (Ensures compatibility with btoa/atob signup parameters)
+  function isPasswordCorrect(enteredPass, storedPass) {
+    if (enteredPass === storedPass) return true;
+    try {
+      if (btoa(enteredPass) === storedPass) return true;
+    } catch(e) {}
+    try {
+      if (enteredPass === atob(storedPass)) return true;
+    } catch(e) {}
+    return false;
+  }
+
+  // ==========================================
+  // PATHWAY 1: TEACHER / ADMINISTRATION LOGIN
+  // ==========================================
+  function handleTeacherSubmit(e) {
+    e.preventDefault();
+    document.getElementById('errorBox').style.display = 'none';
+
+    const loginInput = document.getElementById('tEmail').value.trim().toLowerCase();
+    const password = document.getElementById('tPassword').value;
+
+    if (!loginInput || !password) {
+      displayAuthError('empty_fields');
+      return;
+    }
+
+    const overlay = document.getElementById('loadingOverlay');
+    overlay.style.display = 'flex';
+
+    setTimeout(function() {
+      overlay.style.display = 'none';
+
+      // Lookup inside Local Users database
+      let usersList = [];
+      try {
+        const stored = localStorage.getItem('acadtrack_users');
+        if (stored) usersList = JSON.parse(stored);
+      } catch (err) { usersList = []; }
+
+      const user = usersList.find(u => 
+        (u.email.toLowerCase() === loginInput || u.phone === loginInput) && isPasswordCorrect(password, u.password)
+      );
+
+      if (!user) {
+        displayAuthError('invalid_credentials');
+        return;
+      }
+
+      // Store Active Session cache
+      localStorage.setItem('acadtrack_currentUser', JSON.stringify(user));
+      localStorage.setItem('acadtrack_demoMode', 'true');
+
+      // Check workspace approval status parameters
+      if (user.status === 'pending_subscription') {
+        window.location.href = '/p/subscribe.html';
+      } else {
+        // Active Dashboard routing
+        const targetDashboard = user.role === 'admin' ? '/p/dept-admin-dashboard.html' : '/p/teacher-dashboard.html';
+        window.location.href = targetDashboard;
+      }
+
+    }, 1200);
+  }
+
+  // Simulated Google Auth login (Quick Sandbox login)
+  function simulateGoogleLogin() {
+    const overlay = document.getElementById('loadingOverlay');
+    overlay.querySelector('.loader-text').innerHTML = '<span data-lang="en">Connecting with Google...</span><span data-lang="fr">Connexion avec Google...</span><span data-lang="ar">جاري المتابعة عبر Google...</span>';
+    setLanguage(localStorage.getItem('acadtrack-lang') || 'en');
+    overlay.style.display = 'flex';
+
+    setTimeout(function() {
+      overlay.style.display = 'none';
+
+      // Default Admin profile mock
+      const mockAdmin = {
+        uid: "demo_teacher_admin_batna1",
+        email: "zakia.chenna@univ-batna.dz",
+        phone: "0659144039",
+        password: "123",
+        role: "teacher",
+        institution: "Batna 1 University",
+        department: "Psuchology Department",
+        name: "Pr. Zakia CHENNA",
+        status: "active",
+        approved: true
+      };
+
+      localStorage.setItem('acadtrack_currentUser', JSON.stringify(mockAdmin));
+      localStorage.setItem('acadtrack_demoMode', 'true');
+      
+      window.location.href = '/p/teacher-dashboard.html';
+    }, 1000);
+  }
+
+  // ==========================================
+  // PATHWAY 2: STUDENT LOGIN & ONBOARDING GATE
+  // ==========================================
+  function handleStudentSubmit(e) {
+    e.preventDefault();
+    document.getElementById('errorBox').style.display = 'none';
+
+    const loginInput = document.getElementById('sId').value.trim();
+    const password = document.getElementById('sPassword').value;
+
+    if (!loginInput || !password) {
+      displayAuthError('empty_fields');
+      return;
+    }
+
+    const overlay = document.getElementById('loadingOverlay');
+    overlay.style.display = 'flex';
+
+    setTimeout(function() {
+      overlay.style.display = 'none';
+
+      let studentsList = [];
+      try {
+        const stored = localStorage.getItem('students');
+        if (stored) studentsList = JSON.parse(stored);
+      } catch (err) { studentsList = []; }
+
+      // Lookup student record by ID or Phone or Email
+      const student = studentsList.find(s => 
+        s.id === loginInput || s.email === loginInput || s.phone === loginInput
+      );
+
+      if (!student) {
+        displayAuthError('student_not_found');
+        return;
+      }
+
+      // Check first-time login substate
+      if (!student.completed) {
+        // Must use correct default password to enter completion wizard
+        const defaultPassword = student.defaultPassword || '123';
+        if (password !== defaultPassword) {
+          displayAuthError('student_password_incorrect');
+          return;
+        }
+
+        // Trigger step-up Account Onboarding completing Wizard
+        completingStudentObj = student;
+        displayAccountCompletionWizard(student);
+      } else {
+        // Subsequent login - verify actual password
+        if (!isPasswordCorrect(password, student.password)) {
+          displayAuthError('invalid_credentials');
+          return;
+        }
+
+        // Store active Student session
+        const studentUserNode = {
+          uid: 'student_' + student.id,
+          name: student.firstName + ' ' + student.lastName,
+          role: 'student',
+          studentId: student.id,
+          department: 'Psychologie',
+          group: student.group,
+          status: 'active'
+        };
+        localStorage.setItem('acadtrack_currentUser', JSON.stringify(studentUserNode));
+        localStorage.setItem('acadtrack_demoMode', 'true');
+
+        window.location.href = '/p/student-dashboard.html';
+      }
+
+    }, 1200);
+  }
+
+  // Step-up wizard trigger
+  function displayAccountCompletionWizard(student) {
+    document.getElementById('authStateView').style.display = 'none';
+    const card = document.getElementById('authContainer');
+    if (card) card.classList.add('completion-card');
+
+    document.getElementById('cId').value = student.id;
+    document.getElementById('cFirst').value = student.firstName;
+    document.getElementById('cLast').value = student.lastName;
+    document.getElementById('cGroup').value = student.group || 'L3 Clinique A';
+
+    document.getElementById('accountCompletionView').style.display = 'block';
+  }
+
+  function handleCompletionSubmit(e) {
+    e.preventDefault();
+    document.getElementById('errorBox').style.display = 'none';
+
+    const gender = document.getElementById('cGender').value;
+    const dob = document.getElementById('cDob').value;
+    const email = document.getElementById('cEmail').value.trim();
+    const phone = document.getElementById('cPhone').value.trim();
+    const password = document.getElementById('cPassword').value;
+
+    if (!email || !phone || !password || !dob) {
+      displayAuthError('empty_fields');
+      return;
+    }
+    if (password.length < 6) {
+      displayAuthError('password_length');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      displayAuthError('invalid_email');
+      return;
+    }
+
+    const overlay = document.getElementById('loadingOverlay');
+    overlay.querySelector('.loader-text').innerHTML = '<span data-lang="en">Configuring profile parameters...</span><span data-lang="fr">Configuration de votre espace...</span><span data-lang="ar">جاري إعداد وتأمين الحساب...</span>';
+    setLanguage(localStorage.getItem('acadtrack-lang') || 'en');
+    overlay.style.display = 'flex';
+
+    setTimeout(function() {
+      overlay.style.display = 'none';
+
+      // Load existing students DB, update profile nodes
+      let studentsList = [];
+      try {
+        const stored = localStorage.getItem('students');
+        if (stored) studentsList = JSON.parse(stored);
+      } catch (err) { studentsList = []; }
+
+      const idx = studentsList.findIndex(s => s.id === completingStudentObj.id);
+      if (idx !== -1) {
+        studentsList[idx].gender = gender;
+        studentsList[idx].dob = dob;
+        studentsList[idx].email = email;
+        studentsList[idx].phone = phone;
+        // Securely write using standard Base64 encoding parameters
+        studentsList[idx].password = btoa(password);
+        studentsList[idx].completed = true;
+
+        localStorage.setItem('students', JSON.stringify(studentsList));
+      }
+
+      // Store Active Student Session Cache
+      const studentUserNode = {
+        uid: 'student_' + completingStudentObj.id,
+        name: completingStudentObj.firstName + ' ' + completingStudentObj.lastName,
+        role: 'student',
+        studentId: completingStudentObj.id,
+        department: 'Psychologie',
+        group: completingStudentObj.group || 'L3 Clinique A',
+        status: 'active'
+      };
+      localStorage.setItem('acadtrack_currentUser', JSON.stringify(studentUserNode));
+      localStorage.setItem('acadtrack_demoMode', 'true');
+
+      // Success Redirect
+      window.location.href = '/p/student-dashboard.html';
+
+    }, 1500);
+  }
+//]]>
+</script>

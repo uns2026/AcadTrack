@@ -1,0 +1,41 @@
+<style>
+.lang-toggle { position: relative; }
+.lang-btn { display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; background: none; border: 1px solid var(--border); border-radius: 9999px; cursor: pointer; overflow: hidden; transition: background 0.2s; }
+.lang-btn:hover { background-color: var(--bg-warm); border-color: var(--text-light); }
+.lang-btn img { width: 2.25rem; height: 2.25rem; border-radius: 50%; object-fit: cover; }
+.lang-dropdown { position: absolute; top: calc(100% + 0.75rem); right: 0; width: 180px; background: var(--card); border: 1px solid var(--border-light); border-radius: var(--radius); box-shadow: var(--shadow-lg); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.2s ease; z-index: 100; overflow: hidden; }
+.lang-dropdown::before { content: ''; position: absolute; top: -6px; right: 10px; width: 12px; height: 12px; background: var(--card); border-top: 1px solid var(--border-light); border-left: 1px solid var(--border-light); transform: rotate(45deg); }
+.lang-dropdown.active { opacity: 1; visibility: visible; transform: translateY(0); }
+.lang-option { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: var(--text-secondary); font-size: 0.875rem; font-weight: 500; transition: background 0.2s; text-align: left; }
+.lang-option:hover { background-color: var(--bg-warm); color: var(--primary); } .lang-option img { width: 1.25rem; height: 1.25rem; border-radius: 50%; object-fit: cover; }
+@media (min-width: 1070px) { .lang-mobile-only { display: none !important; } }
+@media (max-width: 1070px) { .lang-desktop-only { display: none !important; } }
+</style>
+
+<!-- Default Language Configuration: change this value to 'en', 'fr', or 'ar' to set your default language portal-wide -->
+<span id="defaultLangConfig" style="display:none;">ar</span>
+
+<button class="lang-btn" id="langToggleDesktop" aria-label="Change Language">
+  <img src="https://kapowaz.github.io/circle-flags/flags/us.svg" alt="EN" id="activeFlagDesktop" class="active-lang-flag"/>
+</button>
+<div class="lang-dropdown" id="langDropdownDesktop">
+  <a href="#" onclick="setLanguage('en'); return false;" class="lang-option"><img src="https://kapowaz.github.io/circle-flags/flags/us.svg" alt="EN"/> <span data-lang="en">English</span><span data-lang="fr">Anglais</span><span data-lang="ar">الإنجليزية</span></a>
+  <a href="#" onclick="setLanguage('fr'); return false;" class="lang-option"><img src="https://kapowaz.github.io/circle-flags/flags/fr.svg" alt="FR"/> <span data-lang="en">French</span><span data-lang="fr">Français</span><span data-lang="ar">الفرنسية</span></a>
+  <a href="#" onclick="setLanguage('ar'); return false;" class="lang-option"><img src="https://kapowaz.github.io/circle-flags/flags/dz.svg" alt="AR"/> <span data-lang="en">Arabic</span><span data-lang="fr">Arabe</span><span data-lang="ar">العربية</span></a>
+</div>
+
+<script>
+  function setLanguage(lang) {
+    applyLanguage(lang);
+  }
+  function registerLangToggler() {
+    var langToggleDesktop = document.getElementById('langToggleDesktop');
+    var langDropdownDesktop = document.getElementById('langDropdownDesktop');
+    if (langToggleDesktop && langDropdownDesktop) {
+      langToggleDesktop.removeEventListener('click', handleLangClick);
+      langToggleDesktop.addEventListener('click', handleLangClick);
+    }
+  }
+  window.addEventListener('load', registerLangToggler);
+  document.addEventListener('DOMSubtreeModified', registerLangToggler);
+</script>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Academic User Directory — AcadTrack</title>
+
+  <!-- Google Fonts & Icon Libraries -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+  <!-- ===== EXPLICIT LAYOUT OVERRIDE ===== -->
+  <style>
+    .article__header {
+      margin-bottom: var(--space-xl);
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--border-light);
+      display: none;
+    }
+    .layout {
+      display: contents;
+      gap: var(--space-xl);
+    }
+    .article {
+      max-width: -webkit-fill-available;
+      margin: -27px auto;
+    }
+
+    /* Hide Blogger Default wrappers */
+    .sidebar, .page-title, .sidebar-widget { display: none !important; }
+    .layout { grid-template-columns: 1fr !important; }
+    .site-main { display: block !important; padding: 0 !important; }
+  </style>
+
+  <!-- ===== GLOBAL STYLES ===== -->
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --text: #0f172a;
+      --text-secondary: #475569;
+      --text-light: #94a3b8;
+      --bg: #ffffff;
+      --bg-cool: #f8fafc;
+      --bg-warm: #f1f5f9;
+      --border: #cbd5e1;
+      --border-light: #e2e8f0;
+      --card: #ffffff;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.05);
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 1.5rem;
+      --space-lg: 2rem;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Cairo', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text);
+      background-color: var(--bg-cool);
+      -webkit-font-smoothing: antialiased;
+    }
+    input, button, select { font: inherit; color: inherit; }
+    a { color: inherit; text-decoration: none; }
+
+    /* Stretch main container to fill full viewport width */
+    .saas-container {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 32px 28px !important;
+    }
+    @media (max-width: 1023px) {
+      .saas-container { padding: 20px 16px !important; }
+    }
+
+    /* Page Header */
+    .saas-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: var(--space-lg);
+      padding-bottom: var(--space-sm);
+      border-bottom: 1.5px solid var(--border-light);
+    }
+    .saas-header h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.03em;
+    }
+
+    /* ===== STATS CARDS ===== */
+    .stats-grid { display: grid; gap: 16px; grid-template-columns: repeat(1, 1fr); margin-bottom: var(--space-lg); }
+    @media (min-width: 480px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
+    .stat-card { background: var(--card); border: 1.5px solid var(--border-light); border-radius: var(--radius); padding: var(--space-md); display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-sm); }
+    .stat-card-title { font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-card-value { font-size: 24px; font-weight: 800; color: var(--text); margin-top: 4px; }
+    .stat-card-icon { width: 44px; height: 44px; border-radius: 10px; background-color: var(--bg-cool); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+
+    /* ===== HORIZONTALLY SCROLLABLE TABS ===== */
+    .saas-tabs {
+      display: flex;
+      gap: 4px;
+      border-bottom: 2px solid var(--border-light);
+      margin-bottom: var(--space-lg);
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .saas-tabs::-webkit-scrollbar { display: none; }
+    .saas-tab {
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .saas-tab:hover {
+      color: var(--text);
+      background-color: var(--bg-warm);
+      border-radius: 8px 8px 0 0;
+    }
+    .saas-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      font-weight: 800;
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: panelFadeIn 0.35s ease forwards; }
+    @keyframes panelFadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ===== TABLES ===== */
+    .table-card { background: var(--card); border: 1.5px solid var(--border-light); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; margin-bottom: var(--space-md); max-width: 100%; width: 100%; }
+    .table-responsive { width: 100%; overflow-x: auto; scrollbar-width: thin; -webkit-overflow-scrolling: touch; display: block; }
+    .saas-table {     white-space: nowrap; width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px; min-width: 800px; }
+    .saas-table th { background-color: var(--bg-cool); padding: 12px 18px; font-weight: 700; color: var(--text-secondary); border-bottom: 1.5px solid var(--border-light); }
+    .saas-table td { padding: 14px 18px; border-bottom: 1px solid var(--border-light); color: var(--text); vertical-align: middle; }
+    .saas-table tr:last-child td { border-bottom: none; }
+    .saas-table tr:hover td { background-color: var(--bg-cool); }
+
+    /* ===== BADGES ===== */
+    .badge { font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; }
+    .badge.active { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .badge.fulltime { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .badge.parttime { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+
+    /* ===== BUTTONS ===== */
+    .btn-saas { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 18px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: all 0.2s ease; font-family: inherit; }
+    .btn-saas-secondary { background-color: var(--bg-cool); color: var(--text-secondary); border-color: var(--border); }
+    .btn-saas-secondary:hover { background-color: var(--bg-warm); color: var(--text); }
+
+    /* ===== RTL ARABIC VIEW ALIGNMENTS ===== */
+    .lang-ar .saas-header, .lang-ar .table-card, .lang-ar .saas-table {     white-space: nowrap; direction: rtl; text-align: right; }
+    .lang-ar .saas-table th, .lang-ar .saas-table td { text-align: right; }
+    .lang-ar .saas-tabs { flex-direction: row-reverse; }
+    .lang-ar .saas-tab { flex-direction: row-reverse; }
+    .lang-ar .btn-saas-secondary { flex-direction: row-reverse; }
+  </style>
+</head>
+<body>
+
+<div class="saas-container">
+  
+  <header class="saas-header">
+    <h2>
+      <span data-lang="en">User Management Directory</span>
+      <span data-lang="fr">Gestion des Utilisateurs</span>
+      <span data-lang="ar">دليل إدارة المستخدمين للقسم</span>
+    </h2>
+    <div style="display:flex; gap:8px;">
+      <button class="btn-saas btn-saas-secondary" onclick="window.location.href='/p/dept-admin-dashboard.html'"><i class="fa-solid fa-arrow-left"></i> <span data-lang="en">Back to Dashboard</span><span data-lang="fr">Retour</span><span data-lang="ar">العودة للوحة التحكم</span></button>
+    </div>
+  </header>
+
+  <!-- KPI Metrics Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div>
+        <div class="stat-card-title"><span data-lang="en">Total Users</span><span data-lang="fr">Total Utilisateurs</span><span data-lang="ar">إجمالي المستخدمين</span></div>
+        <div class="stat-card-value">87</div>
+      </div>
+      <div class="stat-card-icon" style="background:#eff6ff; color:#2563eb;"><i class="fa-solid fa-users"></i></div>
+    </div>
+    <div class="stat-card">
+      <div>
+        <div class="stat-card-title"><span data-lang="en">Active Professors</span><span data-lang="fr">Enseignants Actifs</span><span data-lang="ar">هيئة التدريس</span></div>
+        <div class="stat-card-value">12</div>
+      </div>
+      <div class="stat-card-icon" style="background:#f5f3ff; color:#7c3aed;"><i class="fa-solid fa-chalkboard-user"></i></div>
+    </div>
+    <div class="stat-card">
+      <div>
+        <div class="stat-card-title"><span data-lang="en">Enrolled Students</span><span data-lang="fr">Étudiants Inscrits</span><span data-lang="ar">الطلبة المسجلين</span></div>
+        <div class="stat-card-value">75</div>
+      </div>
+      <div class="stat-card-icon" style="background:#ecfdf5; color:#10b981;"><i class="fa-solid fa-graduation-cap"></i></div>
+    </div>
+    <div class="stat-card">
+      <div>
+        <div class="stat-card-title"><span data-lang="en">Cohort Specialties</span><span data-lang="fr">Spécialités</span><span data-lang="ar">الشعب والتخصصات</span></div>
+        <div class="stat-card-value">5</div>
+      </div>
+      <div class="stat-card-icon" style="background:#fffbeb; color:#d97706;"><i class="fa-solid fa-sitemap"></i></div>
+    </div>
+  </div>
+
+  <!-- Responsive Tab Menu (Scrollable on Mobile) -->
+  <div class="saas-tabs">
+    <div class="saas-tab active" id="professors-tab-link" onclick="switchSubTab('professors')">
+      <i class="fa-solid fa-chalkboard-user"></i>
+      <span data-lang="en">Department Professors (12)</span><span data-lang="fr">Enseignants (12)</span><span data-lang="ar">أعضاء هيئة التدريس (12)</span>
+    </div>
+    <div class="saas-tab" id="students-tab-link" onclick="switchSubTab('students')">
+      <i class="fa-solid fa-graduation-cap"></i>
+      <span data-lang="en">Student Directory (75)</span><span data-lang="fr">Répertoire Étudiants (75)</span><span data-lang="ar">قائمة الطلبة المسجلين (75)</span>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- TAB CONTENT 1: COHORT PROFESSORS (12 Rows) -->
+  <!-- ========================================== -->
+  <div class="tab-content active" id="professors-tab-content">
+    <div class="table-card">
+      <div class="table-responsive">
+        <table class="saas-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Specialty</th>
+              <th>Target Module</th>
+              <th>Type</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:700; color:#0f172a;">Dr. Samira MANSOURI</td>
+              <td>samira.mansouri@univ-batna1.dz</td>
+              <td style="font-family:monospace;">0662345678</td>
+              <td><span data-lang="en">Clinical Psychology</span><span data-lang="fr">Psychologie Clinique</span><span data-lang="ar">علم النفس العيادي</span></td>
+              <td>منهجية وتقنيات البحث</td>
+              <td><span class="badge fulltime">Full time</span></td>
+              <td><span class="badge active">Active</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700; color:#0f172a;">Dr. Hakim SAID</td>
+              <td>hakim.said@univ-batna1.dz</td>
+              <td style="font-family:monospace;">0553123456</td>
+              <td><span data-lang="en">Clinical Psychology</span><span data-lang="fr">Psychologie Clinique</span><span data-lang="ar">علم النفس العيادي</span></td>
+              <td>علم النفس المرضي</td>
+              <td><span class="badge parttime">Part time</span></td>
+              <td><span class="badge active">Active</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700; color:#0f172a;">Pr. Zakia CHENNA</td>
+              <td>zakia.chenna@univ-batna.dz</td>
+              <td style="font-family:monospace;">0659144039</td>
+              <td><span data-lang="en">Clinical Psychology</span><span data-lang="fr">Psychologie Clinique</span><span data-lang="ar">علم النفس العيادي</span></td>
+              <td>علم النفس المرضي</td>
+              <td><span class="badge fulltime">Full time</span></td>
+              <td><span class="badge active">Active</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700; color:#0f172a;">Pr. Lahcene LAGGOUN</td>
+              <td>lahcene.laggoun@univ-biskra.dz</td>
+              <td style="font-family:monospace;">0778452193</td>
+              <td><span data-lang="en">School Psychology</span><span data-lang="fr">Psychologie Scolaire</span><span data-lang="ar">علم النفس المدرسي</span></td>
+              <td>منهجية وتقنيات البحث</td>
+              <td><span class="badge fulltime">Full time</span></td>
+              <td><span class="badge active">Active</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700; color:#0f172a;">Pr. Saliha ELGUES</td>
+              <td>saliha.elgues@univ-batna.dz</td>
+              <td style="font-family:monospace;">0557812046</td>
+              <td><span data-lang="en">Education Sciences</span><span data-lang="fr">Sciences de l'Éducation</span><span data-lang="ar">علوم التربية</span></td>
+              <td>نظريات التعلم</td>
+              <td><span class="badge fulltime">Full time</span></td>
+              <td><span class="badge active">Active</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700; color:#0f172a;">Pr. Loubna AHMANE</td>
+              <td>loubna.ahmane@univ-batna.dz</td>
+              <td style="font-family:monospace;">0669023147</td>
+              <td><span data-lang="en">Speech Therapy</span><span data-lang="fr">Orthophonie</span><span data-lang="ar">الأرطوفونيا</span></td>
+              <td>مشكلات نفسية اجتماعية</td>
+              <td><span class="badge fulltime">Full time</span></td>
+              <td><span class="badge active">Active</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700; color:#0f172a;">Pr. Ounes AMEZIANE</td>
+              <td>ounes.ameziane@univ-batna.dz</td>
+              <td style="font-family:monospace;">0776154892</td>
+              <td><span data-lang="en">Education Sciences</span><span data-lang="fr">Sciences de l'Éducation</span><span data-lang="ar">علوم التربية</span></td>
+              <td>نظريات التعلم</td>
+              <td><span class="badge fulltime">Full time</span></td>
+              <td><span class="badge active">Active</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700; color:#0f172a;">Pr. Lylia BAHMED</td>
+              <td>lylia.bahmed@univ-batna.dz</td>
+              <td style="font-family:monospace;">0554398712</td>
+              <td><span data-lang="en">Speech Therapy</span><span data-lang="fr">Orthophonie</span><span data-lang="ar">الأرطوفونيا</span></td>
+              <td>مشكلات نفسية اجتماعية</td>
+              <td><span class="badge fulltime">Full time</span></td>
+              <td><span class="badge active">Active</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700; color:#0f172a;">Dr. Amel BENALIA</td>
+              <td>amel.b@univ-batna.dz</td>
+              <td style="font-family:monospace;">0554812345</td>
+              <td><span data-lang="en">School Psychology</span><span data-lang="fr">Psychologie Scolaire</span><span data-lang="ar">علم النفس المدرسي</span></td>
+              <td>نظريات التعلم</td>
+              <td><span class="badge parttime">Part time</span></td>
+              <td><span class="badge active">Active</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700; color:#0f172a;">Dr. Youcef OUALI</td>
+              <td>youcef.o@univ-batna.dz</td>
+              <td style="font-family:monospace;">0772812345</td>
+              <td><span data-lang="en">Organizational Psychology</span><span data-lang="fr">Psychologie du Travail</span><span data-lang="ar">علم النفس التنظيم والعمل</span></td>
+              <td>علم النفس التنظيم والعمل</td>
+              <td><span class="badge parttime">Part time</span></td>
+              <td><span class="badge active">Active</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700; color:#0f172a;">Dr. Houda SAIDI</td>
+              <td>houda.s@univ-batna.dz</td>
+              <td style="font-family:monospace;">0665123456</td>
+              <td><span data-lang="en">Education Sciences</span><span data-lang="fr">Sciences de l'Éducation</span><span data-lang="ar">علوم التربية</span></td>
+              <td>نظريات التعلم</td>
+              <td><span class="badge fulltime">Full time</span></td>
+              <td><span class="badge active">Active</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700; color:#0f172a;">Dr. Mourad TOUATI</td>
+              <td>mourad.t@univ-batna.dz</td>
+              <td style="font-family:monospace;">0556123456</td>
+              <td><span data-lang="en">Speech Therapy</span><span data-lang="fr">Orthophonie</span><span data-lang="ar">الأرطوفونيا</span></td>
+              <td>مشكلات نفسية اجتماعية</td>
+              <td><span class="badge parttime">Part time</span></td>
+              <td><span class="badge active">Active</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- TAB CONTENT 2: COHORT STUDENTS (75 Rows) -->
+  <!-- ========================================== -->
+  <div class="tab-content" id="students-tab-content">
+    <div class="table-card">
+      <div class="table-responsive">
+        <table class="saas-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Student Name</th>
+              <th>Specialty Cohort Group</th>
+              <th>Email</th>
+              <th>Phone</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Group 1: L3 Psychologie Clinique -->
+            <tr><td>202312001</td><td style="font-weight:700; color:#0f172a;">Imad AZIZI</td><td>L3 Psychologie Clinique</td><td>imad.azizi@univ-batna.dz</td><td style="font-family:monospace;">0659144039</td></tr>
+            <tr><td>202312002</td><td style="font-weight:700; color:#0f172a;">Amina BENALIA</td><td>L3 Psychologie Clinique</td><td>amina.b@univ-batna.dz</td><td style="font-family:monospace;">0554123456</td></tr>
+            <tr><td>202312003</td><td style="font-weight:700; color:#0f172a;">Youcef OUALI</td><td>L3 Psychologie Clinique</td><td>youcef.o@univ-batna.dz</td><td style="font-family:monospace;">0772123456</td></tr>
+            <tr><td>202312004</td><td style="font-weight:700; color:#0f172a;">Meriem KHERBOUCHE</td><td>L3 Psychologie Clinique</td><td>meriem.k@univ-batna.dz</td><td style="font-family:monospace;">0663456789</td></tr>
+            <tr><td>202312005</td><td style="font-weight:700; color:#0f172a;">Sofiane HADJ</td><td>L3 Psychologie Clinique</td><td>sofiane.h@univ-batna.dz</td><td style="font-family:monospace;">0655123456</td></tr>
+            <tr><td>202312006</td><td style="font-weight:700; color:#0f172a;">Farida LAKHDAR</td><td>L3 Psychologie Clinique</td><td>farida.l@univ-batna.dz</td><td style="font-family:monospace;">0550123456</td></tr>
+            <tr><td>202312007</td><td style="font-weight:700; color:#0f172a;">Khaled BENMEDDOUR</td><td>L3 Psychologie Clinique</td><td>khaled.b@univ-batna.dz</td><td style="font-family:monospace;">0771123456</td></tr>
+            <tr><td>202312008</td><td style="font-weight:700; color:#0f172a;">Ryad CHERIF</td><td>L3 Psychologie Clinique</td><td>ryad.c@univ-batna.dz</td><td style="font-family:monospace;">0660123456</td></tr>
+            <tr><td>202312009</td><td style="font-weight:700; color:#0f172a;">Karima BOUAZIZ</td><td>L3 Psychologie Clinique</td><td>karima.b@univ-batna.dz</td><td style="font-family:monospace;">0551123456</td></tr>
+            <tr><td>202312010</td><td style="font-weight:700; color:#0f172a;">Samir MEHRA</td><td>L3 Psychologie Clinique</td><td>samir.m@univ-batna.dz</td><td style="font-family:monospace;">0773123456</td></tr>
+            <tr><td>202312011</td><td style="font-weight:700; color:#0f172a;">Houda SAIDI</td><td>L3 Psychologie Clinique</td><td>houda.s@univ-batna.dz</td><td style="font-family:monospace;">0665123456</td></tr>
+            <tr><td>202312012</td><td style="font-weight:700; color:#0f172a;">Tarek CHENNA</td><td>L3 Psychologie Clinique</td><td>tarek.c@univ-batna.dz</td><td style="font-family:monospace;">0552123456</td></tr>
+            <tr><td>202312013</td><td style="font-weight:700; color:#0f172a;">Amel MAHMOUDI</td><td>L3 Psychologie Clinique</td><td>amel.m@univ-batna.dz</td><td style="font-family:monospace;">0774123456</td></tr>
+            <tr><td>202312014</td><td style="font-weight:700; color:#0f172a;">Salim MAIDI</td><td>L3 Psychologie Clinique</td><td>salim.m@univ-batna.dz</td><td style="font-family:monospace;">0666123456</td></tr>
+            <tr><td>202312015</td><td style="font-weight:700; color:#0f172a;">Lamia ZEKRI</td><td>L3 Psychologie Clinique</td><td>lamia.z@univ-batna.dz</td><td style="font-family:monospace;">0553123456</td></tr>
+
+            <!-- Group 2: L3 Psychologie Scolaire -->
+            <tr><td>202312016</td><td style="font-weight:700; color:#0f172a;">Nabila GHERBI</td><td>L3 Psychologie Scolaire</td><td>nabila.g@univ-batna.dz</td><td style="font-family:monospace;">0667123456</td></tr>
+            <tr><td>202312017</td><td style="font-weight:700; color:#0f172a;">Rachid KHEDIM</td><td>L3 Psychologie Scolaire</td><td>rachid.k@univ-batna.dz</td><td style="font-family:monospace;">0554123457</td></tr>
+            <tr><td>202312018</td><td style="font-weight:700; color:#0f172a;">Soumia HAFID</td><td>L3 Psychologie Scolaire</td><td>soumia.h@univ-batna.dz</td><td style="font-family:monospace;">0775123456</td></tr>
+            <tr><td>202312019</td><td style="font-weight:700; color:#0f172a;">Bilal DJEBBAR</td><td>L3 Psychologie Scolaire</td><td>bilal.d@univ-batna.dz</td><td style="font-family:monospace;">0668123456</td></tr>
+            <tr><td>202312020</td><td style="font-weight:700; color:#0f172a;">Leila BOUDIAF</td><td>L3 Psychologie Scolaire</td><td>leila.b@univ-batna.dz</td><td style="font-family:monospace;">0555123456</td></tr>
+            <tr><td>202312021</td><td style="font-weight:700; color:#0f172a;">Anis MESSAOUDI</td><td>L3 Psychologie Scolaire</td><td>anis.m@univ-batna.dz</td><td style="font-family:monospace;">0776123456</td></tr>
+            <tr><td>202312022</td><td style="font-weight:700; color:#0f172a;">Rania BELKACEM</td><td>L3 Psychologie Scolaire</td><td>rania.b@univ-batna.dz</td><td style="font-family:monospace;">0669123456</td></tr>
+            <tr><td>202312023</td><td style="font-weight:700; color:#0f172a;">Mourad TOUATI</td><td>L3 Psychologie Scolaire</td><td>mourad.t@univ-batna.dz</td><td style="font-family:monospace;">0556123456</td></tr>
+            <tr><td>202312024</td><td style="font-weight:700; color:#0f172a;">Fatiha DERBAL</td><td>L3 Psychologie Scolaire</td><td>fatiha.d@univ-batna.dz</td><td style="font-family:monospace;">0777123456</td></tr>
+            <tr><td>202312025</td><td style="font-weight:700; color:#0f172a;">Hamza MANSOURI</td><td>L3 Psychologie Scolaire</td><td>hamza.m@univ-batna.dz</td><td style="font-family:monospace;">0650123456</td></tr>
+            <tr><td>202312026</td><td style="font-weight:700; color:#0f172a;">Yasmin SEBAA</td><td>L3 Psychologie Scolaire</td><td>yasmin.s@univ-batna.dz</td><td style="font-family:monospace;">0557123456</td></tr>
+            <tr><td>202312027</td><td style="font-weight:700; color:#0f172a;">Adel CHIKHI</td><td>L3 Psychologie Scolaire</td><td>adel.c@univ-batna.dz</td><td style="font-family:monospace;">0778123456</td></tr>
+            <tr><td>202312028</td><td style="font-weight:700; color:#0f172a;">Hanane MERAH</td><td>L3 Psychologie Scolaire</td><td>hanane.m@univ-batna.dz</td><td style="font-family:monospace;">0651123456</td></tr>
+            <tr><td>202312029</td><td style="font-weight:700; color:#0f172a;">Walid REZGUI</td><td>L3 Psychologie Scolaire</td><td>walid.r@univ-batna.dz</td><td style="font-family:monospace;">0558123456</td></tr>
+            <tr><td>202312030</td><td style="font-weight:700; color:#0f172a;">Linda NEZZAR</td><td>L3 Psychologie Scolaire</td><td>linda.n@univ-batna.dz</td><td style="font-family:monospace;">0779123456</td></tr>
+
+            <!-- Group 3: L3 Sciences de l'Éducation -->
+            <tr><td>202312031</td><td style="font-weight:700; color:#0f172a;">Karim SADOUNE</td><td>L3 Sciences de l'Éducation</td><td>karim.s@univ-batna.dz</td><td style="font-family:monospace;">0652123456</td></tr>
+            <tr><td>202312032</td><td style="font-weight:700; color:#0f172a;">Samira SLIMANI</td><td>L3 Sciences de l'Éducation</td><td>samira.s@univ-batna.dz</td><td style="font-family:monospace;">0559123456</td></tr>
+            <tr><td>202312033</td><td style="font-weight:700; color:#0f172a;">Hichem GUECHI</td><td>L3 Sciences de l'Éducation</td><td>hichem.g@univ-batna.dz</td><td style="font-family:monospace;">0770123457</td></tr>
+            <tr><td>202312034</td><td style="font-weight:700; color:#0f172a;">Zohra BENKHELIFA</td><td>L3 Sciences de l'Éducation</td><td>zohra.b@univ-batna.dz</td><td style="font-family:monospace;">0653123456</td></tr>
+            <tr><td>202312035</td><td style="font-weight:700; color:#0f172a;">Sofiane LAHMAR</td><td>L3 Sciences de l'Éducation</td><td>sofiane.l@univ-batna.dz</td><td style="font-family:monospace;">0550123457</td></tr>
+            <tr><td>202312036</td><td style="font-weight:700; color:#0f172a;">Amira KHELIFA</td><td>L3 Sciences de l'Éducation</td><td>amira.k@univ-batna.dz</td><td style="font-family:monospace;">0771123457</td></tr>
+            <tr><td>202312037</td><td style="font-weight:700; color:#0f172a;">Redouane TALEB</td><td>L3 Sciences de l'Éducation</td><td>redouane.t@univ-batna.dz</td><td style="font-family:monospace;">0654123456</td></tr>
+            <tr><td>202312038</td><td style="font-weight:700; color:#0f172a;">Kenza BOUZID</td><td>L3 Sciences de l'Éducation</td><td>kenza.b@univ-batna.dz</td><td style="font-family:monospace;">0551123457</td></tr>
+            <tr><td>202312039</td><td style="font-weight:700; color:#0f172a;">Oussama MERABET</td><td>L3 Sciences de l'Éducation</td><td>oussama.m@univ-batna.dz</td><td style="font-family:monospace;">0772123457</td></tr>
+            <tr><td>202312040</td><td style="font-weight:700; color:#0f172a;">Dalila BARKAT</td><td>L3 Sciences de l'Éducation</td><td>dalila.b@univ-batna.dz</td><td style="font-family:monospace;">0655123457</td></tr>
+            <tr><td>202312041</td><td style="font-weight:700; color:#0f172a;">Faycal DJOUDI</td><td>L3 Sciences de l'Éducation</td><td>faycal.d@univ-batna.dz</td><td style="font-family:monospace;">0552123457</td></tr>
+            <tr><td>202312042</td><td style="font-weight:700; color:#0f172a;">Nassima CHERGUI</td><td>L3 Sciences de l'Éducation</td><td>nassima.c@univ-batna.dz</td><td style="font-family:monospace;">0773123457</td></tr>
+            <tr><td>202312043</td><td style="font-weight:700; color:#0f172a;">Ramzi KHALDI</td><td>L3 Sciences de l'Éducation</td><td>ramzi.k@univ-batna.dz</td><td style="font-family:monospace;">0656123456</td></tr>
+            <tr><td>202312044</td><td style="font-weight:700; color:#0f172a;">Hayat BELHADJ</td><td>L3 Sciences de l'Éducation</td><td>hayat.b@univ-batna.dz</td><td style="font-family:monospace;">0553123457</td></tr>
+            <tr><td>202312045</td><td style="font-weight:700; color:#0f172a;">Abderrahmane SIAD</td><td>L3 Sciences de l'Éducation</td><td>abderrahmane.s@univ-batna.dz</td><td style="font-family:monospace;">0774123457</td></tr>
+
+            <!-- Group 4: L3 Orthophonie -->
+            <tr><td>202312046</td><td style="font-weight:700; color:#0f172a;">Chafik BENYAHIA</td><td>L3 Orthophonie</td><td>chafik.b@univ-batna.dz</td><td style="font-family:monospace;">0657123456</td></tr>
+            <tr><td>202312047</td><td style="font-weight:700; color:#0f172a;">Sabrina KASMI</td><td>L3 Orthophonie</td><td>sabrina.k@univ-batna.dz</td><td style="font-family:monospace;">0554123458</td></tr>
+            <tr><td>202312048</td><td style="font-weight:700; color:#0f172a;">Tarik BOUTEFLIKA</td><td>L3 Orthophonie</td><td>tarik.b@univ-batna.dz</td><td style="font-family:monospace;">0775123457</td></tr>
+            <tr><td>202312049</td><td style="font-weight:700; color:#0f172a;">Souad ALLOUCHE</td><td>L3 Orthophonie</td><td>souad.a@univ-batna.dz</td><td style="font-family:monospace;">0658123456</td></tr>
+            <tr><td>202312050</td><td style="font-weight:700; color:#0f172a;">Mustapha CHEBBAH</td><td>L3 Orthophonie</td><td>mustapha.c@univ-batna.dz</td><td style="font-family:monospace;">0555123457</td></tr>
+            <tr><td>202312051</td><td style="font-weight:700; color:#0f172a;">Meriem BOUSSAID</td><td>L3 Orthophonie</td><td>meriem.b@univ-batna.dz</td><td style="font-family:monospace;">0776123457</td></tr>
+            <tr><td>202312052</td><td style="font-weight:700; color:#0f172a;">Amine GHARBI</td><td>L3 Orthophonie</td><td>amine.g@univ-batna.dz</td><td style="font-family:monospace;">0659123456</td></tr>
+            <tr><td>202312053</td><td style="font-weight:700; color:#0f172a;">Nadia HAMADI</td><td>L3 Orthophonie</td><td>nadia.h@univ-batna.dz</td><td style="font-family:monospace;">0556123457</td></tr>
+            <tr><td>202312054</td><td style="font-weight:700; color:#0f172a;">Djamel FERHATI</td><td>L3 Orthophonie</td><td>djamel.f@univ-batna.dz</td><td style="font-family:monospace;">0777123457</td></tr>
+            <tr><td>202312055</td><td style="font-weight:700; color:#0f172a;">Karima MEROUANE</td><td>L3 Orthophonie</td><td>karima.m@univ-batna.dz</td><td style="font-family:monospace;">0660123457</td></tr>
+            <tr><td>202312056</td><td style="font-weight:700; color:#0f172a;">Issam CHERIF</td><td>L3 Orthophonie</td><td>issam.c@univ-batna.dz</td><td style="font-family:monospace;">0557123457</td></tr>
+            <tr><td>202312057</td><td style="font-weight:700; color:#0f172a;">Sonia BOURAS</td><td>L3 Orthophonie</td><td>sonia.b@univ-batna.dz</td><td style="font-family:monospace;">0778123457</td></tr>
+            <tr><td>202312058</td><td style="font-weight:700; color:#0f172a;">Sid Ahmed BENALI</td><td>L3 Orthophonie</td><td>sidahmed.b@univ-batna.dz</td><td style="font-family:monospace;">0661123457</td></tr>
+            <tr><td>202312059</td><td style="font-weight:700; color:#0f172a;">Halima BOUKHALFA</td><td>L3 Orthophonie</td><td>halima.b@univ-batna.dz</td><td style="font-family:monospace;">0558123457</td></tr>
+            <tr><td>202312060</td><td style="font-weight:700; color:#0f172a;">Zakaria CHENOUF</td><td>L3 Orthophonie</td><td>zakaria.c@univ-batna.dz</td><td style="font-family:monospace;">0779123457</td></tr>
+
+            <!-- Group 5: L3 Psychologie du Travail -->
+            <tr><td>202312061</td><td style="font-weight:700; color:#0f172a;">Nadir KADI</td><td>L3 Psychologie du Travail</td><td>nadir.k@univ-batna.dz</td><td style="font-family:monospace;">0662123457</td></tr>
+            <tr><td>202312062</td><td style="font-weight:700; color:#0f172a;">Lila BENMESSAOUD</td><td>L3 Psychologie du Travail</td><td>lila.b@univ-batna.dz</td><td style="font-family:monospace;">0559123457</td></tr>
+            <tr><td>202312063</td><td style="font-weight:700; color:#0f172a;">Rafik MEFTAH</td><td>L3 Psychologie du Travail</td><td>rafik.m@univ-batna.dz</td><td style="font-family:monospace;">0770123458</td></tr>
+            <tr><td>202312064</td><td style="font-weight:700; color:#0f172a;">Sarah ZIANI</td><td>L3 Psychologie du Travail</td><td>sarah.z@univ-batna.dz</td><td style="font-family:monospace;">0663123457</td></tr>
+            <tr><td>202312065</td><td style="font-weight:700; color:#0f172a;">Lamine BOUAZZA</td><td>L3 Psychologie du Travail</td><td>lamine.b@univ-batna.dz</td><td style="font-family:monospace;">0550123458</td></tr>
+            <tr><td>202312066</td><td style="font-weight:700; color:#0f172a;">Assia DJOUADI</td><td>L3 Psychologie du Travail</td><td>assia.d@univ-batna.dz</td><td style="font-family:monospace;">0771123458</td></tr>
+            <tr><td>202312067</td><td style="font-weight:700; color:#0f172a;">Hassen MESSAOUD</td><td>L3 Psychologie du Travail</td><td>hassen.m@univ-batna.dz</td><td style="font-family:monospace;">0664123457</td></tr>
+            <tr><td>202312068</td><td style="font-weight:700; color:#0f172a;">Fella LARIBI</td><td>L3 Psychologie du Travail</td><td>fella.l@univ-batna.dz</td><td style="font-family:monospace;">0551123458</td></tr>
+            <tr><td>202312069</td><td style="font-weight:700; color:#0f172a;">Mohamed BENMOUSSA</td><td>L3 Psychologie du Travail</td><td>mohamed.b@univ-batna.dz</td><td style="font-family:monospace;">0772123458</td></tr>
+            <tr><td>202312070</td><td style="font-weight:700; color:#0f172a;">Ghiles AMOKRANE</td><td>L3 Psychologie du Travail</td><td>ghiles.a@univ-batna.dz</td><td style="font-family:monospace;">0665123457</td></tr>
+            <tr><td>202312071</td><td style="font-weight:700; color:#0f172a;">Lynda MEDJOUB</td><td>L3 Psychologie du Travail</td><td>lynda.m@univ-batna.dz</td><td style="font-family:monospace;">0552123458</td></tr>
+            <tr><td>202312072</td><td style="font-weight:700; color:#0f172a;">Kamel BENABDERRAHMANE</td><td>L3 Psychologie du Travail</td><td>kamel.b@univ-batna.dz</td><td style="font-family:monospace;">0773123458</td></tr>
+            <tr><td>202312073</td><td style="font-weight:700; color:#0f172a;">Bahia CHAOUCH</td><td>L3 Psychologie du Travail</td><td>bahia.c@univ-batna.dz</td><td style="font-family:monospace;">0666123457</td></tr>
+            <tr><td>202312074</td><td style="font-weight:700; color:#0f172a;">Abdenour DRIF</td><td>L3 Psychologie du Travail</td><td>abdenour.d@univ-batna.dz</td><td style="font-family:monospace;">0553123458</td></tr>
+            <tr><td>202312075</td><td style="font-weight:700; color:#0f172a;">Ryma BOUCHAREB</td><td>L3 Psychologie du Travail</td><td>ryma.b@univ-batna.dz</td><td style="font-family:monospace;">0774123458</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+//<![CDATA[
+  document.addEventListener('DOMContentLoaded', function() {
+    const initLang = localStorage.getItem('acadtrack-lang') || 'en';
+    setLanguage(initLang);
+  });
+
+  function setLanguage(lang) {
+    localStorage.setItem('acadtrack-lang', lang);
+    document.documentElement.lang = lang;
+    const isRTL = lang === 'ar';
+    const card = document.querySelector('.saas-container');
+    if (card) card.dir = isRTL ? 'rtl' : 'ltr';
+
+    document.querySelectorAll('[data-lang]').forEach(el => {
+      el.style.display = el.dataset.lang === lang ? '' : 'none';
+    });
+  }
+
+  // Standalone tab switcher controller [2]
+  window.switchSubTab = function(tabName) {
+    // Hide all
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.saas-tab').forEach(el => el.classList.remove('active'));
+
+    // Show active
+    const content = document.getElementById(tabName + '-tab-content');
+    const tabLink = document.getElementById(tabName + '-tab-link');
+
+    if (content) content.classList.add('active');
+    if (tabLink) tabLink.classList.add('active');
+
+    // Sync active language spans
+    setLanguage(localStorage.getItem('acadtrack-lang') || 'en');
+  };
+//]]>
+</script>
+
+</body>
+</html>

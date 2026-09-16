@@ -1,0 +1,212 @@
+// Code.gs
+
+// Auto-setup of spreadsheet using your unique ID
+function getSheet() {
+  var SPREADSHEET_ID = "1-iqvoodYt2wFkV-DACL0yEkJR2QWNYJbfqH6NvO6P1k"; 
+  
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName("Inquiries");
+  if (!sheet) {
+    sheet = ss.insertSheet("Inquiries");
+    sheet.appendRow(["ID", "Timestamp", "Name", "Email", "Role", "Subject", "Message", "Status", "ReplyMessage", "ReplyTimestamp"]);
+    sheet.getRange("1:1").setFontWeight("bold").setBackground("#f1f5f9");
+  }
+  return sheet;
+}
+
+// Handles administrative GET requests to fetch messages for the inbox
+function doGet(e) {
+  try {
+    var action = e.parameter.action;
+    
+    if (action === "getMessages") {
+      var sheet = getSheet();
+      var data = sheet.getDataRange().getValues();
+      var headers = data[0];
+      var rows = [];
+      
+      // Map rows backwards to show the newest messages first
+      for (var i = data.length - 1; i >= 1; i--) {
+        var row = {};
+        for (var j = 0; j < headers.length; j++) {
+          row[headers[j]] = data[i][j];
+        }
+        rows.push(row);
+      }
+      
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        data: rows
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      status: "error",
+      message: "Invalid GET action request"
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({
+      status: "error",
+      message: err.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Handles form submissions and administrative reply actions
+function doPost(e) {
+  try {
+    var params = e.parameter;
+    
+    // Parse raw JSON payloads if sent as JSON
+    if (!params || Object.keys(params).length === 0) {
+      if (e.postData && e.postData.contents) {
+        params = JSON.parse(e.postData.contents);
+      }
+    }
+    
+    var action = params.action;
+    var sheet = getSheet();
+    
+    // =========================================================================
+    // ACTION 1: ADMIN REPLY TO AN INQUIRY
+    // =========================================================================
+    if (action === "replyMessage") {
+      var messageId = params.messageId;
+      var replyText = params.replyText;
+      
+      if (!messageId || !replyText) {
+        throw new Error("Missing required parameters for reply.");
+      }
+      
+      var data = sheet.getDataRange().getValues();
+      var foundIndex = -1;
+      
+      for (var i = 1; i < data.length; i++) {
+        if (data[i][0] === messageId) {
+          foundIndex = i + 1; // 1-based indexing for row manipulation
+          break;
+        }
+      }
+      
+      if (foundIndex === -1) {
+        throw new Error("Message ID not found in database.");
+      }
+      
+      var originalEmail = data[foundIndex - 1][3];
+      var originalName = data[foundIndex - 1][2];
+      var originalSubject = data[foundIndex - 1][5];
+      var originalMessage = data[foundIndex - 1][6];
+      
+      // Send official administrative reply email to original sender
+      var replySubject = "Re: " + originalSubject + " — AcadTrack Admin";
+      var htmlBody = "" +
+        "<div style='font-family: Arial, sans-serif; padding: 24px; color: #0f172a; background-color: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; max-width: 600px; margin: 0 auto; direction: ltr; text-align: left;'>" +
+          "<h2 style='color: #2563eb; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; margin-top: 0;'>Official Administrative Response</h2>" +
+          "<p>Dear " + originalName + ",</p>" +
+          "<p>Thank you for reaching out. Below is our response to your inquiry regarding: <strong>\"" + originalSubject + "\"</strong>.</p>" +
+          "<div style='margin: 20px 0; padding: 16px; background-color: #eff6ff; border-left: 4px solid #2563eb; border-radius: 6px; color: #1e3a8a; line-height: 1.6; font-weight: 500; white-space: pre-wrap;'>" +
+            replyText +
+          "</div>" +
+          "<div style='margin: 20px 0; padding: 14px; background-color: #ffffff; border: 1px solid #cbd5e1; border-left: 4px solid #94a3b8; border-radius: 6px; color: #64748b; font-size: 12px; font-style: italic; white-space: pre-wrap;'>" +
+            "<strong>Original Message:</strong><br/><br/>" +
+            originalMessage +
+          "</div>" +
+          "<p>Best regards,</p>" +
+          "<p><strong>AcadTrack Administration Team</strong></p>" +
+          "<hr style='border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;' />" +
+          "<p style='font-size: 11px; color: #94a3b8; margin-bottom: 0;'>This is an official administrative response. You can reply directly to this email to follow up.</p>" +
+        "</div>";
+        
+      MailApp.sendEmail({
+        to: originalEmail,
+        subject: replySubject,
+        htmlBody: htmlBody,
+        replyTo: "contact.unsclass@gmail.com"
+      });
+      
+      // Update Spreadsheet: Status, ReplyMessage, ReplyTimestamp
+      sheet.getRange(foundIndex, 8).setValue("Replied");
+      sheet.getRange(foundIndex, 9).setValue(replyText);
+      sheet.getRange(foundIndex, 10).setValue(new Date().toLocaleString());
+      
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        message: "Reply sent and recorded successfully."
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // ==========================================
+    // ACTION 2: CLIENT FORM SUBMISSION
+    // ==========================================
+    var name = params.name || "Anonymous";
+    var email = params.email || "No Email";
+    var subject = params.subject || "General Inquiry";
+    var role = params.role || "Not Specified";
+    var message = params.message || "";
+    var messageId = "MSG-" + Math.floor(Math.random() * 90000 + 10000); // Unique Message ID
+    var timestamp = new Date().toLocaleString();
+    
+    // Send email to contact.unsclass@gmail.com
+    var adminSubject = "AcadTrack Inquiry: " + subject;
+    var adminHtmlBody = "" +
+      "<div style='font-family: Arial, sans-serif; padding: 24px; color: #0f172a; background-color: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; max-width: 600px; margin: 0 auto; direction: ltr; text-align: left;'>" +
+        "<h2 style='color: #2563eb; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; margin-top: 0;'>New Contact Inquiry Received</h2>" +
+        "<p style='margin: 8px 0;'><strong>From:</strong> " + name + " (<a href='mailto:" + email + "'>" + email + "</a>)</p>" +
+        "<p style='margin: 8px 0;'><strong>Account Role:</strong> " + role + "</p>" +
+        "<p style='margin: 8px 0;'><strong>Subject:</strong> " + subject + "</p>" +
+        "<div style='margin-top: 20px; padding: 16px; background-color: #ffffff; border-left: 4px solid #2563eb; border-radius: 6px; font-style: italic; white-space: pre-wrap; color: #334155; line-height: 1.6;'>" +
+          message +
+        "</div>" +
+        "<hr style='border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;' />" +
+        "<p style='font-size: 11px; color: #94a3b8; margin-bottom: 0;'>Submitted via AcadTrack Portal Contact Page on " + timestamp + "</p>" +
+      "</div>";
+    
+    MailApp.sendEmail({
+      to: "contact.unsclass@gmail.com",
+      subject: adminSubject,
+      htmlBody: adminHtmlBody,
+      replyTo: email
+    });
+    
+    // Send auto-reply to original sender
+    var userSubject = "We received your message — AcadTrack Support";
+    var userHtmlBody = "" +
+      "<div style='font-family: Arial, sans-serif; padding: 24px; color: #0f172a; background-color: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; max-width: 600px; margin: 0 auto; direction: ltr; text-align: left;'>" +
+        "<h2 style='color: #2563eb; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; margin-top: 0;'>Message Received Successfully</h2>" +
+        "<p>Dear " + name + ",</p>" +
+        "<p>Thank you for reaching out to us. We have successfully received your message regarding: <strong>\"" + subject + "\"</strong>.</p>" +
+        "<p>Our support team is currently reviewing your inquiry, and we will get back to you with a reply as soon as possible (typically within 24 business hours).</p>" +
+        "<div style='margin: 20px 0; padding: 16px; background-color: #ffffff; border: 1.5px solid #e2e8f0; border-left: 4px solid #cbd5e1; border-radius: 6px; color: #475569; font-style: italic; white-space: pre-wrap; line-height: 1.6;'>" +
+          "<strong>Copy of your message:</strong><br/><br/>" +
+          message +
+        "</div>" +
+        "<p>Best regards,</p>" +
+        "<p><strong>AcadTrack Support Team</strong></p>" +
+        "<hr style='border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;' />" +
+        "<p style='font-size: 11px; color: #94a3b8; margin-bottom: 0;'>This is an automated receipt confirmation. Please do not reply directly to this message.</p>" +
+      "</div>";
+      
+    if (email && email.indexOf("@") !== -1) {
+      MailApp.sendEmail({
+        to: email,
+        subject: userSubject,
+        htmlBody: userHtmlBody
+      });
+    }
+    
+    // Record into Spreadsheet
+    sheet.appendRow([messageId, timestamp, name, email, role, subject, message, "Pending", "", ""]);
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      status: "success",
+      message: "Message recorded and sent successfully."
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({
+      status: "error",
+      message: err.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}

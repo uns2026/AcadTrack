@@ -1,0 +1,196 @@
+<style>
+  .user-dropdown { 
+    position: absolute; 
+    top: calc(100% + 0.75rem); 
+    right: 0; 
+    width: 260px; 
+    background-color: var(--card); 
+    border: 1px solid var(--border-light); 
+    border-radius: var(--radius); 
+    box-shadow: var(--shadow-lg); 
+    padding: var(--space-md); 
+    opacity: 0; 
+    visibility: hidden; 
+    transform: translateY(-10px); 
+    transition: all 0.2s ease; 
+    z-index: 100; 
+    /* Dynamic viewport height constraint to support smaller screens */
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  .user-dropdown::-webkit-scrollbar { width: 6px; }
+  .user-dropdown::-webkit-scrollbar-track { background: var(--bg-warm); }
+  .user-dropdown::-webkit-scrollbar-thumb { background-color: var(--border); border-radius: 999px; }
+
+  .user-dropdown::before { content: ''; position: absolute; top: -6px; right: 10px; width: 12px; height: 12px; background-color: var(--card); border-top: 1px solid var(--border-light); border-left: 1px solid var(--border-light); transform: rotate(45deg); }
+  .user-dropdown.active { opacity: 1; visibility: visible; transform: translateY(0); }
+  @media (max-width: 767px) { .user-dropdown { display: none !important; } }
+  .user-profile-header { margin-bottom: var(--space-md); padding-bottom: var(--space-md); border-bottom: 1px solid var(--border-light); }
+  .user-greeting { font-size: 0.875rem; color: var(--text-secondary); } 
+  .user-name { font-size: 1.125rem; font-weight: 700; color: var(--text); margin-top: 0.25rem; }
+  .user-profile-actions { display: flex; gap: var(--space-xs); margin-bottom: var(--space-md); padding-bottom: var(--space-md); border-bottom: 1px solid var(--border-light); }
+  .btn-sm { padding: 0.5rem 1rem; font-size: 0.8125rem; flex: 1; justify-content: center; border-radius: 0.5rem; } 
+  .btn-outline { background-color: transparent; color: var(--primary); border: 1px solid var(--primary); } 
+  .btn-outline:hover { background-color: var(--primary); color: white; }
+  .user-profile-nav { display: flex; flex-direction: column; gap: var(--space-xs); } 
+  .user-profile-nav a { display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-xs) 0; font-size: 0.875rem; font-weight: 500; color: var(--text-secondary); transition: color var(--transition); } 
+  .user-profile-nav a i { width: 1.25rem; text-align: center; }
+  .user-profile-nav a:hover { color: var(--primary); }
+  .saas-subtext { font-size: 0.75rem; font-weight: 600; color: var(--primary); text-transform: uppercase; margin-top: 2px; letter-spacing: 0.05em; }
+
+  /* New custom styling targeting the logout buttons */
+  .user-profile-nav a[href="#logout"] {
+    background-color: #dc2626 !important;
+    color: #ffffff !important;
+    border: 1px solid #dc2626 !important;
+    transition: all 0.2s ease !important;
+  }
+  .user-profile-nav a[href="#logout"]:hover {
+    background-color: #ffffff !important;
+    color: #dc2626 !important;
+    border: 1px solid #dc2626 !important;
+  }
+</style>
+
+<!-- 1. GUEST DROP DOWN -->
+<div class="state-guest">
+  <div class="user-profile-header">
+    <div class="user-name">
+      <span data-lang="en">Welcome to AcadTrack</span>
+      <span data-lang="fr">Bienvenue sur AcadTrack</span>
+      <span data-lang="ar">مرحبًا بك في AcadTrack</span>
+    </div>
+    <div class="user-greeting">
+      <span data-lang="en">Login to access your dashboard</span>
+      <span data-lang="fr">Connectez-vous pour accéder au tableau de bord</span>
+      <span data-lang="ar">سجل الدخول للوصول إلى لوحة التحكم</span>
+    </div>
+  </div>
+  <div class="user-profile-actions" style="flex-direction: column; gap: 0.5rem;">
+    <a href="/p/login.html" class="btn btn-sm" style="width:100%;"><i class="fa-solid fa-right-to-bracket"></i> <span data-lang="en">Login</span><span data-lang="fr">Connexion</span><span data-lang="ar">تسجيل الدخول</span></a>
+    <a href="/p/signup.html" class="btn btn-sm btn-outline" style="width:100%;"><span data-lang="en">Request Access</span><span data-lang="fr">Demander un accès</span><span data-lang="ar">طلب انضمام</span></a>
+    <a href="#googlesignup" class="btn btn-sm btn-outline" style="width:100%;"><i class="fa-brands fa-google"></i> <span data-lang="en">Continue with Google</span><span data-lang="fr">Continuer avec Google</span><span data-lang="ar">المتابعة باستخدام Google</span></a>
+  </div>
+  <div class="saas-subtext" style="margin-bottom: 0.5rem;">
+    <span data-lang="en">Quick Access</span>
+    <span data-lang="fr">Accès rapide</span>
+    <span data-lang="ar">وصول سريع</span>
+  </div>
+  <nav class="user-profile-nav">
+    <a href="/p/features.html"><i class="fa-solid fa-star"></i> <span data-lang="en">Features</span><span data-lang="fr">Fonctionnalités</span><span data-lang="ar">المميزات</span></a>
+    <a href="/p/about.html"><i class="fa-solid fa-circle-info"></i> <span data-lang="en">About Platform</span><span data-lang="fr">À propos de la plateforme</span><span data-lang="ar">حول المنصة</span></a>
+    <a href="/p/help-center.html"><i class="fa-solid fa-question-circle"></i> <span data-lang="en">Help Center</span><span data-lang="fr">Centre d'aide</span><span data-lang="ar">مركز المساعدة</span></a>
+  </nav>
+</div>
+
+<!-- 2. STUDENT DROP DOWN -->
+<div class="state-student">
+  <div class="user-profile-header">
+    <div class="user-greeting">
+      <span class="saasGreeting">Good Morning</span>,
+    </div>
+    <div class="user-name studentName">
+      <span data-lang="en">Imad AZIZI</span>
+      <span data-lang="fr">Imad AZIZI</span>
+      <span data-lang="ar">عماد عزيزي</span>
+    </div>
+    <div class="saas-subtext"><i class="fa-solid fa-graduation-cap"></i> <span data-lang="en">Student</span><span data-lang="fr">Étudiant</span><span data-lang="ar">طالب</span> • <span data-lang="en">Psychology Dept</span><span data-lang="fr">Dépt Psychologie</span><span data-lang="ar">قسم علم النفس</span></div>
+  </div>
+  <nav class="user-profile-nav">
+    <a href="/p/student-dashboard.html"><i class="fa-solid fa-gauge"></i> <span data-lang="en">Dashboard</span><span data-lang="fr">Tableau de bord</span><span data-lang="ar">لوحة التحكم</span></a>
+    <a href="/p/student-profile.html"><i class="fa-solid fa-user"></i> <span data-lang="en">My Profile</span><span data-lang="fr">Mon Profil</span><span data-lang="ar">ملفي الشخصي</span></a>
+    <a href="/p/student-modules.html"><i class="fa-solid fa-book"></i> <span data-lang="en">Modules</span><span data-lang="fr">Modules</span><span data-lang="ar">المواد الدراسية</span></a>
+    <a href="/p/student-schedule.html"><i class="fa-solid fa-calendar-days"></i> <span data-lang="en">Schedule</span><span data-lang="fr">Emploi du temps</span><span data-lang="ar">جدول الحصص</span></a>
+    <a href="/p/student-grades.html"><i class="fa-solid fa-square-poll-vertical"></i> <span data-lang="en">Grades &amp; Results</span><span data-lang="fr">Notes &amp; Résultats</span><span data-lang="ar">النقاط والنتائج</span></a>
+    <a href="/p/student-messages.html"><i class="fa-solid fa-envelope"></i> <span data-lang="en">Messages</span><span data-lang="fr">Messages</span><span data-lang="ar">الرسائل</span></a>
+    <a href="/p/student-reports.html"><i class="fa-solid fa-chart-pie"></i> <span data-lang="en">Reports</span><span data-lang="fr">Rapports</span><span data-lang="ar">التقارير</span></a>
+    <a href="/p/student-settings.html"><i class="fa-solid fa-gear"></i> <span data-lang="en">Settings</span><span data-lang="fr">Paramètres</span><span data-lang="ar">الإعدادات</span></a>
+    <a href="/p/help-center.html"><i class="fa-solid fa-circle-question"></i> <span data-lang="en">Help Center</span><span data-lang="fr">Centre d'aide</span><span data-lang="ar">مركز المساعدة</span></a>
+    <a href="#logout" onclick="logoutUser(); return false;" class="btn btn-sm btn-outline" style="margin-top: 1rem;"><i class="fa-solid fa-sign-out"></i> <span data-lang="en">Logout</span><span data-lang="fr">Déconnexion</span><span data-lang="ar">تسجيل الخروج</span></a>
+  </nav>
+</div>
+
+<!-- 3. TEACHER DROP DOWN -->
+<div class="state-teacher">
+  <div class="user-profile-header">
+    <div class="user-greeting">
+      <span class="saasGreeting">Good Morning</span>,
+    </div>
+    <div class="user-name">
+      <span data-lang="en">Pr. Zakia CHENNA</span>
+      <span data-lang="fr">Pr. Zakia CHENNA</span>
+      <span data-lang="ar">أ.د. زكية شنة</span>
+    </div>
+    <div class="saas-subtext"><i class="fa-solid fa-chalkboard-user"></i> <span data-lang="en">Professor</span><span data-lang="fr">Enseignant</span><span data-lang="ar">أستاذ</span> • <span data-lang="en">Psychology Dept</span><span data-lang="fr">Dépt Psychologie</span><span data-lang="ar">قسم علم النفس</span></div>
+  </div>
+  <nav class="user-profile-nav">
+    <a href="/p/teacher-dashboard.html"><i class="fa-solid fa-gauge"></i> <span data-lang="en">Dashboard</span><span data-lang="fr">Tableau de bord</span><span data-lang="ar">لوحة التحكم</span></a>
+    <a href="/p/teacher-profile.html"><i class="fa-solid fa-user"></i> <span data-lang="en">My Profile</span><span data-lang="fr">Mon Profil</span><span data-lang="ar">ملفي الشخصي</span></a>
+    <a href="/p/teacher-sessions.html"><i class="fa-solid fa-clock"></i> <span data-lang="en">My Sessions</span><span data-lang="fr">Mes Sessions</span><span data-lang="ar">حصصي الدراسية</span></a>
+    <a href="/p/teacher-messages.html"><i class="fa-solid fa-envelope"></i> <span data-lang="en">Messages</span><span data-lang="fr">Messages</span><span data-lang="ar">الرسائل</span></a>
+    <a href="/p/teacher-reports.html"><i class="fa-solid fa-chart-bar"></i> <span data-lang="en">Reports</span><span data-lang="fr">Rapports</span><span data-lang="ar">التقارير</span></a>
+    <a href="#settings"><i class="fa-solid fa-gear"></i> <span data-lang="en">Settings</span><span data-lang="fr">Paramètres</span><span data-lang="ar">الإعدادات</span></a>
+    <a href="#appearance"><i class="fa-solid fa-palette"></i> <span data-lang="en">Appearance</span><span data-lang="fr">Apparence</span><span data-lang="ar">المظهر</span></a>
+    <a href="/p/help-center.html"><i class="fa-solid fa-circle-question"></i> <span data-lang="en">Help Center</span><span data-lang="fr">Centre d'aide</span><span data-lang="ar">مركز المساعدة</span></a>
+    <a href="#logout" onclick="logoutUser(); return false;" class="btn btn-sm btn-outline" style="margin-top: 1rem;"><i class="fa-solid fa-sign-out"></i> <span data-lang="en">Logout</span><span data-lang="fr">Déconnexion</span><span data-lang="ar">تسجيل الخروج</span></a>
+  </nav>
+</div>
+
+<!-- 4. ADMINISTRATION DROP DOWN -->
+<div class="state-admin">
+  <div class="user-profile-header">
+    <div class="user-greeting">
+      <span class="saasGreeting">Good Morning</span>,
+    </div>
+    <div class="user-name">
+      <span data-lang="en">Dr. Ammar CHOUCHANE</span>
+      <span data-lang="fr">Dr. Ammar CHOUCHANE</span>
+      <span data-lang="ar">د. عمار شوشان</span>
+    </div>
+    <div class="saas-subtext"><i class="fa-solid fa-user-tie"></i> <span data-lang="en">Department Head</span><span data-lang="fr">Chef de Département</span><span data-lang="ar">رئيس القسم</span> • <span data-lang="en">Psychology Dept</span><span data-lang="fr">Dépt Psychologie</span><span data-lang="ar">قسم علم النفس</span></div>
+  </div>
+  <nav class="user-profile-nav">
+    <a href="/p/dept-admin-dashboard.html"><i class="fa-solid fa-gauge"></i> <span data-lang="en">Dashboard</span><span data-lang="fr">Tableau de bord</span><span data-lang="ar">لوحة التحكم</span></a>
+    <a href="/p/dept-admin-profile.html"><i class="fa-solid fa-user"></i> <span data-lang="en">My Profile</span><span data-lang="fr">Mon Profil</span><span data-lang="ar">ملفي الشخصي</span></a>
+    <a href="/p/dept-admin-analytics.html"><i class="fa-solid fa-chart-line"></i> <span data-lang="en">Analytics</span><span data-lang="fr">Analytiques</span><span data-lang="ar">التحليلات</span></a>
+    <a href="/p/dept-admin-users.html"><i class="fa-solid fa-users-gear"></i> <span data-lang="en">User Management</span><span data-lang="fr">Gestion des Utilisateurs</span><span data-lang="ar">إدارة المستخدمين</span></a>
+    <a href="/p/dept-admin-departments.html"><i class="fa-solid fa-building"></i> <span data-lang="en">Department Management</span><span data-lang="fr">Gestion du Département</span><span data-lang="ar">إدارة القسم</span></a>
+    <a href="/p/dept-admin-reports.html"><i class="fa-solid fa-file-invoice"></i> <span data-lang="en">Reports Center</span><span data-lang="fr">Centre de Rapports</span><span data-lang="ar">مركز التقارير</span></a>
+    <a href="/p/dept-admin-monitoring.html"><i class="fa-solid fa-shield-halved"></i> <span data-lang="en">System Monitoring</span><span data-lang="fr">Supervision Système</span><span data-lang="ar">مراقبة النظام</span></a>
+    <a href="/p/dept-admin-activity-logs.html"><i class="fa-solid fa-list-check"></i> <span data-lang="en">Activity Logs</span><span data-lang="fr">Journaux d'Activité</span><span data-lang="ar">سجلات النشاط</span></a>
+    <a href="/p/dept-admin-messages.html"><i class="fa-solid fa-envelope"></i> <span data-lang="en">Messages</span><span data-lang="fr">Messages</span><span data-lang="ar">الرسائل</span></a>
+    <a href="/p/dept-admin-settings.html"><i class="fa-solid fa-lock"></i> <span data-lang="en">Security Settings</span><span data-lang="fr">Paramètres de Sécurité</span><span data-lang="ar">إعدادات الأمان</span></a>
+    <a href="/p/help-center.html"><i class="fa-solid fa-circle-question"></i> <span data-lang="en">Help Center</span><span data-lang="fr">Centre d'aide</span><span data-lang="ar">مركز المساعدة</span></a>
+    <a href="#logout" onclick="logoutUser(); return false;" class="btn btn-sm btn-outline" style="margin-top: 1rem;"><i class="fa-solid fa-sign-out"></i> <span data-lang="en">Logout</span><span data-lang="fr">Déconnexion</span><span data-lang="ar">تسجيل الخروج</span></a>
+  </nav>
+</div>
+
+<!-- 5. PLATFORM ADMIN DROP DOWN -->
+<div class="state-platform-admin">
+  <div class="user-profile-header">
+    <div class="user-greeting">
+      <span class="saasGreeting">Good Morning</span>,
+    </div>
+    <div class="user-name">
+      <span data-lang="en">Mr. Uns MAHMOUDI</span>
+      <span data-lang="fr">M. Uns MAHMOUDI</span>
+      <span data-lang="ar">أ. أنس محمودي</span>
+    </div>
+    <div class="saas-subtext"><i class="fa-solid fa-server"></i> <span data-lang="en">Platform Admin</span><span data-lang="fr">Admin Plateforme</span><span data-lang="ar">مدير النظام</span></div>
+  </div>
+  <nav class="user-profile-nav">
+    <a href="/p/platform-admin-dashboard.html"><i class="fa-solid fa-gauge"></i> <span data-lang="en">Dashboard</span><span data-lang="fr">Tableau de bord</span><span data-lang="ar">لوحة التحكم</span></a>
+    <a href="#profile"><i class="fa-solid fa-user"></i> <span data-lang="en">My Profile</span><span data-lang="fr">Mon Profil</span><span data-lang="ar">ملفي الشخصي</span></a>
+    <a href="/p/dept-admin-analytics.html"><i class="fa-solid fa-chart-line"></i> <span data-lang="en">Analytics</span><span data-lang="fr">Analytiques</span><span data-lang="ar">التحليلات</span></a>
+    <a href="/p/dept-admin-users.html"><i class="fa-solid fa-users-gear"></i> <span data-lang="en">User Management</span><span data-lang="fr">Gestion des Utilisateurs</span><span data-lang="ar">إدارة المستخدمين</span></a>
+    <a href="/p/dept-admin-departments.html"><i class="fa-solid fa-building"></i> <span data-lang="en">Department Management</span><span data-lang="fr">Gestion du Département</span><span data-lang="ar">إدارة القسم</span></a>
+    <a href="/p/dept-admin-reports.html"><i class="fa-solid fa-file-invoice"></i> <span data-lang="en">Reports Center</span><span data-lang="fr">Centre de Rapports</span><span data-lang="ar">مركز التقارير</span></a>
+    <a href="/p/dept-admin-monitoring.html"><i class="fa-solid fa-shield-halved"></i> <span data-lang="en">System Monitoring</span><span data-lang="fr">Supervision Système</span><span data-lang="ar">مراقبة النظام</span></a>
+    <a href="/p/dept-admin-activity-logs.html"><i class="fa-solid fa-list-check"></i> <span data-lang="en">Activity Logs</span><span data-lang="fr">Journaux d'Activité</span><span data-lang="ar">سجلات النشاط</span></a>
+    <a href="/p/dept-admin-messages.html"><i class="fa-solid fa-envelope"></i> <span data-lang="en">Messages</span><span data-lang="fr">Messages</span><span data-lang="ar">الرسائل</span></a>
+    <a href="/p/dept-admin-settings.html"><i class="fa-solid fa-lock"></i> <span data-lang="en">Security Settings</span><span data-lang="fr">Paramètres de Sécurité</span><span data-lang="ar">إعدادات الأمان</span></a>
+    <a href="/p/help-center.html"><i class="fa-solid fa-circle-question"></i> <span data-lang="en">Help Center</span><span data-lang="fr">Centre d'aide</span><span data-lang="ar">مركز المساعدة</span></a>
+    <a href="#logout" onclick="logoutUser(); return false;" class="btn btn-sm btn-outline" style="margin-top: 1rem;"><i class="fa-solid fa-sign-out"></i> <span data-lang="en">Logout</span><span data-lang="fr">Déconnexion</span><span data-lang="ar">تسجيل الخروج</span></a>
+  </nav>
+</div>

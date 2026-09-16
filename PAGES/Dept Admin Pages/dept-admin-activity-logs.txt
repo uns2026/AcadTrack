@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Activity Logs &amp; Audit Trail — AcadTrack</title>
+
+  <!-- Google Fonts & Icon Libraries -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+  <!-- ===== EXPLICIT LAYOUT OVERRIDE ===== -->
+  <style>
+    .article__header {
+      margin-bottom: var(--space-xl);
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--border-light);
+      display: none;
+    }
+    .layout {
+      display: contents;
+      gap: var(--space-xl);
+    }
+    .article {
+      max-width: -webkit-fill-available;
+      margin: -27px auto;
+    }
+
+    /* Hide Blogger Default wrappers */
+    .sidebar, .page-title, .sidebar-widget { display: none !important; }
+    .layout { grid-template-columns: 1fr !important; }
+    .site-main { display: block !important; padding: 0 !important; }
+  </style>
+
+  <!-- ===== GLOBAL STYLES ===== -->
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --text: #0f172a;
+      --text-secondary: #475569;
+      --text-light: #94a3b8;
+      --bg: #ffffff;
+      --bg-cool: #f8fafc;
+      --bg-warm: #f1f5f9;
+      --border: #cbd5e1;
+      --border-light: #e2e8f0;
+      --card: #ffffff;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.05);
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 1.5rem;
+      --space-lg: 2rem;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Cairo', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text);
+      background-color: var(--bg-cool);
+      -webkit-font-smoothing: antialiased;
+    }
+    input, button, select { font: inherit; color: inherit; }
+    a { color: inherit; text-decoration: none; }
+
+    /* Stretch main container to fill full viewport width */
+    .saas-container {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 32px 28px !important;
+    }
+    @media (max-width: 1023px) {
+      .saas-container { padding: 20px 16px !important; }
+    }
+
+    /* Page Header */
+    .saas-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: var(--space-lg);
+      padding-bottom: var(--space-sm);
+      border-bottom: 1.5px solid var(--border-light);
+    }
+    .saas-header h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.03em;
+    }
+
+    /* ===== STATS CARDS ===== */
+    .stats-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom: var(--space-md); }
+    .stat-card { background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 18px; display: flex; align-items: center; gap: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+    .stat-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .stat-icon.blue { background: #eff6ff; color: #2563eb; }
+    .stat-icon.emerald { background: #ecfdf5; color: #059669; }
+    .stat-icon.purple { background: #f5f3ff; color: #7c3aed; }
+    .stat-icon.amber { background: #fffbeb; color: #d97706; }
+    .stat-value { font-size: 24px; font-weight: 800; color: #0f172a; line-height: 1; }
+    .stat-label { font-size: 12px; color: #64748b; font-weight: 600; margin-top: 4px; }
+
+    /* ===== TOOLBAR, SEARCH & FILTERS ===== */
+    .toolbar { display: flex; gap: 12px; margin-bottom: var(--space-md); flex-wrap: wrap; align-items: center; justify-content: space-between; }
+    .search-wrap { position: relative; flex: 1; min-width: 240px; max-width: 400px; }
+    .search-wrap i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 14px; pointer-events: none; }
+    .search-input { width: 100%; padding: 10px 14px 10px 38px; border: 1.5px solid #cbd5e1; border-radius: var(--radius-sm); font-size: 14px; background: #ffffff; transition: all 0.2s; color: #0f172a; }
+    .search-input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+
+    /* ===== TABLES ===== */
+    .table-card { background: var(--card); border: 1.5px solid var(--border-light); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; margin-bottom: var(--space-md); max-width: 100%; width: 100%; }
+    .table-responsive { width: 100%; overflow-x: auto; scrollbar-width: thin; -webkit-overflow-scrolling: touch; display: block; }
+    .saas-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px; min-width: 800px; }
+    .saas-table th { background-color: var(--bg-cool); padding: 12px 18px; font-weight: 700; color: var(--text-secondary); border-bottom: 1.5px solid var(--border-light); }
+    .saas-table td { padding: 14px 18px; border-bottom: 1px solid var(--border-light); color: var(--text); vertical-align: middle; }
+    .saas-table tr:last-child td { border-bottom: none; }
+    .saas-table tr:hover td { background-color: var(--bg-cool); }
+
+    /* ===== CATEGORY BADGES ===== */
+    .category-badge { font-size: 9.5px; font-weight: 800; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; }
+    .category-badge.auth { background: #eff6ff; color: #1e4ed8; border: 1px solid #bfdbfe; }
+    .category-badge.data { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .category-badge.session { background: #f5f3ff; color: #6d28d9; border: 1px solid #c7d2fe; }
+    .category-badge.attendance { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+    .category-badge.system { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+
+    /* ===== BUTTONS ===== */
+    .btn-saas { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 18px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: all 0.2s ease; font-family: inherit; }
+    .btn-saas-secondary { background-color: var(--bg-cool); color: var(--text-secondary); border-color: var(--border); }
+    .btn-saas-secondary:hover { background-color: var(--bg-warm); color: var(--text); }
+
+    /* ===== SECTION DIVIDER ===== */
+    .section-divider { display: flex; align-items: center; gap: 10px; margin: var(--space-md) 0 var(--space-sm); }
+    .section-divider-label { font-size: clamp(10px, 1vw, 11px); font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; }
+    .section-divider-line { flex: 1; height: 1px; background: #e2e8f0; }
+
+    /* ===== RTL ALIGNMENTS ===== */
+    .lang-ar .saas-header, .lang-ar .table-card, .lang-ar .saas-table { direction: rtl; text-align: right; }
+    .lang-ar .saas-table th, .lang-ar .saas-table td { text-align: right; }
+    .lang-ar .search-wrap i { left: auto; right: 14px; }
+    .lang-ar .search-input { padding-left: 14px !important; padding-right: 38px !important; text-align: right; direction: rtl !important; }
+    .lang-ar .btn-saas-secondary { flex-direction: row-reverse; }
+    .lang-ar .section-divider { flex-direction: row-reverse; }
+    .lang-ar .stats-grid { direction: ltr; }
+  </style>
+</head>
+<body>
+
+<div class="saas-container">
+  
+  <header class="saas-header">
+    <h2>
+      <span data-lang="en">Administrative Activity Logs &amp; Audit Trail</span>
+      <span data-lang="fr">Journaux d'Activité &amp; Piste d'Audit</span>
+      <span data-lang="ar">سجل النشاطات التاريخي وعمليات البوابة</span>
+    </h2>
+    <div style="display:flex; gap:8px;">
+      <button class="btn-saas btn-saas-secondary" onclick="window.location.href='/p/dept-admin-dashboard.html'"><i class="fa-solid fa-arrow-left"></i> <span data-lang="en">Back to Dashboard</span><span data-lang="fr">Retour</span><span data-lang="ar">العودة للوحة التحكم</span></button>
+    </div>
+  </header>
+
+  <!-- Real-Time Metrics Stats Grid (100% Mocked) -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon blue"><i class="fa-solid fa-clock-rotate-left"></i></div>
+      <div>
+        <div class="stat-value">17</div>
+        <div class="stat-label"><span data-lang="en">Total Logs Today</span><span data-lang="fr">Journaux Aujourd'hui</span><span data-lang="ar">سجلات العمليات اليوم</span></div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon emerald"><i class="fa-solid fa-user-shield"></i></div>
+      <div>
+        <div class="stat-value">3</div>
+        <div class="stat-label"><span data-lang="en">Admin Operations</span><span data-lang="fr">Actions Admin</span><span data-lang="ar">عمليات المشرفين</span></div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon purple"><i class="fa-solid fa-chalkboard-user"></i></div>
+      <div>
+        <div class="stat-value">11</div>
+        <div class="stat-label"><span data-lang="en">Teacher Operations</span><span data-lang="fr">Actions Enseignants</span><span data-lang="ar">عمليات الأساتذة</span></div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon amber"><i class="fa-solid fa-graduation-cap"></i></div>
+      <div>
+        <div class="stat-value">3</div>
+        <div class="stat-label"><span data-lang="en">Student Check-Ins</span><span data-lang="fr">Présences Enregistrées</span><span data-lang="ar">تسجيلات حضور الطلاب</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Toolbar Filters -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" class="search-input" id="logSearchField" oninput="filterSaaSLogs(this.value)" placeholder="Search logs by keyword, user, category or IP..." />
+    </div>
+  </div>
+
+  <!-- ACTIVITY LOGS TABLE (17 COHORT CASES HARDCODED) -->
+  <div class="section-divider">
+    <span class="section-divider-label"><span data-lang="en">Chronological Audit Trail (17 logs)</span><span data-lang="fr">Piste d'Audit Chronologique</span><span data-lang="ar">سجل العمليات التاريخي المتكامل (17 سجل)</span></span>
+    <div class="section-divider-line"></div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-responsive">
+      <table class="saas-table" id="saas-logs-table">
+        <thead>
+          <tr>
+            <th style="width: 100px;">Log ID</th>
+            <th>Action / Event Description</th>
+            <th>Triggered User</th>
+            <th>IP/Device Signature</th>
+            <th>Category</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Log 1 -->
+          <tr class="log-row">
+            <td style="font-family:var(--font-mono); font-weight:700;">ACT_55101</td>
+            <td style="font-weight:600; color:#334155;">أ.د. نور الدين بوعزيز قام بتفعيل حساب الأستاذة سميرة منصوري وتأكيد اشتراكها</td>
+            <td style="font-weight:700; color:#0f172a;">Prof. Bouaziz</td>
+            <td style="font-family:var(--font-mono); font-size:12px;">193.194.81.42</td>
+            <td><span class="category-badge auth">User Auth</span></td>
+            <td style="font-family:var(--font-mono); font-size:12.5px;">2026-05-27 10:30:15</td>
+          </tr>
+          <!-- Log 2 -->
+          <tr class="log-row">
+            <td style="font-family:var(--font-mono); font-weight:700;">ACT_55102</td>
+            <td style="font-weight:600; color:#334155;">أ.د. صليحة القس قامت بجدولة حصة أعمال موجهة جديدة في قاعة 101 لمقياس نظريات التعلم</td>
+            <td style="font-weight:700; color:#0f172a;">Pr. Saliha ELGUES</td>
+            <td style="font-family:var(--font-mono); font-size:12px;">105.101.44.12</td>
+            <td><span class="category-badge session">Scheduling</span></td>
+            <td style="font-family:var(--font-mono); font-size:12.5px;">2026-05-27 10:00:00</td>
+          </tr>
+          <!-- Log 3 -->
+          <tr class="log-row">
+            <td style="font-family:var(--font-mono); font-weight:700;">ACT_55103</td>
+            <td style="font-weight:600; color:#334155;">تسجيل دخول ناجح للأستاذة زكية شنة عبر البوابة الأكاديمية للقسم</td>
+            <td style="font-weight:700; color:#0f172a;">Pr. Zakia CHENNA</td>
+            <td style="font-family:var(--font-mono); font-size:12px;">105.101.55.22</td>
+            <td><span class="category-badge auth">User Auth</span></td>
+            <td style="font-family:var(--font-mono); font-size:12.5px;">2026-05-27 09:15:02</td>
+          </tr>
+          <!-- Log 4 -->
+          <tr class="log-row">
+            <td style="font-family:var(--font-mono); font-weight:700;">ACT_55104</td>
+            <td style="font-weight:600; color:#334155;">تصدير كشف غيابات ومواظبة فوج L3 Clinique A بصيغة ملف PDF للطباعة</td>
+            <td style="font-weight:700; color:#0f172a;">Pr. Zakia CHENNA</td>
+            <td style="font-family:var(--font-mono); font-size:12px;">105.101.55.22</td>
+            <td><span class="category-badge data">Data Export</span></td>
+            <td style="font-family:var(--font-mono); font-size:12.5px;">2026-05-26 15:30:00</td>
+          </tr>
+          <!-- Log 5 -->
+          <tr class="log-row">
+            <td style="font-family:var(--font-mono); font-weight:700;">ACT_55105</td>
+            <td style="font-weight:600; color:#334155;">رصد وتعديل نقاط الامتحانات للفوج L3 Clinique A لمقياس علم النفس المرضي</td>
+            <td style="font-weight:700; color:#0f172a;">Pr. Zakia CHENNA</td>
+            <td style="font-family:var(--font-mono); font-size:12px;">105.101.55.22</td>
+            <td><span class="category-badge data">Data Update</span></td>
+            <td style="font-family:var(--font-mono); font-size:12.5px;">2026-05-26 14:40:00</td>
+          </tr>
+          <!-- Log 6 -->
+          <tr class="log-row">
+            <td style="font-family:var(--font-mono); font-weight:700;">ACT_55106</td>
+            <td style="font-weight:600; color:#334155;">إنذار نظام تلقائي: غياب حرج للطالب عماد عزيزي في مقياس علم النفس المرضي (أقل من 80%)</td>
+            <td style="font-weight:700; color:#0f172a;">System Guard</td>
+            <td style="font-family:var(--font-mono); font-size:12px;">127.0.0.1</td>
+            <td><span class="category-badge system">System Alert</span></td>
+            <td style="font-family:var(--font-mono); font-size:12.5px;">2026-05-26 12:10:00</td>
+          </tr>
+          <!-- Log 7 -->
+          <tr class="log-row">
+            <td style="font-family:var(--font-mono); font-weight:700;">ACT_55107</td>
+            <td style="font-weight:600; color:#334155;">تأكيد وحفظ كشف الحضور اليدوي للفوج L3 Clinique A من طرف أستاذ المقياس</td>
+            <td style="font-weight:700; color:#0f172a;">Dr. Samira Mansouri</td>
+            <td style="font-family:var(--font-mono); font-size:12px;">105.101.44.12</td>
+            <td><span class="category-badge attendance">Attendance</span></td>
+            <td style="font-family:var(--font-mono); font-size:12.5px;">2026-05-25 10:45:00</td>
+          </tr>
+          <!-- Log 8 -->
+          <tr class="log-row">
+            <td style="font-family:var(--font-mono); font-weight:700;">ACT_55108</td>
+            <td style="font-weight:600; color:#334155;">الطالب عماد عزيزي يسجل حضوره بنجاح في القاعة عبر مسح رمز الـ QR الذكي</td>
+            <td style="font-weight:700; color:#0f172a;">Student (202312001)</td>
+            <td style="font-family:var(--font-mono); font-size:12px;">105.102.12.85</td>
+            <td><span class="category-badge attendance">Attendance</span></td>
+            <td style="font-family:var(--font-mono); font-size:12.5px;">2026-05-25 08:35:12</td>
+          </tr>
+          <!-- Log 9 -->
+          <tr class="log-row">
+            <td style="font-family:var(--font-mono); font-weight:700;">ACT_55109</td>
+            <td style="font-weight:600; color:#334155;">جدولة حصة أعمال تطبيقية جديدة (TP) في المخبر ج02 لمقياس علم النفس التنظيمي</td>
+            <td style="font-weight:700; color:#0f172a;">Dr. Hakim Said</td>
+            <td style="font-family:var(--font-mono); font-size:12px;">105.101.32.14</td>
+            <td><span class="category-badge session">Scheduling</span></td>
+            <td style="font-family:var(--font-mono); font-size:12.5px;">2026-05-24 11:20:00</td>
+          </tr>
+          <!-- Log 10 -->
+          <tr class="log-row">
+            <td style="font-family:var(--font-mono); font-weight:700;">ACT_55110</td>
+            <td style="font-weight:600; color:#334155;">تحميل واستيراد كشف أسماء الطلاب (3 طلاب) دفعة واحدة من ملف Excel مكسن خارجي</td>
+            <td style="font-weight:700; color:#0f172a;">Prof. Bouaziz</td>
+            <td style="font-family:var(--font-mono); font-size:12px;">193.194.81.42</td>
+            <td><span class="category-badge data">Data Import</span></td>
+            <td style="font-family:var(--font-mono); font-size:12.5px;">2026-05-23 15:30:00</td>
+          </tr>
+          <!-- Log 11 -->
+          <tr class="log-row">
+            <td style="font-family:var(--font-mono); font-weight:700;">ACT_55111</td>
+            <td style="font-weight:600; color:#334155;">أستاذة صليحة القس تعدل وتحدث معايير توزيع نسب كشف النقاط للمقياس</td>
+            <td style="font-weight:700; color:#0f172a;">Pr. Saliha ELGUES</td>
+            <td style="font-family:var(--font-mono); font-size:12px;">105.101.44.12</td>
+            <td><span class="category-badge data">Data Update</span></td>
+            <td style="font-family:var(--font-mono); font-size:12.5px;">2026-05-23 14:10:00</td>
+          </tr>
+          <!-- Log 12 -->
+          <tr class="log-row">
+            <td style="font-family:var(--font-mono); font-weight:700;">ACT_55112</td>
+            <td style="font-weight:600; color:#334155;">الطالب عماد عزيزي يكمل تفعيل حسابه بنجاح عبر استمارة الولوج للمرة الأولى</td>
+            <td style="font-weight:700; color:#0f172a;">Student (202312001)</td>
+            <td style="font-family:var(--font-mono); font-size:12px;">105.102.12.85</td>
+            <td><span class="category-badge auth">User Auth</span></td>
+            <td style="font-family:var(--font-mono); font-size:12.5px;">2026-05-23 09:10:00</td>
+          </tr>
+          <!-- Log 13 -->
+          <tr class="log-row">
+            <td style="font-family:var(--font-mono); font-weight:700;">ACT_55113</td>
+            <td style="font-weight:600; color:#334155;">أ.د. نور الدين بوعزيز ينشئ الفوج الأكاديمي الجديد L3 Psychologie du Travail بالقسم</td>
+            <td style="font-weight:700; color:#0f172a;">Prof. Bouaziz</td>
+            <td style="font-family:var(--font-mono); font-size:12px;">193.194.81.42</td>
+            <td><span class="category-badge system">System Event</span></td>
+            <td style="font-family:var(--font-mono); font-size:12.5px;">2026-05-22 11:20:00</td>
+          </tr>
+          <!-- Log 14 -->
+          <tr class="log-row">
+            <td style="font-family:var(--font-mono); font-weight:700;">ACT_55114</td>
+            <td style="font-weight:600; color:#334155;">تصدير وتحميل كامل قاعدة بيانات القسم كملف نسخة احتياطية مشفرة JSON</td>
+            <td style="font-weight:700; color:#0f172a;">Prof. Bouaziz</td>
+            <td style="font-family:var(--font-mono); font-size:12px;">193.194.81.42</td>
+            <td><span class="category-badge data">Data Export</span></td>
+            <td style="font-family:var(--font-mono); font-size:12.5px;">2026-05-22 08:30:15</td>
+          </tr>
+          <!-- Log 15 -->
+          <tr class="log-row">
+            <td style="font-family:var(--font-mono); font-weight:700;">ACT_55115</td>
+            <td style="font-weight:600; color:#334155;">القيام بمسح وتصفير قاعدة البيانات المحلية للقسم وإعادة التعيين الافتراضي للبيانات</td>
+            <td style="font-weight:700; color:#0f172a;">Prof. Bouaziz</td>
+            <td style="font-family:var(--font-mono); font-size:12px;">193.194.81.42</td>
+            <td><span class="category-badge system">System Event</span></td>
+            <td style="font-family:var(--font-mono); font-size:12.5px;">2026-05-22 08:00:00</td>
+          </tr>
+          <!-- Log 16 -->
+          <tr class="log-row">
+            <td style="font-family:var(--font-mono); font-weight:700;">ACT_55116</td>
+            <td style="font-weight:600; color:#334155;">الأستاذة زكية شنة ترسل رسالة رد سريعة عبر نظام المراسلات الداخلي للبوابة</td>
+            <td style="font-weight:700; color:#0f172a;">Pr. Zakia CHENNA</td>
+            <td style="font-family:var(--font-mono); font-size:12px;">105.101.55.22</td>
+            <td><span class="category-badge data">Data Update</span></td>
+            <td style="font-family:var(--font-mono); font-size:12.5px;">2026-05-21 16:45:00</td>
+          </tr>
+          <!-- Log 17 -->
+          <tr class="log-row">
+            <td style="font-family:var(--font-mono); font-weight:700;">ACT_55117</td>
+            <td style="font-weight:600; color:#334155;">تسجيل دخول ناجح للمشرف الأكاديمي أ.د. نور الدين بوعزيز للوحة التحكم</td>
+            <td style="font-weight:700; color:#0f172a;">Prof. Bouaziz</td>
+            <td style="font-family:var(--font-mono); font-size:12px;">193.194.81.42</td>
+            <td><span class="category-badge auth">User Auth</span></td>
+            <td style="font-family:var(--font-mono); font-size:12.5px;">2026-05-20 08:30:00</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+//<![CDATA[
+  document.addEventListener('DOMContentLoaded', function() {
+    const initLang = localStorage.getItem('acadtrack-lang') || 'en';
+    setLanguage(initLang);
+  });
+
+  function setLanguage(lang) {
+    localStorage.setItem('acadtrack-lang', lang);
+    document.documentElement.lang = lang;
+    const isRTL = lang === 'ar';
+    const card = document.querySelector('.saas-container');
+    if (card) card.dir = isRTL ? 'rtl' : 'ltr';
+
+    document.querySelectorAll('[data-lang]').forEach(el => {
+      el.style.display = el.dataset.lang === lang ? '' : 'none';
+    });
+  }
+
+  // Live filter query inside the static HTML DOM tree [1]
+  window.filterSaaSLogs = function(val) {
+    const q = val.toLowerCase().trim();
+    document.querySelectorAll('.log-row').forEach(row => {
+      const text = row.textContent.toLowerCase();
+      row.style.display = text.includes(q) ? '' : 'none';
+    });
+  };
+//]]>
+</script>
+
+</body>
+</html>

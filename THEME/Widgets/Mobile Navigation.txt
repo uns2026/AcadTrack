@@ -1,0 +1,90 @@
+<style>
+.mobile-nav { position: fixed; inset: var(--header-height) 0 0 0; background-color: var(--bg); padding: var(--space-lg); flex-direction: column; gap: 0; z-index: 40; border-top: 1px solid var(--border-light); transform: translateX(-100%); opacity: 0; visibility: hidden; transition: transform 0.35s ease, opacity 0.35s ease, visibility 0s 0.35s; overflow-y: auto; }
+.mobile-nav.active { transform: translateX(0); opacity: 1; visibility: visible; transition: transform 0.35s ease, opacity 0.35s ease, visibility 0s 0s; display: flex; }
+.mobile-nav a { font-size: 1.125rem; font-weight: 500; padding: var(--space-sm) 0; border-bottom: 1px solid var(--border-light); color: var(--text); transform: translateX(-20px); opacity: 0; transition: color var(--transition), transform 0.35s ease, opacity 0.35s ease; }
+.mobile-nav.active a { transform: translateX(0); opacity: 1; } 
+.mobile-nav.active a:nth-child(1) { transition-delay: 0.08s; } 
+.mobile-nav.active a:nth-child(2) { transition-delay: 0.14s; } 
+.mobile-nav.active a:nth-child(3) { transition-delay: 0.2s; } 
+.mobile-nav.active a:nth-child(4) { transition-delay: 0.26s; }
+.mobile-nav a:hover { color: var(--primary); }
+</style>
+<a href="/"><span data-lang="en">Home</span><span data-lang="fr">Accueil</span><span data-lang="ar">الرئيسية</span></a>
+<a href="#features"><span data-lang="en">Features</span><span data-lang="fr">Fonctionnalités</span><span data-lang="ar">المميزات</span></a>
+<a href="/p/about.html"><span data-lang="en">About</span><span data-lang="fr">À propos</span><span data-lang="ar">حول</span></a>
+<a href="/p/contact.html"><span data-lang="en">Contact</span><span data-lang="fr">Contact</span><span data-lang="ar">اتصل بنا</span></a>
+
+<!-- Mobile Navigation Language Selector Accordion (Mobile View Only) -->
+<div style="padding: 0.5rem 0; border-bottom: 1px solid var(--border-light);">
+  <div class="menu-accordion-header">
+    <span style="font-size:1.125rem;font-weight:500;color:var(--text);display:flex;align-items:center;gap:var(--space-sm);">
+      <i class="fa-solid fa-globe" style="width: 1.25rem;"></i> 
+      <span data-lang="en">Language</span><span data-lang="fr">Langue</span><span data-lang="ar">اللغة</span>
+    </span>
+    <i class="fa-solid fa-chevron-down" style="font-size:0.75rem;color:var(--text-light);"></i>
+  </div>
+  <div class="menu-accordion-content" id="langAccordMobile" style="display: none; padding-left:1.5rem; margin-top:0.5rem;">
+    <a href="#" onclick="setLanguage('en'); return false;" class="lang-option" style="font-size:1rem; padding: 0.5rem 0; display:flex; align-items:center; gap:0.5rem; border:none; transform: none; opacity: 1;">
+      <img src="https://kapowaz.github.io/circle-flags/flags/us.svg" alt="EN" style="width:1.25rem;height:1.25rem;border-radius:50%;"/> <span>English</span>
+    </a>
+    <a href="#" onclick="setLanguage('fr'); return false;" class="lang-option" style="font-size:1rem; padding: 0.5rem 0; display:flex; align-items:center; gap:0.5rem; border:none; transform: none; opacity: 1;">
+      <img src="https://kapowaz.github.io/circle-flags/flags/fr.svg" alt="FR" style="width:1.25rem;height:1.25rem;border-radius:50%;"/> <span>Français</span>
+    </a>
+    <a href="#" onclick="setLanguage('ar'); return false;" class="lang-option" style="font-size:1rem; padding: 0.5rem 0; display:flex; align-items:center; gap:0.5rem; border:none; transform: none; opacity: 1;">
+      <img src="https://kapowaz.github.io/circle-flags/flags/dz.svg" alt="AR" style="width:1.25rem;height:1.25rem;border-radius:50%;"/> <span>العربية</span>
+    </a>
+  </div>
+</div>
+
+<!-- Mobile Navigation Demo Selector Accordion -->
+<div style="padding: 0.5rem 0; border-bottom: 1px solid var(--border-light);">
+  <div class="menu-accordion-header">
+    <span style="font-size:1.125rem;font-weight:500;color:var(--text);display:flex;align-items:center;gap:var(--space-sm);">
+      <i class="fa-solid fa-flask" id="demoActiveIconMobile" style="width: 1.25rem;"></i> 
+      <span id="demoActiveLabelMobile"  style="font-family: 'Cairo', sans-serif;">
+       <span id="demoActiveLabelMobile" style="font-family: 'Cairo', sans-serif;">العرض</span>
+      </span>
+    </span>
+    <i class="fa-solid fa-chevron-down" style="font-size:0.75rem;color:var(--text-light);"></i>
+  </div>
+  <div class="menu-accordion-content" id="demoAccordMobile" style="display: none; padding-left:1.5rem; margin-top:0.5rem;">
+    <div class="demo-role-option" onclick="selectSaaSRole('student')" id="demoOptMobileStudent" style="padding: 0.5rem 0; border: none;">
+      <span class="demo-role-title" style="font-size:0.95rem; font-weight:700;"><i class="fa-solid fa-graduation-cap" style="color:var(--primary); margin-right: 8px;"></i> <span data-lang="en">Psychology Student</span><span data-lang="fr">Étudiant en Psychologie</span><span data-lang="ar">طالب علم النفس</span></span>
+      <span class="demo-role-desc" style="display:block; font-size:0.75rem; color:var(--text-secondary); margin-left: 1.5rem;">
+        <span data-lang="en">Imad AZIZI (L3) • Univ. Batna 1</span>
+        <span data-lang="fr">Imad AZIZI (L3) • Univ. Batna 1</span>
+        <span data-lang="ar">عماد عزيزي (سنة 3) • جامعة باتنة 1</span>
+      </span>
+    </div>
+    <div class="demo-role-option" onclick="selectSaaSRole('teacher')" id="demoOptMobileTeacher" style="padding: 0.5rem 0; border: none;">
+      <span class="demo-role-title" style="font-size:0.95rem; font-weight:700;"><i class="fa-solid fa-chalkboard-user" style="color:#10b981; margin-right: 8px;"></i> <span data-lang="en">Psychology Professor</span><span data-lang="fr">Enseignant en Psychologie</span><span data-lang="ar">أستاذ علم النفس</span></span>
+      <span class="demo-role-desc" style="display:block; font-size:0.75rem; color:var(--text-secondary); margin-left: 1.5rem;">
+        <span data-lang="en">Pr. Zakia CHENNA (Pr) • Univ. Batna 1</span>
+        <span data-lang="fr">Pr. Zakia CHENNA (Pr) • Univ. Batna 1</span>
+        <span data-lang="ar">أ.د. زكية شنة (بروفيسور) • جامعة باتنة 1</span>
+      </span>
+    </div>
+    <div class="demo-role-option" onclick="selectSaaSRole('admin')" id="demoOptMobileAdmin" style="padding: 0.5rem 0; border: none;">
+      <span class="demo-role-title" style="font-size:0.95rem; font-weight:700;"><i class="fa-solid fa-user-tie" style="color:#f59e0b; margin-right: 8px;"></i> <span data-lang="en">Department Head</span><span data-lang="fr">Chef de Département</span><span data-lang="ar">رئيس القسم</span></span>
+      <span class="demo-role-desc" style="display:block; font-size:0.75rem; color:var(--text-secondary); margin-left: 1.5rem;">
+        <span data-lang="en">Dr. Ammar CHOUCHANE (MCA) • Univ. Batna 1</span>
+        <span data-lang="fr">Dr. Ammar CHOUCHANE (MCA) • Univ. Batna 1</span>
+        <span data-lang="ar">د. عمار شوشان (أستاذ محاضر أ) • جامعة باتنة 1</span>
+      </span>
+    </div>
+    <div class="demo-role-option" onclick="selectSaaSRole('platform-admin')" id="demoOptMobilePlatform" style="padding: 0.5rem 0; border: none;">
+      <span class="demo-role-title" style="font-size:0.95rem; font-weight:700;"><i class="fa-solid fa-server" style="color:#6366f1; margin-right: 8px;"></i> <span data-lang="en">Platform Super Admin</span><span data-lang="fr">Super Admin Plateforme</span><span data-lang="ar">مدير النظام</span></span>
+      <span class="demo-role-desc" style="display:block; font-size:0.75rem; color:var(--text-secondary); margin-left: 1.5rem;">
+        <span data-lang="en">Mr. Uns MAHMOUDI • Developer</span>
+        <span data-lang="fr">M. Uns MAHMOUDI • Développeur</span>
+        <span data-lang="ar">أ. يونس محمودي • مطور البرمجية</span>
+      </span>
+    </div>
+    <div class="demo-role-option exit-demo-option" onclick="selectSaaSRole('guest')" id="demoOptMobileExit" style="padding: 0.5rem 0; border-top:1px solid var(--border-light); margin-top:0.5rem;">
+      <span class="demo-role-title" style="font-size:0.95rem; font-weight:700; color:#ef4444;"><i class="fa-solid fa-circle-xmark" style="margin-right: 8px;"></i> <span data-lang="en">Exit Demo Mode</span><span data-lang="fr">Quitter le Mode Démo</span><span data-lang="ar">الخروج من وضع العرض</span></span>
+      <span class="demo-role-desc" style="display:block; font-size:0.75rem; color:var(--text-secondary); margin-left: 1.5rem;" data-lang="en">Reset to original guest state</span>
+      <span class="demo-role-desc" style="display:block; font-size:0.75rem; color:var(--text-secondary); margin-left: 1.5rem;" data-lang="fr">Réinitialiser à l'état invité</span>
+      <span class="demo-role-desc" style="display:block; font-size:0.75rem; color:var(--text-secondary); margin-left: 1.5rem;" data-lang="ar">إعادة تعيين إلى وضع الزائر</span>
+    </div>
+  </div>
+</div>

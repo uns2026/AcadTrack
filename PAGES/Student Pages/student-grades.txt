@@ -1,0 +1,595 @@
+<!-- ===== EXPLICIT LAYOUT OVERRIDE ===== -->
+<style>
+  .article__header {
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--border-light);
+    display: none;
+  }
+  .layout {
+    display: contents;
+    gap: var(--space-xl);
+  }
+  .article {
+    max-width: -webkit-fill-available;
+    margin: -27px auto;
+  }
+
+  /* Hide Blogger Default wrappers */
+  .sidebar, .page-title, .sidebar-widget { display: none !important; }
+  .layout { grid-template-columns: 1fr !important; }
+  .site-main { display: block !important; padding: 0 !important; }
+</style>
+
+<!-- ===== GLOBAL STYLES ===== -->
+<style>
+  :root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --text: #0f172a;
+    --text-secondary: #475569;
+    --text-light: #94a3b8;
+    --bg: #ffffff;
+    --bg-cool: #f8fafc;
+    --bg-warm: #f1f5f9;
+    --border: #cbd5e1;
+    --border-light: #e2e8f0;
+    --card: #ffffff;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-lg: 16px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+    --shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.05);
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 1.5rem;
+    --space-lg: 2rem;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Cairo', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+    background-color: var(--bg-cool);
+    -webkit-font-smoothing: antialiased;
+  }
+  input, button, select { font: inherit; color: inherit; }
+  a { color: inherit; text-decoration: none; }
+
+  /* Stretch main container to fill full viewport width */
+  .saas-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 32px 28px !important;
+  }
+  @media (max-width: 1023px) {
+    .saas-container { padding: 20px 16px !important; }
+  }
+
+  /* Page Header */
+  .saas-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1.5px solid var(--border-light);
+  }
+  .saas-header h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.03em;
+  }
+
+  /* ===== GRADES METRICS STATS ===== */
+  .grd-stats-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom: var(--space-md); }
+  .grd-stat-card { background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 18px; display: flex; align-items: center; gap: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .grd-stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+  .grd-stat-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .grd-stat-icon.blue { background: #eff6ff; color: #2563eb; }
+  .grd-stat-icon.emerald { background: #ecfdf5; color: #059669; }
+  .grd-stat-icon.rose { background: #fff1f2; color: #f43f5e; }
+  .grd-stat-icon.purple { background: #f5f3ff; color: #7c3aed; }
+  .grd-stat-value { font-size: 24px; font-weight: 800; color: #0f172a; line-height: 1; }
+  .grd-stat-label { font-size: 12px; color: #64748b; font-weight: 600; margin-top: 4px; }
+
+  /* ===== TABLES ===== */
+  .table-card { background: var(--card); border: 1.5px solid var(--border-light); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; margin-bottom: var(--space-md); max-width: 100%; width: 100%; }
+  .table-responsive { width: 100%; overflow-x: auto; scrollbar-width: thin; -webkit-overflow-scrolling: touch; display: block; }
+  .saas-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px; min-width: 650px; }
+  .saas-table th { background-color: var(--bg-cool); padding: 12px 18px; font-weight: 700; color: var(--text-secondary); border-bottom: 1.5px solid var(--border-light); }
+  .saas-table td { padding: 14px 18px; border-bottom: 1px solid var(--border-light); color: var(--text); vertical-align: middle; }
+  .saas-table tr:last-child td { border-bottom: none; }
+  .saas-table tr:hover td { background-color: var(--bg-cool); }
+
+  /* ===== GRADE LEVEL BADGES ===== */
+  .grade-avg-badge { font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 6px; display: inline-block; font-family: var(--font-mono); }
+  .grade-avg-badge.pass { background: #ecfdf5; color: #047857; border: 1.1px solid #a7f3d0; }
+  .grade-avg-badge.fail { background: #fef2f2; color: #b91c1c; border: 1.1px solid #fecaca; }
+
+  .grd-status-badge { font-size: 10.5px; font-weight: 800; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; }
+  .grd-status-badge.pass { background-color: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+  .grd-status-badge.fail { background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+  /* ===== BUTTONS ===== */
+  .btn-saas { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 18px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: all 0.2s ease; font-family: inherit; }
+  .btn-saas-primary { background-color: var(--primary); color: white !important; }
+  .btn-saas-primary:hover { background-color: var(--primary-hover); }
+  .btn-saas-secondary { background-color: var(--bg-cool); color: var(--text-secondary); border-color: var(--border); }
+  .btn-saas-secondary:hover { background-color: var(--bg-warm); color: var(--text); }
+
+  /* ===== MOBILE CARD SYSTEM ===== */
+  .grades-cards-mobile { display: none; flex-direction: column; gap: 10px; margin-bottom: var(--space-md); }
+  .grd-card-mobile { background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 10px; text-align: start; }
+  .grd-card-m-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+  .grd-card-m-label { color: #94a3b8; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.04em; }
+  .grd-card-m-value { color: #334155; font-weight: 600; }
+  .grd-evals-wrap { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; background-color: #f8fafc; border: 1.1px solid #e2e8f0; border-radius: 8px; padding: 8px; text-align: center; }
+  .grd-eval-box { display: flex; flex-direction: column; gap: 2px; }
+  .grd-eval-lbl { font-size: 9px; font-weight: 700; color: #94a3b8; text-transform: uppercase; }
+  .grd-eval-val { font-size: 11px; font-weight: 800; color: #0f172a; font-family: var(--font-mono); }
+
+  @media (max-width: 767px) {
+    #panel-grades .table-card { display: none !important; }
+    .grades-cards-mobile { display: flex; }
+  }
+
+  /* ===== SECTION DIVIDER ===== */
+  .section-divider { display: flex; align-items: center; gap: 10px; margin: var(--space-md) 0 var(--space-sm); }
+  .section-divider-label { font-size: clamp(10px, 1vw, 11px); font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; }
+  .section-divider-line { flex: 1; height: 1px; background: #e2e8f0; }
+
+  /* ===== RTL ALIGNMENTS ===== */
+  .lang-ar .saas-header, .lang-ar .table-card, .lang-ar .saas-table { direction: rtl; text-align: right; }
+  .lang-ar .saas-table th, .lang-ar .saas-table td { text-align: right; }
+  .lang-ar .grd-stat-card { direction: rtl !important; text-align: right !important; display: flex !important; justify-content: flex-start !important; gap: 14px !important; }
+  .lang-ar .grd-card-mobile { text-align: right !important; direction: rtl !important; }
+  .lang-ar .grd-card-m-row { flex-direction: row-reverse !important; }
+  .lang-ar .grd-card-m-value { text-align: left !important; }
+  .lang-ar .grd-evals-wrap { direction: ltr !important; }
+  .lang-ar .btn-saas-secondary, .lang-ar .btn-saas-primary { flex-direction: row-reverse; }
+  .lang-ar .section-divider { flex-direction: row-reverse; }
+  .lang-ar .grd-stats-grid { direction: ltr; }
+</style>
+
+<!-- PASTE GRADES HTML HERE -->
+<div class="saas-container">
+  
+  <header class="saas-header">
+    <h2>
+      <span data-lang="en">My Grades &amp; Transcripts</span>
+      <span data-lang="fr">Mes Notes &amp; Bulletins</span>
+      <span data-lang="ar">كشف النقاط والنتائج الأكاديمية</span>
+    </h2>
+    <div style="display:flex; gap:8px;">
+      <button class="btn-saas btn-saas-primary" onclick="compileArabicSaaSTranscript()"><i class="fa-solid fa-print"></i> <span data-lang="en">Print Official Transcript</span><span data-lang="fr">Imprimer</span><span data-lang="ar">طباعة كشف النقاط الرسمي</span></button>
+      <button class="btn-saas btn-saas-secondary" onclick="window.location.href='/p/student-dashboard.html'"><i class="fa-solid fa-arrow-left"></i> <span data-lang="en">Back to Dashboard</span><span data-lang="fr">Retour</span><span data-lang="ar">العودة للوحة التحكم</span></button>
+    </div>
+  </header>
+
+  <!-- Grade Stats Grid -->
+  <div class="grd-stats-grid">
+    <div class="grd-stat-card">
+      <div class="grd-stat-icon blue"><i class="fa-solid fa-calculator"></i></div>
+      <div>
+        <div class="grd-stat-value">14.50</div>
+        <div class="grd-stat-label"><span data-lang="en">S2 Average GPA</span><span data-lang="fr">Moyenne Générale</span><span data-lang="ar">معدل الفصل الإجمالي</span></div>
+      </div>
+    </div>
+    <div class="grd-stat-card">
+      <div class="grd-stat-icon emerald"><i class="fa-solid fa-square-check"></i></div>
+      <div>
+        <div class="grd-stat-value">5 / 5</div>
+        <div class="grd-stat-label"><span data-lang="en">Passed Modules</span><span data-lang="fr">Modules Validés</span><span data-lang="ar">المقاييس المستوفاة</span></div>
+      </div>
+    </div>
+    <div class="grd-stat-card">
+      <div class="grd-stat-icon purple"><i class="fa-solid fa-award"></i></div>
+      <div>
+        <div class="grd-stat-value">22 ECTS</div>
+        <div class="grd-stat-label"><span data-lang="en">ECTS Credits Earned</span><span data-lang="fr">Crédits Obtenus</span><span data-lang="ar">رصيد (ECTS) المكتسب</span></div>
+      </div>
+    </div>
+    <div class="grd-stat-card">
+      <div class="grd-stat-icon rose"><i class="fa-solid fa-star"></i></div>
+      <div>
+        <div class="grd-stat-value">15.10</div>
+        <div class="grd-stat-label"><span data-lang="en">Highest Score</span><span data-lang="fr">Note Maximale</span><span data-lang="ar">أعلى علامة مسجلة</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 1: Desktop Matrix Table Grid view (100% Hardcoded Demo) [1] -->
+  <div class="section-divider">
+    <span class="section-divider-label"><span data-lang="en">Course Grades Matrix</span><span data-lang="fr">Relevé détaillé</span><span data-lang="ar">نتائج نقاط المقاييس الدراسية للفصل الحالي</span></span>
+    <div class="section-divider-line"></div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-responsive">
+      <table class="saas-table" id="student-grades-matrix-table">
+        <thead>
+          <tr>
+            <th style="width: 110px;">Code</th>
+            <th><span data-lang="en">Module Name</span><span data-lang="fr">Nom du Module</span><span data-lang="ar">اسم المقياس الدراسي</span></th>
+            <th style="width: 80px; text-align:center;">Exam (50%)</th>
+            <th style="width: 80px; text-align:center;">TD (20%)</th>
+            <th style="width: 80px; text-align:center;">TP (15%)</th>
+            <th style="width: 80px; text-align:center;">Assign (10%)</th>
+            <th style="width: 80px; text-align:center;">Partic (5%)</th>
+            <th style="width: 100px; text-align:center;"><span data-lang="en">Average</span><span data-lang="fr">Moyenne</span><span data-lang="ar">المعدل</span></th>
+            <th style="width: 120px; text-align:center;"><span data-lang="en">Status</span><span data-lang="fr">Statut</span><span data-lang="ar">النتيجة</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Row 1: منهجية وتقنيات البحث -->
+          <tr>
+            <td style="font-family:var(--font-mono); font-weight:700;">PSY-311</td>
+            <td style="font-weight:700; color:#0f172a;">منهجية وتقنيات البحث</td>
+            <td style="text-align:center; font-family:var(--font-mono);">14.50</td>
+            <td style="text-align:center; font-family:var(--font-mono);">15.00</td>
+            <td style="text-align:center; font-family:var(--font-mono);">13.50</td>
+            <td style="text-align:center; font-family:var(--font-mono);">14.00</td>
+            <td style="text-align:center; font-family:var(--font-mono);">15.00</td>
+            <td style="text-align:center;"><span class="grade-avg-badge pass">14.50</span></td>
+            <td style="text-align:center;"><span class="grd-status-badge pass"><span data-lang="en">Pass</span><span data-lang="fr">Admis</span><span data-lang="ar">مستوفى</span></span></td>
+          </tr>
+          <!-- Row 2: علم النفس المرضي -->
+          <tr>
+            <td style="font-family:var(--font-mono); font-weight:700;">PSY-312</td>
+            <td style="font-weight:700; color:#0f172a;">علم النفس المرضي</td>
+            <td style="text-align:center; font-family:var(--font-mono);">14.00</td>
+            <td style="text-align:center; font-family:var(--font-mono);">15.00</td>
+            <td style="text-align:center; font-family:var(--font-mono);">14.00</td>
+            <td style="text-align:center; font-family:var(--font-mono);">15.00</td>
+            <td style="text-align:center; font-family:var(--font-mono);">15.00</td>
+            <td style="text-align:center;"><span class="grade-avg-badge pass">14.20</span></td>
+            <td style="text-align:center;"><span class="grd-status-badge pass"><span data-lang="en">Pass</span><span data-lang="fr">Admis</span><span data-lang="ar">مستوفى</span></span></td>
+          </tr>
+          <!-- Row 3: نظريات التعلم -->
+          <tr>
+            <td style="font-family:var(--font-mono); font-weight:700;">PSY-313</td>
+            <td style="font-weight:700; color:#0f172a;">نظريات التعلم</td>
+            <td style="text-align:center; font-family:var(--font-mono);">13.00</td>
+            <td style="text-align:center; font-family:var(--font-mono);">14.00</td>
+            <td style="text-align:center; font-family:var(--font-mono);">15.00</td>
+            <td style="text-align:center; font-family:var(--font-mono);">15.00</td>
+            <td style="text-align:center; font-family:var(--font-mono);">15.00</td>
+            <td style="text-align:center;"><span class="grade-avg-badge pass">13.80</span></td>
+            <td style="text-align:center;"><span class="grd-status-badge pass"><span data-lang="en">Pass</span><span data-lang="fr">Admis</span><span data-lang="ar">مستوفى</span></span></td>
+          </tr>
+          <!-- Row 4: مشكلات نفسية اجتماعية -->
+          <tr>
+            <td style="font-family:var(--font-mono); font-weight:700;">PSY-314</td>
+            <td style="font-weight:700; color:#0f172a;">مشكلات نفسية اجتماعية</td>
+            <td style="text-align:center; font-family:var(--font-mono);">15.00</td>
+            <td style="text-align:center; font-family:var(--font-mono);">16.00</td>
+            <td style="text-align:center; font-family:var(--font-mono);">14.00</td>
+            <td style="text-align:center; font-family:var(--font-mono);">16.00</td>
+            <td style="text-align:center; font-family:var(--font-mono);">16.00</td>
+            <td style="text-align:center;"><span class="grade-avg-badge pass">15.10</span></td>
+            <td style="text-align:center;"><span class="grd-status-badge pass"><span data-lang="en">Pass</span><span data-lang="fr">Admis</span><span data-lang="ar">مستوفى</span></span></td>
+          </tr>
+          <!-- Row 5: علم النفس التنظيم والعمل -->
+          <tr>
+            <td style="font-family:var(--font-mono); font-weight:700;">PSY-315</td>
+            <td style="font-weight:700; color:#0f172a;">علم النفس التنظيم والعمل</td>
+            <td style="text-align:center; font-family:var(--font-mono);">14.50</td>
+            <td style="text-align:center; font-family:var(--font-mono);">15.00</td>
+            <td style="text-align:center; font-family:var(--font-mono);">15.00</td>
+            <td style="text-align:center; font-family:var(--font-mono);">16.00</td>
+            <td style="text-align:center; font-family:var(--font-mono);">16.00</td>
+            <td style="text-align:center;"><span class="grade-avg-badge pass">14.90</span></td>
+            <td style="text-align:center;"><span class="grd-status-badge pass"><span data-lang="en">Pass</span><span data-lang="fr">Admis</span><span data-lang="ar">مستوفى</span></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Mobile Responsive Roster Cards (100% Hardcoded Demo) [1] -->
+  <div class="grades-cards-mobile" id="student-grades-mobile-wrapper">
+    <!-- Card 1 -->
+    <div class="grd-card-mobile">
+      <div class="grd-card-m-row">
+        <span class="grd-card-m-label"><span data-lang="en">Module Name</span><span data-lang="fr">Nom du Module</span><span data-lang="ar">المقياس الدراسي</span></span>
+        <span class="grd-card-m-value" style="font-weight:800; color:#0f172a;">منهجية وتقنيات البحث</span>
+      </div>
+      <div class="grd-card-m-row">
+        <span class="grd-card-m-label">Code</span>
+        <span class="grd-card-m-value" style="font-family:var(--font-mono);">PSY-311</span>
+      </div>
+      <div class="grd-evals-wrap">
+        <div class="grd-eval-box"><span class="grd-eval-lbl">Ex</span><span class="grd-eval-val">14.50</span></div>
+        <div class="grd-eval-box"><span class="grd-eval-lbl">TD</span><span class="grd-eval-val">15.00</span></div>
+        <div class="grd-eval-box"><span class="grd-eval-lbl">TP</span><span class="grd-eval-val">13.50</span></div>
+        <div class="grd-eval-box"><span class="grd-eval-lbl">As</span><span class="grd-eval-val">14.00</span></div>
+        <div class="grd-eval-box"><span class="grd-eval-lbl">Pa</span><span class="grd-eval-val">15.00</span></div>
+      </div>
+      <div class="grd-card-m-row" style="margin-top:6px;">
+        <span class="grd-card-m-label"><span data-lang="en">Average &amp; Status</span><span data-lang="fr">Moyenne &amp; Statut</span><span data-lang="ar">المعدل والنتيجة</span></span>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <span class="grade-avg-badge pass">14.50</span>
+          <span class="grd-status-badge pass"><span data-lang="en">Pass</span><span data-lang="fr">Admis</span><span data-lang="ar">مستوفى</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="grd-card-mobile">
+      <div class="grd-card-m-row">
+        <span class="grd-card-m-label"><span data-lang="en">Module Name</span><span data-lang="fr">Nom du Module</span><span data-lang="ar">المقياس الدراسي</span></span>
+        <span class="grd-card-m-value" style="font-weight:800; color:#0f172a;">علم النفس المرضي</span>
+      </div>
+      <div class="grd-card-m-row">
+        <span class="grd-card-m-label">Code</span>
+        <span class="grd-card-m-value" style="font-family:var(--font-mono);">PSY-312</span>
+      </div>
+      <div class="grd-evals-wrap">
+        <div class="grd-eval-box"><span class="grd-eval-lbl">Ex</span><span class="grd-eval-val">14.00</span></div>
+        <div class="grd-eval-box"><span class="grd-eval-lbl">TD</span><span class="grd-eval-val">15.00</span></div>
+        <div class="grd-eval-box"><span class="grd-eval-lbl">TP</span><span class="grd-eval-val">14.00</span></div>
+        <div class="grd-eval-box"><span class="grd-eval-lbl">As</span><span class="grd-eval-val">15.00</span></div>
+        <div class="grd-eval-box"><span class="grd-eval-lbl">Pa</span><span class="grd-eval-val">15.00</span></div>
+      </div>
+      <div class="grd-card-m-row" style="margin-top:6px;">
+        <span class="grd-card-m-label"><span data-lang="en">Average &amp; Status</span><span data-lang="fr">Moyenne &amp; Statut</span><span data-lang="ar">المعدل والنتيجة</span></span>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <span class="grade-avg-badge pass">14.20</span>
+          <span class="grd-status-badge pass"><span data-lang="en">Pass</span><span data-lang="fr">Admis</span><span data-lang="ar">مستوفى</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="grd-card-mobile">
+      <div class="grd-card-m-row">
+        <span class="grd-card-m-label"><span data-lang="en">Module Name</span><span data-lang="fr">Nom du Module</span><span data-lang="ar">المقياس الدراسي</span></span>
+        <span class="grd-card-m-value" style="font-weight:800; color:#0f172a;">نظريات التعلم</span>
+      </div>
+      <div class="grd-card-m-row">
+        <span class="grd-card-m-label">Code</span>
+        <span class="grd-card-m-value" style="font-family:var(--font-mono);">PSY-313</span>
+      </div>
+      <div class="grd-evals-wrap">
+        <div class="grd-eval-box"><span class="grd-eval-lbl">Ex</span><span class="grd-eval-val">13.00</span></div>
+        <div class="grd-eval-box"><span class="grd-eval-lbl">TD</span><span class="grd-eval-val">14.00</span></div>
+        <div class="grd-eval-box"><span class="grd-eval-lbl">TP</span><span class="grd-eval-val">15.00</span></div>
+        <div class="grd-eval-box"><span class="grd-eval-lbl">As</span><span class="grd-eval-val">15.00</span></div>
+        <div class="grd-eval-box"><span class="grd-eval-lbl">Pa</span><span class="grd-eval-val">15.00</span></div>
+      </div>
+      <div class="grd-card-m-row" style="margin-top:6px;">
+        <span class="grd-card-m-label"><span data-lang="en">Average &amp; Status</span><span data-lang="fr">Moyenne &amp; Statut</span><span data-lang="ar">المعدل والنتيجة</span></span>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <span class="grade-avg-badge pass">13.80</span>
+          <span class="grd-status-badge pass"><span data-lang="en">Pass</span><span data-lang="fr">Admis</span><span data-lang="ar">مستوفى</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="grd-card-mobile">
+      <div class="grd-card-m-row">
+        <span class="grd-card-m-label"><span data-lang="en">Module Name</span><span data-lang="fr">Nom du Module</span><span data-lang="ar">المقياس الدراسي</span></span>
+        <span class="grd-card-m-value" style="font-weight:800; color:#0f172a;">مشكلات نفسية اجتماعية</span>
+      </div>
+      <div class="grd-card-m-row">
+        <span class="grd-card-m-label">Code</span>
+        <span class="grd-card-m-value" style="font-family:var(--font-mono);">PSY-314</span>
+      </div>
+      <div class="grd-evals-wrap">
+        <div class="grd-eval-box"><span class="grd-eval-lbl">Ex</span><span class="grd-eval-val">15.00</span></div>
+        <div class="grd-eval-box"><span class="grd-eval-lbl">TD</span><span class="grd-eval-val">16.00</span></div>
+        <div class="grd-eval-box"><span class="grd-eval-lbl">TP</span><span class="grd-eval-val">14.00</span></div>
+        <div class="grd-eval-box"><span class="grd-eval-lbl">As</span><span class="grd-eval-val">16.00</span></div>
+        <div class="grd-eval-box"><span class="grd-eval-lbl">Pa</span><span class="grd-eval-val">16.00</span></div>
+      </div>
+      <div class="grd-card-m-row" style="margin-top:6px;">
+        <span class="grd-card-m-label"><span data-lang="en">Average &amp; Status</span><span data-lang="fr">Moyenne &amp; Statut</span><span data-lang="ar">المعدل والنتيجة</span></span>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <span class="grade-avg-badge pass">15.10</span>
+          <span class="grd-status-badge pass"><span data-lang="en">Pass</span><span data-lang="fr">Admis</span><span data-lang="ar">مستوفى</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="grd-card-mobile">
+      <div class="grd-card-m-row">
+        <span class="grd-card-m-label"><span data-lang="en">Module Name</span><span data-lang="fr">Nom du Module</span><span data-lang="ar">المقياس الدراسي</span></span>
+        <span class="grd-card-m-value" style="font-weight:800; color:#0f172a;">علم النفس التنظيم والعمل</span>
+      </div>
+      <div class="grd-card-m-row">
+        <span class="grd-card-m-label">Code</span>
+        <span class="grd-card-m-value" style="font-family:var(--font-mono);">PSY-315</span>
+      </div>
+      <div class="grd-evals-wrap">
+        <div class="grd-eval-box"><span class="grd-eval-lbl">Ex</span><span class="grd-eval-val">14.50</span></div>
+        <div class="grd-eval-box"><span class="grd-eval-lbl">TD</span><span class="grd-eval-val">15.00</span></div>
+        <div class="grd-eval-box"><span class="grd-eval-lbl">TP</span><span class="grd-eval-val">15.00</span></div>
+        <div class="grd-eval-box"><span class="grd-eval-lbl">As</span><span class="grd-eval-val">16.00</span></div>
+        <div class="grd-eval-box"><span class="grd-eval-lbl">Pa</span><span class="grd-eval-val">16.00</span></div>
+      </div>
+      <div class="grd-card-m-row" style="margin-top:6px;">
+        <span class="grd-card-m-label"><span data-lang="en">Average &amp; Status</span><span data-lang="fr">Moyenne &amp; Statut</span><span data-lang="ar">المعدل والنتيجة</span></span>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <span class="grade-avg-badge pass">14.90</span>
+          <span class="grd-status-badge pass"><span data-lang="en">Pass</span><span data-lang="fr">Admis</span><span data-lang="ar">مستوفى</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+//<![CDATA[
+  document.addEventListener('DOMContentLoaded', function() {
+    const initLang = localStorage.getItem('acadtrack-lang') || 'en';
+    setLanguage(initLang);
+  });
+
+  function setLanguage(lang) {
+    localStorage.setItem('acadtrack-lang', lang);
+    document.documentElement.lang = lang;
+    const isRTL = lang === 'ar';
+    const card = document.querySelector('.saas-container');
+    if (card) card.dir = isRTL ? 'rtl' : 'ltr';
+
+    document.querySelectorAll('[data-lang]').forEach(el => {
+      el.style.display = el.dataset.lang === lang ? '' : 'none';
+    });
+  }
+
+  // Official Algerian administrative printable HTML sheet (Arabic layout, Algerian headers & official Batna 1 University logo) [2]
+  window.compileArabicSaaSTranscript = function() {
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      alert("Pop-up blocker active. Please allow popups to compile the printable PDF sheet.");
+      return;
+    }
+
+    const documentBody = `
+      <!DOCTYPE html>
+      <html lang="ar" dir="rtl">
+      <head>
+        <title>كشف النقاط الرسمي للفصل الدراسي</title>
+        <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet" />
+        <style>
+          body { font-family: 'Cairo', -apple-system, sans-serif; padding: 40px; color:#0f172a; direction: rtl; text-align: right; }
+          .header-panel { display: flex; justify-content: space-between; align-items: center; border-bottom: 2.5px solid #2563eb; padding-bottom: 16px; margin-bottom: 30px; }
+          .header-text { text-align: right; line-height: 1.6; }
+          .university-logo { height: 80px; width: auto; }
+          .doc-title { text-align: center; font-size: 20px; font-weight: 800; color: #1e3a8a; margin: 30px 0; }
+          .meta-details { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 30px; font-size: 13.5px; font-weight: 700; color:#475569; }
+          .saas-table { width: 100%; border-collapse: collapse; margin-bottom: 40px; font-size: 13px; }
+          .saas-table th { border: 1px solid #cbd5e1; padding:10px; background:#f8fafc; text-align:right; font-weight:800; }
+          .saas-table td { border: 1px solid #cbd5e1; padding:8px; }
+          .footer-sign { display: flex; justify-content: flex-end; margin-top: 60px; font-size: 13px; font-weight: 700; color:#334155; }
+        </style>
+      </head>
+      <body>
+        <div class="header-panel">
+          <div class="header-text">
+            <div style="font-size: 13px; font-weight: 800; color:#0f172a;">الجمهورية الجزائرية الديمقراطية الشعبية</div>
+            <div style="font-size: 12px; font-weight: 700; color:#475569; margin-top:4px;">وزارة التعليم العالي والبحث العلمي</div>
+            <div style="font-size: 12px; font-weight: 700; color:#475569; margin-top:2px;">جامعة باتنة 1 – الحاج لخضر</div>
+            <div style="font-size: 11px; color:#64748b; margin-top:2px;">كلية العلوم الإنسانية والاجتماعية</div>
+            <div style="font-size: 11px; color:#64748b; margin-top:2px;">قسم: علم النفس</div>
+          </div>
+          <img src="https://www.univ-batna.dz/wp-content/uploads/2026/02/ChatGPT-Image-26-avr.-2026-16_54_46.png" class="university-logo" alt="Batna 1 University Logo" />
+        </div>
+
+        <div class="doc-title">كشف النقاط الرسمي للفصل الدراسي الحالي</div>
+
+        <div class="meta-details">
+          <div>اسم الطالب ولقبه: <strong style="color:#0f172a;">عماد عزيزي</strong></div>
+          <div>رقم تسجيل الطالب: <strong style="color:#0f172a; font-family:monospace;">202312001</strong></div>
+          <div>الفوج الأكاديمي: <strong style="color:#0f172a;">السنة الثالثة علم نفس عيادي</strong></div>
+          <div>تاريخ الطباعة: <strong>2026/05/27</strong></div>
+        </div>
+
+        <table class="saas-table">
+          <thead>
+            <tr>
+              <th style="width: 100px; text-align:center;">الرمز</th>
+              <th>المقياس الدراسي</th>
+              <th style="text-align:center; width: 70px;">الامتحان</th>
+              <th style="text-align:center; width: 70px;">الأعمال الموجهة</th>
+              <th style="text-align:center; width: 70px;">الأعمال التطبيقية</th>
+              <th style="text-align:center; width: 70px;">الواجبات</th>
+              <th style="text-align:center; width: 70px;">المشاركة</th>
+              <th style="text-align:center; width: 85px; color:#2563eb;">المعدل</th>
+              <th style="text-align:center; width: 90px;">النتيجة</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-family:monospace; text-align:center;">PSY-311</td>
+              <td style="font-weight:bold;">منهجية وتقنيات البحث</td>
+              <td style="text-align:center; font-family:monospace;">14.50</td>
+              <td style="text-align:center; font-family:monospace;">15.00</td>
+              <td style="text-align:center; font-family:monospace;">13.50</td>
+              <td style="text-align:center; font-family:monospace;">14.00</td>
+              <td style="text-align:center; font-family:monospace;">15.00</td>
+              <td style="text-align:center; font-weight:bold; color:#2563eb; font-family:monospace;">14.50</td>
+              <td style="text-align:center; font-weight:bold; color:#047857;">مستوفى</td>
+            </tr>
+            <tr>
+              <td style="font-family:monospace; text-align:center;">PSY-312</td>
+              <td style="font-weight:bold;">علم النفس المرضي</td>
+              <td style="text-align:center; font-family:monospace;">14.00</td>
+              <td style="text-align:center; font-family:monospace;">15.00</td>
+              <td style="text-align:center; font-family:monospace;">14.00</td>
+              <td style="text-align:center; font-family:monospace;">15.00</td>
+              <td style="text-align:center; font-family:monospace;">15.00</td>
+              <td style="text-align:center; font-weight:bold; color:#2563eb; font-family:monospace;">14.20</td>
+              <td style="text-align:center; font-weight:bold; color:#047857;">مستوفى</td>
+            </tr>
+            <tr>
+              <td style="font-family:monospace; text-align:center;">PSY-313</td>
+              <td style="font-weight:bold;">نظريات التعلم</td>
+              <td style="text-align:center; font-family:monospace;">13.00</td>
+              <td style="text-align:center; font-family:monospace;">14.00</td>
+              <td style="text-align:center; font-family:monospace;">15.00</td>
+              <td style="text-align:center; font-family:monospace;">15.00</td>
+              <td style="text-align:center; font-family:monospace;">15.00</td>
+              <td style="text-align:center; font-weight:bold; color:#2563eb; font-family:monospace;">13.80</td>
+              <td style="text-align:center; font-weight:bold; color:#047857;">مستوفى</td>
+            </tr>
+            <tr>
+              <td style="font-family:monospace; text-align:center;">PSY-314</td>
+              <td style="font-weight:bold;">مشكلات نفسية اجتماعية</td>
+              <td style="text-align:center; font-family:monospace;">15.00</td>
+              <td style="text-align:center; font-family:monospace;">16.00</td>
+              <td style="text-align:center; font-family:monospace;">14.00</td>
+              <td style="text-align:center; font-family:monospace;">16.00</td>
+              <td style="text-align:center; font-family:monospace;">16.00</td>
+              <td style="text-align:center; font-weight:bold; color:#2563eb; font-family:monospace;">15.10</td>
+              <td style="text-align:center; font-weight:bold; color:#047857;">مستوفى</td>
+            </tr>
+            <tr>
+              <td style="font-family:monospace; text-align:center;">PSY-315</td>
+              <td style="font-weight:bold;">علم النفس التنظيم والعمل</td>
+              <td style="text-align:center; font-family:monospace;">14.50</td>
+              <td style="text-align:center; font-family:monospace;">15.00</td>
+              <td style="text-align:center; font-family:monospace;">15.00</td>
+              <td style="text-align:center; font-family:monospace;">16.00</td>
+              <td style="text-align:center; font-family:monospace;">16.00</td>
+              <td style="text-align:center; font-weight:bold; color:#2563eb; font-family:monospace;">14.90</td>
+              <td style="text-align:center; font-weight:bold; color:#047857;">مستوفى</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="footer-sign">
+          <div style="text-align: center; border-top: 1.5px dashed #cbd5e1; padding-top: 8px; min-width: 220px;">
+            توقيع وختم رئيس القسم
+          </div>
+        </div>
+
+        <script>
+          window.addEventListener('load', function() {
+            setTimeout(function() {
+              window.print();
+            }, 400);
+          });
+        <\/script>
+      </body>
+      </html>
+    `;
+
+    printWindow.document.write(documentBody);
+    printWindow.document.close();
+  };
+//]]>
+</script>
+
+</body>
+</html>
